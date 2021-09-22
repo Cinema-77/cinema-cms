@@ -26,6 +26,7 @@ import {
   FiTrendingUp,
   FiCompass,
   FiStar,
+  FiUser,
   FiSettings,
   FiMenu,
   FiBell,
@@ -43,9 +44,10 @@ interface LinkItemProps {
 }
 const LinkItems: Array<LinkItemProps> = [
   { name: 'Home', icon: FiHome, to: '/dashboard' },
-  { name: 'Trending', icon: FiTrendingUp, to: '/treding' },
-  { name: 'Explore', icon: FiCompass, to: '/explore' },
-  { name: 'Favourites', icon: FiStar, to: '/fa' },
+  { name: 'Revenue', icon: FiTrendingUp, to: '/revenue' },
+  { name: 'Cinema', icon: FiCompass, to: '/cinema' },
+  { name: 'Users', icon: FiUser, to: '/users' },
+  { name: 'Favourites', icon: FiStar, to: '/favourites' },
   { name: 'Settings', icon: FiSettings, to: '/as' },
 ];
 
@@ -94,7 +96,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
+          Movieer CMS
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
@@ -176,7 +178,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         fontFamily="monospace"
         fontWeight="bold"
       >
-        Logo
+        Movieer CMS
       </Text>
 
       <HStack spacing={{ base: '0', md: '6' }}>

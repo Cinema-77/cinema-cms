@@ -60,7 +60,7 @@ export const Auth: React.FC<AuthProps> = () => {
         spacing={4}
         w="100%"
       >
-        <Heading mb={6}>Login to CMS </Heading>
+        <Heading mb={6}>Sign in to CMS </Heading>
         <InputField
           label="Email Address"
           registration={register('username')}
@@ -77,20 +77,20 @@ export const Auth: React.FC<AuthProps> = () => {
         <Button
           id="login"
           type="submit"
-          backgroundColor="gray.900"
+          backgroundColor="cyan.400"
           color="white"
           isLoading={isLoggingIn}
           fontWeight="medium"
           mt={4}
           h="50px"
           fontSize="lg"
-          _hover={{ bg: 'gray.700' }}
+          _hover={{ bg: 'cyan.700' }}
           _active={{
-            bg: 'gray.800',
+            bg: 'cyan.200',
             transform: 'scale(0.95)',
           }}
         >
-          Login
+          Sign in
         </Button>
       </Stack>
     </Flex>
