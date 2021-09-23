@@ -1,4 +1,4 @@
-import { FormControl, FormErrorMessage, FormLabel, FormControlProps } from '@chakra-ui/react';
+import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import * as React from 'react';
 import { FieldError } from 'react-hook-form';
 

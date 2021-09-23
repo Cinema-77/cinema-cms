@@ -6,7 +6,7 @@ export function PrivateRoute(props: any) {
   if (!auth.user) {
     return (
       <Route>
-        <Redirect to="/auth" />
+        <Redirect to="/" />
       </Route>
     );
   }

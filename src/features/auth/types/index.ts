@@ -1,29 +1,29 @@
 interface UserProfile {
   fullName: string;
   dateOfBirth: string;
-  address: UserAddress;
+  avatar: string;
+  male: boolean;
+  address: string;
 }
 
-interface UserAddress {
-  city: string;
-  district: string;
-  ward: string;
-  street: string;
-  lat: string;
-  lng: string;
+interface UserPermission {
+  _id?: string;
+  name: string;
+  type: string;
 }
 
 export interface AuthUser {
-  _id: string;
+  _id?: string;
   email: string;
-  createdAt: string;
   phoneNumber: string;
   profile: UserProfile;
+  createdAt: string;
+  permission: UserPermission;
 }
 
 export interface UserResponse {
   token: string;
-  user: AuthUser;
+  staff: AuthUser;
 }
 
 export interface AuthResponse {

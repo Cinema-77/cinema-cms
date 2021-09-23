@@ -4,15 +4,15 @@ import { Flex, Spinner } from '@chakra-ui/react';
 import { initReactQueryAuth } from 'react-query-auth';
 
 async function handleUserResponse(data: UserResponse) {
-  const { token, user } = data;
+  const { token, staff } = data;
   storage.setToken(token);
-  return user;
+  return staff;
 }
 
 async function loadUser() {
   if (storage.getToken()) {
-    const { user } = await getUser();
-    return user;
+    const { values } = await getUser();
+    return values.staff;
   }
   return null;
 }

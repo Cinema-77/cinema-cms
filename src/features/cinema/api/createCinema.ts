@@ -1,7 +1,8 @@
 import { axios } from '@/lib/axios';
 import { MutationConfig, queryClient } from '@/lib/react-query';
+import { createStandaloneToast } from '@chakra-ui/toast';
 import { useMutation } from 'react-query';
-import { CinemaRespone, CinemaType } from '../type';
+import { CinemaRespone } from '../type';
 
 export type CreateCommentDTO = {
   name: string;
@@ -22,6 +23,7 @@ type UseCreateCinematOptions = {
 };
 
 export const useCreateCinema = ({ config }: UseCreateCinematOptions = {}) => {
+  const toast = createStandaloneToast();
   return useMutation({
     onMutate: async (newCinema) => {
       await queryClient.cancelQueries('cinemas');
@@ -42,6 +44,12 @@ export const useCreateCinema = ({ config }: UseCreateCinematOptions = {}) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries('cinemas');
+      toast({
+        title: 'Created Cinema',
+        status: 'success',
+        isClosable: true,
+        position: 'top-right',
+      });
     },
     ...config,
     mutationFn: createCinema,

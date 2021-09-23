@@ -4,6 +4,7 @@ import { lazyImport } from '@/utils/lazyImport';
 
 const { Auth } = lazyImport(() => import('@/features/auth'), 'Auth');
 const { DashBoard } = lazyImport(() => import('@/features/dashboard'), 'DashBoard');
+const { Cinemas } = lazyImport(() => import('@/features/cinema'), 'Cinemas');
 const { Cinema } = lazyImport(() => import('@/features/cinema'), 'Cinema');
 
 const routes: any[] = [
@@ -14,6 +15,7 @@ const routes: any[] = [
     exact: true,
   },
   {
+    auth: true,
     component: MainLayout,
     routes: [
       {
@@ -22,7 +24,13 @@ const routes: any[] = [
         title: 'DashBoard',
       },
       {
+        exact: true,
         path: '/cinema',
+        component: Cinemas,
+        title: 'List Cinemas',
+      },
+      {
+        path: '/cinema/:_id',
         component: Cinema,
         title: 'Cinema',
       },

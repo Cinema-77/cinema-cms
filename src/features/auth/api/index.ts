@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import { AuthResponse, Cities, District } from '../types';
 
 export const getUser = (): Promise<AuthResponse> => {
-  return axios.get('/auth/me');
+  return axios.get('/staff/me');
 };
 
 export type LoginCredentialsDTO = {
@@ -13,7 +13,7 @@ export type LoginCredentialsDTO = {
 };
 
 export const loginWithEmailAndPassword = (data: LoginCredentialsDTO): Promise<AuthResponse> => {
-  return axios.post('/auth/login', data);
+  return axios.post('/staff/login', data);
 };
 
 export interface UserAddress {
