@@ -30,6 +30,7 @@ import {
   FiSettings,
   FiMenu,
   FiBell,
+  FiFilm,
   FiChevronDown,
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
@@ -44,6 +45,7 @@ interface LinkItemProps {
 }
 const LinkItems: Array<LinkItemProps> = [
   { name: 'Home', icon: FiHome, to: '/dashboard' },
+  { name: 'Manage Movie', icon: FiFilm, to: '/managemovie' },
   { name: 'Revenue', icon: FiTrendingUp, to: '/revenue' },
   { name: 'Cinema', icon: FiCompass, to: '/cinema' },
   { name: 'Users', icon: FiUser, to: '/users' },
