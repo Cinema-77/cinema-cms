@@ -4,35 +4,30 @@ import { createStandaloneToast } from '@chakra-ui/toast';
 import { useMutation } from 'react-query';
 import { CinemaRespone } from '../type';
 
-export type CreateCommentDTO = {
-  name: string;
-  address: {
-    city: string;
-    district: string;
-    ward: string;
-    street: string;
-  };
+export const deleteCinema = ({ cinemaId }: { cinemaId: string }) => {
+  return axios.delete(`/cinema/delete/${cinemaId}`);
 };
 
-export const createCinema = (data: CreateCommentDTO): Promise<CinemaRespone> => {
-  return axios.post('/cinema/add', data);
+type UseDeleteCinematOptions = {
+  config?: MutationConfig<typeof deleteCinema>;
 };
 
-type UseCreateCinematOptions = {
-  config?: MutationConfig<typeof createCinema>;
-};
-
-export const useCreateCinema = ({ config }: UseCreateCinematOptions = {}) => {
+export const useDeleteCinema = ({ config }: UseDeleteCinematOptions = {}) => {
   const toast = createStandaloneToast();
+
   return useMutation({
-    onMutate: async (newCinema) => {
+    onMutate: async (deleteCinema) => {
       await queryClient.cancelQueries('cinemas');
 
       const previousCinemas = queryClient.getQueryData<CinemaRespone>('cinemas');
 
       queryClient.setQueryData('cinemas', {
         ...previousCinemas,
-        values: { cinemas: [...(previousCinemas?.values.cinemas || []), newCinema] },
+        values: {
+          cinemas: previousCinemas?.values.cinemas.filter(
+            (cinema) => cinema._id !== deleteCinema.cinemaId
+          ),
+        },
       });
 
       return { previousCinemas };
@@ -45,13 +40,13 @@ export const useCreateCinema = ({ config }: UseCreateCinematOptions = {}) => {
     onSuccess: () => {
       queryClient.invalidateQueries('cinemas');
       toast({
-        title: 'Created Cinema',
+        title: 'Deleted Cinema',
         status: 'success',
         isClosable: true,
         position: 'top-right',
       });
     },
     ...config,
-    mutationFn: createCinema,
+    mutationFn: deleteCinema,
   });
 };

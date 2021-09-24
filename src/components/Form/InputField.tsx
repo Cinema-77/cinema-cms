@@ -12,8 +12,8 @@ export const InputField: React.FC<InputFieldProps> = (props) => {
   const { type = 'text', label, registration, error, ...formProps } = props;
 
   return (
-    <FieldWrapper label={label} error={error} {...formProps}>
-      <Input type={type} autoFocus aria-label={label} {...registration} />
+    <FieldWrapper label={label} error={error}>
+      <Input type={type} autoFocus aria-label={label} {...registration} {...formProps} />
     </FieldWrapper>
   );
 };

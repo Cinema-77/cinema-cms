@@ -7,13 +7,17 @@ export function RouteWithSubRoutes(route: any) {
     return (
       <PrivateRoute
         path={route.path}
-        render={(props: any) => (
-          // pass the sub-routes down to keep nesting
-          <>
-            <Head title={route.title} />
-            <route.component {...props} routes={route.routes} />
-          </>
-        )}
+        render={(props: any) => {
+          return (
+            // pass the sub-routes down to keep nesting
+
+            <>
+              <Head title={route.title} />
+              <route.component {...props} routes={route.routes} />
+            </>
+          );
+        }}
+        exact={route.exact}
       />
     );
   }
@@ -28,6 +32,7 @@ export function RouteWithSubRoutes(route: any) {
           <route.component {...props} routes={route.routes} />
         </>
       )}
+      exact={route.exact}
     />
   );
 }

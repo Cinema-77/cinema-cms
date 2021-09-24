@@ -1,5 +1,5 @@
 export interface CinemaType {
-  _id?: string;
+  _id: string;
   name: string;
   address: {
     city: string;

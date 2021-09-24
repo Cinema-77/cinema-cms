@@ -1,17 +1,20 @@
-import { Flex, Box, Heading, Text, Button, Stack } from '@chakra-ui/react';
+import { Flex, Box, Heading, Text, Button, Stack, useColorModeValue } from '@chakra-ui/react';
 import { Avatar } from '@chakra-ui/react';
 import React from 'react';
-import { MdSettings, MdInfo } from 'react-icons/md';
+import { MdInfo } from 'react-icons/md';
+import { Link } from 'react-router-dom';
 import { CinemaType } from '..';
+import { CinemaModalUpdate } from './CinemaModalUpdate';
 
 export const CinemaItem: React.FC<CinemaType> = (props) => {
+  const bg = useColorModeValue('white', 'gray.900');
   return (
     <Box
       border="1px"
       borderColor="gray.200"
       padding="5"
       borderRadius="8px"
-      backgroundColor="white"
+      backgroundColor={bg}
       mb="5"
     >
       <Flex alignItems="flex-start">
@@ -42,10 +45,14 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
         </Box>
       </Flex>
       <Stack direction="row" spacing={4} mt="4" justifyContent="flex-end">
-        <Button leftIcon={<MdSettings />} colorScheme="cyan" color="white" variant="solid">
-          Edit
-        </Button>
-        <Button leftIcon={<MdInfo />} colorScheme="cyan" variant="outline">
+        <CinemaModalUpdate {...props} />
+        <Button
+          as={Link}
+          to={`/cinema/${props._id}`}
+          leftIcon={<MdInfo />}
+          colorScheme="cyan"
+          variant="outline"
+        >
           Details
         </Button>
       </Stack>

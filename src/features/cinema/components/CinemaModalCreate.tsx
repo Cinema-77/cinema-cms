@@ -9,25 +9,20 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react';
 import React, { useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { MdAdd } from 'react-icons/md';
-import * as z from 'zod';
 import { useCreateCinema } from '../api/createCinema';
-
-const schema = z.object({
-  name: z.string().min(8, 'Required'),
-  // address: z.ZodObject()
-});
 
 type Address = {
   districts: District[];
   wards: Ward[];
 };
 
-type CinemaValues = {
+export type CinemaValues = {
   name: string;
   address: {
     city: string;
@@ -37,11 +32,9 @@ type CinemaValues = {
   };
 };
 
-interface AddCinemaModalProps {}
-
-export const AddCinemaModal: React.FC<AddCinemaModalProps> = ({}) => {
+export const CinemaModalCreate: React.FC<any> = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { register, formState, handleSubmit, setError } = useForm();
+  const { register, formState, handleSubmit } = useForm();
   const [address, setAdress] = useState<Address>({ districts: [], wards: [] });
   const initialRef = useRef() as any;
   const cityQuery = useCities();
@@ -80,13 +73,15 @@ export const AddCinemaModal: React.FC<AddCinemaModalProps> = ({}) => {
     await createCinema.mutateAsync(values);
     onClose();
   };
+  const bg = useColorModeValue('gray.900', 'white');
+  const color = useColorModeValue('white', 'gray.900');
   return (
     <>
       <Button
         id="add-site-modal-button"
         onClick={onOpen}
-        backgroundColor="gray.900"
-        color="white"
+        backgroundColor={bg}
+        color={color}
         fontWeight="medium"
         _hover={{ bg: 'gray.700' }}
         _active={{

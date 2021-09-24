@@ -1,3 +1,4 @@
+import { createStandaloneToast } from '@chakra-ui/toast';
 import Axios, { AxiosRequestConfig } from 'axios';
 
 import { API_URL } from '@/config';
@@ -25,8 +26,14 @@ axios.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    // const message = error.response?.data?.message || error.message;
-    // console.log(message);
+    const message = error.response?.data?.message || error.message;
+    const toast = createStandaloneToast();
+    toast({
+      title: 'Error',
+      description: message,
+      status: 'error',
+      position: 'top-right',
+    });
     return Promise.reject(error);
   }
 );

@@ -41,6 +41,7 @@ export const SelectField = (props: SelectFieldProps) => {
         {...registration}
         onChange={onChanging}
       >
+        {defaultValue && <option value={defaultValue}>{defaultValue}</option>}
         {options &&
           options.map(({ label, value }) => (
             <option key={label?.toString()} value={value}>
