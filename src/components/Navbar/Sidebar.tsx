@@ -20,6 +20,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  useColorMode,
 } from '@chakra-ui/react';
 import {
   FiHome,
@@ -29,6 +30,8 @@ import {
   FiUser,
   FiSettings,
   FiMenu,
+  FiMoon,
+  FiSun,
   FiBell,
   FiChevronDown,
 } from 'react-icons/fi';
@@ -85,7 +88,7 @@ interface SidebarProps extends BoxProps {
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   return (
     <Box
-      transition="3s ease"
+      // transition="3s ease"
       bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
@@ -151,7 +154,8 @@ interface MobileProps extends FlexProps {
   onOpen: () => void;
 }
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -182,7 +186,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       </Text>
 
       <HStack spacing={{ base: '0', md: '6' }}>
-        <IconButton size="lg" variant="ghost" aria-label="open menu" icon={<FiBell />} />
+        <IconButton
+          size="lg"
+          variant="ghost"
+          aria-label="toogle theme"
+          icon={colorMode === 'light' ? <FiSun /> : <FiMoon />}
+          onClick={toggleColorMode}
+        />
         <Flex alignItems={'center'}>
           <Menu>
             <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>
@@ -199,7 +209,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                   spacing="1px"
                   ml="2"
                 >
-                  <Text fontSize="sm">Justina Clark</Text>
+                  <Text fontSize="sm">{user?.profile.fullName}</Text>
                   <Text fontSize="xs" color="gray.600">
                     Admin
                   </Text>

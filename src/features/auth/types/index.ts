@@ -31,7 +31,7 @@ export interface AuthResponse {
   message: string;
   values: UserResponse;
   errors?: any;
-  user: AuthUser;
+  staff: AuthUser;
 }
 
 export interface Cities {
