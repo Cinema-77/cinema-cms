@@ -1,13 +1,39 @@
-import { Flex, Box, Heading, Text, Button, Stack, useColorModeValue } from '@chakra-ui/react';
+import {
+  Flex,
+  Box,
+  Heading,
+  Text,
+  Button,
+  Stack,
+  useColorModeValue,
+  IconButton,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+} from '@chakra-ui/react';
 import { Avatar } from '@chakra-ui/react';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { MdInfo } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { CinemaType } from '..';
 import { CinemaModalUpdate } from './CinemaModalUpdate';
+import { FiTrash } from 'react-icons/fi';
+import { useDeleteCinema } from '../api/deleteCinema';
 
 export const CinemaItem: React.FC<CinemaType> = (props) => {
   const bg = useColorModeValue('white', 'gray.900');
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const cancelRef: any = useRef();
+  const onClose = () => setIsOpen(false);
+  const deleteCinemaMutation = useDeleteCinema();
+
+  const onDelete = async () => {
+    await deleteCinemaMutation.mutateAsync({ cinemaId: props._id });
+  };
+
   return (
     <Box
       border="1px"
@@ -27,9 +53,45 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
         </Box>
         <Box paddingX="12px">
           <Box mb="3">
-            <Heading size="lg" mb="1">
-              {props.name}
-            </Heading>
+            <Flex justifyContent="space-between" alignItems="center">
+              <Heading size="lg" mb="1">
+                {props.name}
+              </Heading>
+              <IconButton
+                size="lg"
+                variant="ghost"
+                aria-label="toogle theme"
+                icon={<FiTrash />}
+                onClick={() => setIsOpen(!isOpen)}
+              />
+              <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+                <AlertDialogOverlay />
+                <AlertDialogContent>
+                  <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                    Delete Cinema
+                  </AlertDialogHeader>
+                  <AlertDialogBody>
+                    Are you sure? This will also delete all showtimes and movie left on the cinema.
+                    You can't undo this action afterwards.
+                  </AlertDialogBody>
+                  <AlertDialogFooter>
+                    <Button ref={cancelRef} onClick={onClose}>
+                      Cancel
+                    </Button>
+                    <Button
+                      fontWeight="bold"
+                      colorScheme="red"
+                      onClick={onDelete}
+                      ml={3}
+                      isLoading={deleteCinemaMutation.isLoading}
+                    >
+                      Delete
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </Flex>
+
             <Text fontSize="md" textColor="gray.500">
               {`${props.address.street}, ${props.address.ward}, ${props.address.district}, ${props.address.city}`}
             </Text>

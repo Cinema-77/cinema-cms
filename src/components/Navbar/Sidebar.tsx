@@ -21,6 +21,11 @@ import {
   MenuItem,
   MenuList,
   useColorMode,
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
 } from '@chakra-ui/react';
 import {
   FiHome,
@@ -35,20 +40,40 @@ import {
   FiBell,
   FiChevronDown,
 } from 'react-icons/fi';
+import { BsDot } from 'react-icons/bs';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
+import clsx from 'clsx';
 
 interface LinkItemProps {
   name: string;
   icon: IconType;
-  to: string;
+  to?: string;
+  accor?: boolean;
+  linkChild?: LinkItemProps[];
 }
 const LinkItems: Array<LinkItemProps> = [
   { name: 'Home', icon: FiHome, to: '/dashboard' },
   { name: 'Revenue', icon: FiTrendingUp, to: '/revenue' },
-  { name: 'Cinema', icon: FiCompass, to: '/cinema' },
+  {
+    name: 'Cinema',
+    icon: FiCompass,
+    accor: true,
+    linkChild: [
+      {
+        name: 'List Cinema',
+        icon: BsDot,
+        to: '/cinema/list',
+      },
+      {
+        name: 'Create',
+        icon: BsDot,
+        to: '/cinema/create',
+      },
+    ],
+  },
   { name: 'Users', icon: FiUser, to: '/users' },
   { name: 'Favourites', icon: FiStar, to: '/favourites' },
   { name: 'Settings', icon: FiSettings, to: '/as' },
@@ -95,6 +120,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       w={{ base: 'full', md: 60 }}
       pos="fixed"
       h="full"
+      overflowX="scroll"
       {...rest}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
@@ -103,12 +129,71 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon} href={link.to}>
-          {link.name}
-        </NavItem>
-      ))}
+      {LinkItems.map((link) => {
+        if (link.accor) {
+          return <LinkAccor key={link.name} {...link} />;
+        }
+        return (
+          <NavItem key={link.name} icon={link.icon} href={link.to as string}>
+            {link.name}
+          </NavItem>
+        );
+      })}
     </Box>
+  );
+};
+
+const LinkAccor = (link: LinkItemProps) => {
+  let location = useLocation();
+  console.log(location);
+  return (
+    <Accordion allowToggle>
+      <AccordionItem border="none" m="4">
+        <AccordionButton
+          _expanded={location.pathname.includes('cinema') ? { bg: 'cyan.400', color: 'white' } : {}}
+          display="flex"
+          alignItems="center"
+          borderRadius="lg"
+          role="group"
+          cursor="pointer"
+          p="4"
+          _hover={{
+            bg: 'cyan.400',
+            color: 'white',
+          }}
+          className="link-item"
+        >
+          {link.icon && (
+            <Icon
+              mr="4"
+              fontSize="16"
+              _groupHover={{
+                color: 'white',
+              }}
+              as={link.icon}
+            />
+          )}
+          {link.name}
+          <AccordionIcon flex="1" />
+        </AccordionButton>
+        <AccordionPanel>
+          {link.linkChild &&
+            link.linkChild.map((l, index) => (
+              <NavItem
+                key={index}
+                icon={l.icon}
+                href={l.to as string}
+                m="0"
+                mb="2"
+                classes="link-item-child"
+                color="gray.400"
+              >
+                {l.name}
+              </NavItem>
+            ))}
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
   );
 };
 
@@ -116,8 +201,9 @@ interface NavItemProps extends FlexProps {
   icon: IconType;
   children: ReactText;
   href: string;
+  classes?: string;
 }
-const NavItem = ({ icon, children, href, ...rest }: NavItemProps) => {
+const NavItem = ({ icon, children, href, classes, ...rest }: NavItemProps) => {
   return (
     <NavLink to={href} style={{ textDecoration: 'none' }} activeClassName="active-link">
       <Flex
@@ -131,7 +217,7 @@ const NavItem = ({ icon, children, href, ...rest }: NavItemProps) => {
           bg: 'cyan.400',
           color: 'white',
         }}
-        className="link-item"
+        className={clsx('link-item', classes)}
         {...rest}
       >
         {icon && (
@@ -185,7 +271,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         Movieer CMS
       </Text>
 
-      <HStack spacing={{ base: '0', md: '6' }}>
+      <HStack spacing={{ base: '0', md: '4' }}>
+        <IconButton size="lg" variant="ghost" aria-label="toogle theme" icon={<FiBell />} />
         <IconButton
           size="lg"
           variant="ghost"
