@@ -26,8 +26,14 @@ const routes: any[] = [
       },
       {
         exact: true,
-        path: '/cinema',
+        path: '/cinema/list',
         component: Cinemas,
+        title: 'List Cinemas',
+      },
+      {
+        exact: true,
+        path: '/cinema/create',
+        component: DashBoard,
         title: 'List Cinemas',
       },
       {

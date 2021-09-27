@@ -14,3 +14,9 @@ code {
   background-color: #0bc5ea;
   color: #fff;
 }
+
+.active-link .link-item-child {
+  color: black;
+  font-weight: 500;
+  background-color: inherit;
+}
