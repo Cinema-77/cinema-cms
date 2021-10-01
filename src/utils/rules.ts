@@ -18,6 +18,10 @@ export const rules = {
       value: 160,
       message: 'Thời lượng có độ dài tối đa là 160 ký tự',
     },
+    validate: {
+      thoiluong: (value: string) =>
+        /^[0-9]*$/.test(value) || 'Thời lượng là số, không phải là ký tự.',
+    },
   },
   daodien: {
     required: {
@@ -27,6 +31,22 @@ export const rules = {
     maxLength: {
       value: 160,
       message: 'Đạo diễn có độ dài tối đa là 160 ký tự',
+    },
+  },
+  theloai: {
+    required: {
+      value: true,
+      message: 'Thể loại là bắt buộc nhập',
+    },
+    maxLength: {
+      value: 160,
+      message: 'Thể loại có độ dài tối đa là 160 ký tự',
+    },
+  },
+  loaiman: {
+    required: {
+      value: true,
+      message: 'Loại màn là bắt buộc check',
     },
   },
   dienvien: {

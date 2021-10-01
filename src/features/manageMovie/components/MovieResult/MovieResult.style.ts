@@ -72,25 +72,7 @@ export const MovieAdd = styled.button`
     transition: all 0.5s ease;
   }
 `;
-export const MovieFormAdd = styled.div`
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 1;
-`;
-export const MovieForm = styled.form`
-  position: absolute;
-  padding: 16px 24px;
-  border-radius: 6px;
-  left: 50%;
-  top: 50%;
-  width: 500px;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-`;
+
 export const MovieFormTitle = styled.div`
   display: flex;
   justify-content: space-between;
@@ -98,7 +80,7 @@ export const MovieFormTitle = styled.div`
   font-weight: 700;
   font-size: 20px;
 
-  svg {
+  img {
     cursor: pointer;
     width: 14px;
     height: 14px;
@@ -109,7 +91,7 @@ export const MovieFormListBtn = styled.div`
   justify-content: flex-end;
   align-items: center;
   gap: 0 10px;
-  margin-top: 40px;
+  margin-top: 20px;
 `;
 export const MovieFormBtn = styled.button`
   background-color: #edf2f7;
@@ -128,4 +110,83 @@ export const MovieFormBtn = styled.button`
   &:hover {
     opacity: 1;
   }
+`;
+export const MovieForm = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px 10px;
+`;
+export const MovieFormController = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: calc(100% / 4 - 10px);
+  :last-child {
+    width: 50%;
+  }
+`;
+export const MovieFormController2 = styled.div`
+  width: calc(50% - 10px);
+`;
+export const MovieListVideo = styled.div`
+  height: 450px;
+  overflow-x: hidden;
+  border-radius: 6px;
+
+  iframe {
+    width: 100%;
+    height: 350px;
+    border-radius: 6px;
+    margin-top: 8px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #eec0c6;
+    background-image: linear-gradient(315deg, #eec0c6 0%, #7ee8fa 74%);
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #fad0c4;
+    background-image: linear-gradient(315deg, #fad0c4 0%, #f1a7f1 74%);
+    border-radius: 6px;
+  }
+`;
+export const Iframe = styled.iframe``;
+export const MovieGetVideo = styled.button`
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  margin: 0 auto;
+  width: 100%;
+`;
+export const FormVideo = styled.div`
+  position: relative;
+`;
+export const VideoBtn = styled.button`
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: #fff;
+  background-color: #ff5c58;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 8px;
+`;
+export const VideoBtn2 = styled.button`
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background-color: #9d9d9d;
 `;
