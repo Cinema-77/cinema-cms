@@ -110,7 +110,7 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
         <CinemaModalUpdate {...props} />
         <Button
           as={Link}
-          to={`/cinema/${props._id}`}
+          to={`/cinema/detail/${props._id}`}
           leftIcon={<MdInfo />}
           colorScheme="cyan"
           variant="outline"

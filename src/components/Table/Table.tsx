@@ -10,6 +10,7 @@ export const Table: React.FC<BoxProps> = (props) => {
       ml={0}
       mr={0}
       borderRadius={8}
+      borderColor="black"
       boxShadow="0px 4px 10px rgba(0, 0, 0, 0.05)"
       {...props}
     />

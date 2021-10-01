@@ -20,7 +20,7 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
     <Box mx={4}>
       <Breadcrumb>
         <BreadcrumbItem>
-          <BreadcrumbLink as={Link} to="/cinema">
+          <BreadcrumbLink as={Link} to="/cinema/list">
             {menuName}
           </BreadcrumbLink>
         </BreadcrumbItem>
