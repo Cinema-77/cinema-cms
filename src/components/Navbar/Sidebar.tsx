@@ -38,7 +38,11 @@ import {
   FiMoon,
   FiSun,
   FiBell,
+
+  FiFilm,
+
   FiBox,
+
   FiChevronDown,
 } from 'react-icons/fi';
 import { BsDot } from 'react-icons/bs';
@@ -58,6 +62,7 @@ interface LinkItemProps {
 }
 const LinkItems: Array<LinkItemProps> = [
   { name: 'Home', icon: FiHome, to: '/dashboard' },
+  { name: 'Manage Movie', icon: FiFilm, to: '/managemovie' },
   { name: 'Revenue', icon: FiTrendingUp, to: '/revenue' },
   {
     name: 'Cinema',
