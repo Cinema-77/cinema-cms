@@ -1,10 +1,12 @@
-import { Form, InputField, SelectField } from '@/components';
+import { CheckBoxField, Form, InputField, SelectField } from '@/components';
+import { InputNumberField } from '@/components/Form/InputNumberField';
 import { SiteHeader } from '@/components/Layout';
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/breadcrumb';
 import { Button } from '@chakra-ui/button';
-import { Stack, Flex, Box, Heading, Wrap, WrapItem } from '@chakra-ui/layout';
-import { Checkbox } from '@chakra-ui/react';
-import React, { ChangeEvent } from 'react';
+import { Box, Flex, Stack } from '@chakra-ui/layout';
+import React from 'react';
+import { useTimeSlots } from '..';
+import { useScreens } from '../api/getScreens';
 
 interface RoomProps {}
 
@@ -18,18 +20,12 @@ type RoomValues = {
 };
 
 export const CreateRoom: React.FC<RoomProps> = () => {
-  const [timeSlotsId, setTimeSlotsId] = React.useState<string[]>([]);
+  const timeSlotQuery = useTimeSlots();
+  const screensQuery = useScreens();
 
-  const onChangeTime = (e: ChangeEvent<HTMLInputElement>) => {
-    const crItem = e.target.value;
-    const isExistItem = timeSlotsId.find((s: string) => s === crItem);
-    if (isExistItem) {
-      const newTimeSlotsId = timeSlotsId.filter((s: string) => s !== isExistItem);
-      setTimeSlotsId(newTimeSlotsId);
-    } else {
-      setTimeSlotsId([...timeSlotsId, crItem]);
-    }
-  };
+  if (timeSlotQuery.isLoading && screensQuery.isLoading) {
+    return null;
+  }
 
   return (
     <>
@@ -53,7 +49,7 @@ export const CreateRoom: React.FC<RoomProps> = () => {
           <Box maxWidth="400px" width="100%" margin="auto">
             <Form<RoomValues>
               onSubmit={async (data) => {
-                console.log({ ...data, timeSlotsId });
+                console.log(data);
               }}
               // options={{}}
             >
@@ -69,40 +65,36 @@ export const CreateRoom: React.FC<RoomProps> = () => {
                     label="Màn hình"
                     registration={register('screenId')}
                     error={formState.errors['screenId']}
-                    options={[]}
+                    options={screensQuery.data?.values.screens.map(({ _id, name }) => ({
+                      label: name,
+                      value: _id,
+                    }))}
                   />
-                  <InputField
-                    type="text"
+                  <InputNumberField
                     label="Số hàng ghế"
+                    max={20}
+                    min={10}
+                    defaultValue={15}
                     error={formState.errors['rowNumber']}
                     registration={register('rowNumber')}
                   />
-                  <InputField
-                    type="text"
+                  <InputNumberField
                     label="Số ghế mỗi hàng"
+                    max={15}
+                    min={8}
+                    defaultValue={10}
                     error={formState.errors['seatsInRow']}
                     registration={register('seatsInRow')}
                   />
-                  <Heading size="md" fontWeight="normal">
-                    Khung giờ
-                  </Heading>
-                  <Wrap spacing={4}>
-                    <WrapItem>
-                      <Checkbox value="naruto" onChange={onChangeTime}>
-                        1:00
-                      </Checkbox>
-                    </WrapItem>
-                    <WrapItem>
-                      <Checkbox value="sasuke" onChange={onChangeTime}>
-                        2:00
-                      </Checkbox>
-                    </WrapItem>
-                    <WrapItem>
-                      <Checkbox value="kakashi" onChange={onChangeTime}>
-                        3:00
-                      </Checkbox>
-                    </WrapItem>
-                  </Wrap>
+                  {timeSlotQuery.data && (
+                    <CheckBoxField
+                      label="Time"
+                      registration={register('timeSlotsId')}
+                      options={timeSlotQuery.data?.values.timeSlots.map(({ time }) => time)}
+                      more
+                    />
+                  )}
+
                   <Button
                     backgroundColor="cyan.400"
                     color="white"

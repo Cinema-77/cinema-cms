@@ -42,7 +42,7 @@ import {
   FiChevronDown,
 } from 'react-icons/fi';
 import { BsDot } from 'react-icons/bs';
-import { GrSchedulePlay } from 'react-icons/gr';
+import { AiOutlineSchedule } from 'react-icons/ai';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -95,7 +95,7 @@ const LinkItems: Array<LinkItemProps> = [
   },
   {
     name: 'ShowTimes',
-    icon: GrSchedulePlay,
+    icon: AiOutlineSchedule,
     accor: true,
     linkChild: [
       {
@@ -186,6 +186,8 @@ const LinkAccor = (link: LinkItemProps) => {
         <AccordionButton
           display="flex"
           alignItems="center"
+          justifyContent="flex-start"
+          flexGrow={1}
           borderRadius="lg"
           role="group"
           cursor="pointer"
@@ -198,6 +200,7 @@ const LinkAccor = (link: LinkItemProps) => {
         >
           {link.icon && (
             <Icon
+              flexShrink={0}
               mr="4"
               fontSize="16"
               _groupHover={{
@@ -206,8 +209,10 @@ const LinkAccor = (link: LinkItemProps) => {
               as={link.icon}
             />
           )}
-          {link.name}
-          <AccordionIcon flex="1" />
+          <Text flex="1 1 auto" textAlign="left">
+            {link.name}
+          </Text>
+          <AccordionIcon ml="2" />
         </AccordionButton>
         <AccordionPanel>
           {link.linkChild &&

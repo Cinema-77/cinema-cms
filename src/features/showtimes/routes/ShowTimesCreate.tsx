@@ -24,10 +24,8 @@ type ShowTimesValues = {
 };
 
 export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
-  //   const options = ['react', 'vue', 'svelte'];
-
   const { isOpen, onToggle } = useDisclosure();
-  const toggleDate = () => {};
+
   return (
     <>
       <SiteHeader menuName="Showtimes" heading={`Create a new Showtimes`}>

@@ -18,7 +18,7 @@ const routes: any[] = [
     exact: true,
   },
   {
-    // auth: true,
+    auth: true,
     component: MainLayout,
     routes: [
       {

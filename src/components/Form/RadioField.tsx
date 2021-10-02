@@ -1,11 +1,4 @@
-import {
-  RadioGroupProps,
-  Radio,
-  RadioGroup,
-  Wrap,
-  WrapItem,
-  FormControlProps,
-} from '@chakra-ui/react';
+import { FormControlProps, Radio, RadioGroup, Wrap, WrapItem } from '@chakra-ui/react';
 import React from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import { FieldWrapper, FieldWrapperPassThroughProps } from '.';
