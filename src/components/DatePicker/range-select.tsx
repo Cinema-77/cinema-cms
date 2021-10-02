@@ -62,7 +62,7 @@ export const RangeSelect: React.FC<RangeSelectProps> = ({ dateStart, dateEnd }) 
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Box width={300}>
+    <Box width="100%">
       <Popover isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <PopoverTrigger>
           <Box

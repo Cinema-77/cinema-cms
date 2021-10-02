@@ -38,11 +38,8 @@ import {
   FiMoon,
   FiSun,
   FiBell,
-
   FiFilm,
-
   FiBox,
-
   FiChevronDown,
 } from 'react-icons/fi';
 import { BsDot } from 'react-icons/bs';
@@ -75,9 +72,9 @@ const LinkItems: Array<LinkItemProps> = [
         to: '/cinema/list',
       },
       {
-        name: 'ShowTimes',
+        name: 'My Cinema',
         icon: BsDot,
-        to: '/cinema/create',
+        to: '/cinema/mycinema',
       },
     ],
   },

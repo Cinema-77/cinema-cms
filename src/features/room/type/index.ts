@@ -25,3 +25,18 @@ export interface ScreenRespone {
     screens: Screen[];
   };
 }
+
+export interface Room {
+  name: string;
+  rowNumber: number;
+  seatsInRow: 10;
+  screenId: string;
+  cinemaId: string;
+}
+export interface RoomRespone {
+  success: boolean;
+  message: string;
+  values: {
+    rooms: Room[];
+  };
+}

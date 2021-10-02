@@ -11,7 +11,8 @@ import { getCategoryAll } from '../../api/category';
 import { getDirectorAll } from '../../api/director';
 import { CheckboxField } from '@/components/Form2/CheckboxField/CheckboxField';
 import { getScreenAll } from '../../api/screen';
-import storage from '@/firebase/firebase';
+import { storage } from '@/lib/firebase';
+import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import axios from 'axios';
 
 interface MovieResultProps {}
@@ -80,9 +81,10 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
   const handleImageChange = async (e: any) => {
     if (e.target.files.length === 1) {
       const image = e.target.files[0];
-      const uploadImage = storage.ref(`images/${image.name}`);
-      await uploadImage.put(image);
-      await uploadImage.getDownloadURL().then((url: any) => setUrl(url));
+      const storageRef = ref(storage, `images/${image.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, image);
+      await uploadBytes(storageRef, image);
+      getDownloadURL(uploadTask.snapshot.ref).then((url: any) => setUrl(url));
     }
   };
 

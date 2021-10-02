@@ -1,3 +1,5 @@
+import { CinemaType } from '@/features/cinema';
+
 interface UserProfile {
   fullName: string;
   dateOfBirth: string;
@@ -19,6 +21,7 @@ export interface AuthUser {
   profile: UserProfile;
   createdAt: string;
   permission: UserPermission;
+  cinema: CinemaType;
 }
 
 export interface UserResponse {

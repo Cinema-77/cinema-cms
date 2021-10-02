@@ -1,6 +1,7 @@
 import { CheckBoxField, Form, RadioField, SelectField } from '@/components';
 import { RangeSelect, SingleSelect } from '@/components/DatePicker';
 import { SiteHeader } from '@/components/Layout';
+import { TimeSlot, useTimeSlots } from '@/features/room';
 import {
   Box,
   BreadcrumbItem,
@@ -13,7 +14,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import React from 'react';
-
+import { TimeSlotCreate } from '../components/TimeSlotCreate';
 interface ShowTimesCreateProps {}
 
 type ShowTimesValues = {
@@ -25,7 +26,17 @@ type ShowTimesValues = {
 
 export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
   const { isOpen, onToggle } = useDisclosure();
+  const timeSlotQuery = useTimeSlots();
 
+  const compareTime = (a: TimeSlot, b: TimeSlot) => {
+    if (a.time > b.time) {
+      return 1;
+    }
+    if (a.time < b.time) {
+      return -1;
+    }
+    return 0;
+  };
   return (
     <>
       <SiteHeader menuName="Showtimes" heading={`Create a new Showtimes`}>
@@ -44,17 +55,26 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
           shadow={[null, 'md']}
           spacing={4}
           w="100%"
+          alignItems="center"
         >
-          <Box maxWidth="400px" width="100%" margin="auto">
+          <TimeSlotCreate />
+          <Box
+            maxWidth="600px"
+            width="100%"
+            margin="auto"
+            border="1px"
+            borderColor="gray.200"
+            borderStyle="solid"
+            padding="5"
+          >
             <Form<ShowTimesValues>
               onSubmit={async (data) => {
                 console.log(data);
               }}
-              // options={{}}
             >
               {({ register, formState }) => (
                 <Stack spacing={4} direction="column">
-                  <Stack spacing={2} direction="row" alignItems="center">
+                  <Flex justifyContent="space-between" direction="row" alignItems="center">
                     <Text as="label" fontSize="md" fontWeight="500">
                       Change pick type
                     </Text>
@@ -64,7 +84,8 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
                       size="md"
                       onChange={onToggle}
                     />
-                  </Stack>
+                  </Flex>
+
                   {isOpen ? <RangeSelect /> : <SingleSelect registration={register('date')} />}
 
                   <RadioField
@@ -80,11 +101,15 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
                     options={[]}
                   />
 
-                  <CheckBoxField
-                    label="TimeSlots"
-                    registration={register('timeSlotsId')}
-                    options={['1:00', '2:00', '3:00']}
-                  />
+                  {timeSlotQuery.data && (
+                    <CheckBoxField
+                      label="Time"
+                      registration={register('timeSlotsId')}
+                      options={timeSlotQuery.data?.values.timeSlots
+                        .sort(compareTime)
+                        .map(({ time }) => time)}
+                    />
+                  )}
 
                   <Button
                     backgroundColor="cyan.400"

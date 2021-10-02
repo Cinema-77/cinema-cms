@@ -17,8 +17,8 @@ export const RadioField: React.FC<RadioFieldProps> = (props) => {
       <RadioGroup defaultValue={defaultValue}>
         <Wrap spacing="24px">
           {options.map((o, index) => (
-            <WrapItem>
-              <Radio value={o} key={index} {...registration}>
+            <WrapItem key={index}>
+              <Radio value={o} {...registration}>
                 {o}
               </Radio>
             </WrapItem>

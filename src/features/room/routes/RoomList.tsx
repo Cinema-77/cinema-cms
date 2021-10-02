@@ -1,7 +1,6 @@
 import { Table, Td, Th, Tr } from '@/components';
 import { SiteHeader } from '@/components/Layout';
 import {
-  Badge,
   Box,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -66,7 +65,6 @@ export const RoomList: React.FC<RoomListProps> = () => {
                   <Th>Name</Th>
                   <Th>Screen</Th>
                   <Th>Row Number</Th>
-                  <Th>Seat In Row</Th>
                   <Th>List Time</Th>
                   <Th width="50px"></Th>
                 </Tr>
@@ -77,45 +75,6 @@ export const RoomList: React.FC<RoomListProps> = () => {
                   <Td>2D</Td>
                   <Td>10</Td>
                   <Td>10</Td>
-                  <Td>
-                    <Stack direction="row">
-                      <Badge>1:00</Badge>
-                      <Badge>2:00</Badge>
-                      <Badge>3:00</Badge>
-                    </Stack>
-                  </Td>
-                  <Td>
-                    <MenuListRoom roomId={`22`} />
-                  </Td>
-                </Box>
-                <Box as="tr">
-                  <Td>Phòng A1</Td>
-                  <Td>2D</Td>
-                  <Td>10</Td>
-                  <Td>10</Td>
-                  <Td>
-                    <Stack direction="row">
-                      <Badge>1:00</Badge>
-                      <Badge>2:00</Badge>
-                      <Badge>3:00</Badge>
-                    </Stack>
-                  </Td>
-                  <Td>
-                    <MenuListRoom roomId={`22`} />
-                  </Td>
-                </Box>
-                <Box as="tr">
-                  <Td>Phòng A1</Td>
-                  <Td>2D</Td>
-                  <Td>10</Td>
-                  <Td>10</Td>
-                  <Td>
-                    <Stack direction="row">
-                      <Badge>1:00</Badge>
-                      <Badge>2:00</Badge>
-                      <Badge>3:00</Badge>
-                    </Stack>
-                  </Td>
                   <Td>
                     <MenuListRoom roomId={`22`} />
                   </Td>

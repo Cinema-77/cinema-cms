@@ -22,6 +22,7 @@ import { CinemaType } from '..';
 import { CinemaModalUpdate } from './CinemaModalUpdate';
 import { FiTrash } from 'react-icons/fi';
 import { useDeleteCinema } from '../api/deleteCinema';
+import { useAuth } from '@/lib/auth';
 
 export const CinemaItem: React.FC<CinemaType> = (props) => {
   const bg = useColorModeValue('white', 'gray.900');
@@ -29,11 +30,15 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
   const cancelRef: any = useRef();
   const onClose = () => setIsOpen(false);
   const deleteCinemaMutation = useDeleteCinema();
+  const { user } = useAuth();
 
   const onDelete = async () => {
     await deleteCinemaMutation.mutateAsync({ cinemaId: props._id });
   };
 
+  const isMine = () => {
+    return user?.cinema._id === props._id;
+  };
   return (
     <Box
       border="1px"
@@ -57,13 +62,15 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
               <Heading size="lg" mb="1">
                 {props.name}
               </Heading>
-              <IconButton
-                size="lg"
-                variant="ghost"
-                aria-label="toogle theme"
-                icon={<FiTrash />}
-                onClick={() => setIsOpen(!isOpen)}
-              />
+              {isMine() && (
+                <IconButton
+                  size="lg"
+                  variant="ghost"
+                  aria-label="toogle theme"
+                  icon={<FiTrash />}
+                  onClick={() => setIsOpen(!isOpen)}
+                />
+              )}
               <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
                 <AlertDialogOverlay />
                 <AlertDialogContent>
@@ -107,7 +114,7 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
         </Box>
       </Flex>
       <Stack direction="row" spacing={4} mt="4" justifyContent="flex-end">
-        <CinemaModalUpdate {...props} />
+        {isMine() && <CinemaModalUpdate {...props} />}
         <Button
           as={Link}
           to={`/cinema/detail/${props._id}`}

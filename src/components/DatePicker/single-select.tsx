@@ -131,7 +131,7 @@ export const SingleSelect: React.FC<RangeSelectProps> = ({ registration }) => {
   }, [selected, setViewing]);
 
   return (
-    <Box width={300}>
+    <Box width="100%">
       <Popover initialFocusRef={inputRef} isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <PopoverTrigger>
           <InputGroup>
