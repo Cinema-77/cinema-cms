@@ -20,3 +20,11 @@ code {
   font-weight: 500;
   background-color: inherit;
 }
+.link-icon {
+  transform: scale(1);
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+.active-link .link-icon {
+  color: #0bc5ea;
+  transform: scale(2.5);
+}

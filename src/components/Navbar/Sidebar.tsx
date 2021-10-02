@@ -38,13 +38,18 @@ import {
   FiMoon,
   FiSun,
   FiBell,
+
   FiFilm,
+
+  FiBox,
+
   FiChevronDown,
 } from 'react-icons/fi';
 import { BsDot } from 'react-icons/bs';
+import { AiOutlineSchedule } from 'react-icons/ai';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import clsx from 'clsx';
 
@@ -70,9 +75,43 @@ const LinkItems: Array<LinkItemProps> = [
         to: '/cinema/list',
       },
       {
-        name: 'Create',
+        name: 'ShowTimes',
         icon: BsDot,
         to: '/cinema/create',
+      },
+    ],
+  },
+  {
+    name: 'Room',
+    icon: FiBox,
+    accor: true,
+    linkChild: [
+      {
+        name: 'List',
+        icon: BsDot,
+        to: '/room/listRoom',
+      },
+      {
+        name: 'Create',
+        icon: BsDot,
+        to: '/room/createRoom',
+      },
+    ],
+  },
+  {
+    name: 'ShowTimes',
+    icon: AiOutlineSchedule,
+    accor: true,
+    linkChild: [
+      {
+        name: 'List',
+        icon: BsDot,
+        to: '/showtimes/list',
+      },
+      {
+        name: 'Create',
+        icon: BsDot,
+        to: '/showtimes/create',
       },
     ],
   },
@@ -146,15 +185,14 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 };
 
 const LinkAccor = (link: LinkItemProps) => {
-  let location = useLocation();
-  console.log(location);
   return (
     <Accordion allowToggle>
       <AccordionItem border="none" m="4">
         <AccordionButton
-          _expanded={location.pathname.includes('cinema') ? { bg: 'cyan.400', color: 'white' } : {}}
           display="flex"
           alignItems="center"
+          justifyContent="flex-start"
+          flexGrow={1}
           borderRadius="lg"
           role="group"
           cursor="pointer"
@@ -167,6 +205,7 @@ const LinkAccor = (link: LinkItemProps) => {
         >
           {link.icon && (
             <Icon
+              flexShrink={0}
               mr="4"
               fontSize="16"
               _groupHover={{
@@ -175,8 +214,10 @@ const LinkAccor = (link: LinkItemProps) => {
               as={link.icon}
             />
           )}
-          {link.name}
-          <AccordionIcon flex="1" />
+          <Text flex="1 1 auto" textAlign="left">
+            {link.name}
+          </Text>
+          <AccordionIcon ml="2" />
         </AccordionButton>
         <AccordionPanel>
           {link.linkChild &&
@@ -229,7 +270,9 @@ const NavItem = ({ icon, children, href, classes, ...rest }: NavItemProps) => {
             _groupHover={{
               color: 'white',
             }}
+            transition="transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms"
             as={icon}
+            className={classes && 'link-icon'}
           />
         )}
         {children}

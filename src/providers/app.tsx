@@ -7,15 +7,21 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { AuthProvider } from '@/lib/auth';
 import { queryClient } from '@/lib/react-query';
 import { HelmetProvider } from 'react-helmet-async';
-import { Button, Flex, Spinner } from '@chakra-ui/react';
+import { Button, Flex, Heading, Spinner } from '@chakra-ui/react';
 
 const ErrorFallback = () => {
   return (
-    <div
-      className="text-red-500 w-screen h-screen flex flex-col justify-center items-center"
+    <Flex
+      width="100vw"
+      height="100vh"
+      justifyContent="center"
+      alignItems="center"
+      flexDir="column"
       role="alert"
     >
-      <h2 className="text-lg font-semibold">Ooops, something went wrong :( </h2>
+      <Heading size="lg" textColor="red.500" mb="2">
+        Ooops, something went wrong
+      </Heading>
       <Button
         colorScheme="teal"
         variant="solid"
@@ -23,7 +29,7 @@ const ErrorFallback = () => {
       >
         Refresh
       </Button>
-    </div>
+    </Flex>
   );
 };
 
