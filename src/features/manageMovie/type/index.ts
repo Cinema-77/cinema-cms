@@ -8,6 +8,7 @@ export interface MovieType {
   cast: string;
   screensId: string[];
   categoryId: string[];
+  age: number;
 }
 
 export interface MovieRespon {

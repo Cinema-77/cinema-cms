@@ -8,6 +8,9 @@ export const MovieItem = styled.h2`
   border-radius: 8px;
   background-color: #fff;
   height: 100%;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 export const MovieLeft = styled.div`
   position: relative;
@@ -22,7 +25,7 @@ export const MovieLeft = styled.div`
     width: 40%;
   }
   @media (max-width: 768px) {
-    width: 50%;
+    width: 100%;
   }
 `;
 export const MovieTrailer = styled.div`
@@ -56,7 +59,7 @@ export const MovieRight = styled.div`
     width: 60%;
   }
   @media (max-width: 768px) {
-    width: 50%;
+    width: 100%;
   }
 `;
 export const MovieTitle = styled.h2`

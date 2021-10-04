@@ -46,3 +46,8 @@ export const Image = styled.div`
     border-radius: 6px;
   }
 `;
+export const Iframe = styled.iframe`
+  width: 100%;
+  height: 450px;
+  border-radius: 6px;
+`;

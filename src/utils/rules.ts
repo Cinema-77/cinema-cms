@@ -23,6 +23,15 @@ export const rules = {
         /^[0-9]*$/.test(value) || 'Thời lượng là số, không phải là ký tự.',
     },
   },
+  age: {
+    required: {
+      value: true,
+      message: 'Tuổi là bắt buộc nhập',
+    },
+    validate: {
+      thoiluong: (value: string) => /^[0-9]*$/.test(value) || 'Tuổi là số, không phải là ký tự.',
+    },
+  },
   daodien: {
     required: {
       value: true,
