@@ -29,7 +29,7 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
   const [urlIMG, setUrlIMG] = useState<any>('');
   const [urlVideo, setUrlVideo] = useState<any>('');
   const [movieList, setMovieList] = useState<MovieItemType[]>([]);
-  const [movie, setMovie] = useState<any>([]);
+  const [movie, setMovie] = useState(false);
 
   const {
     control,
@@ -75,7 +75,7 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
     try {
       const res = await createMovie(body);
       console.log(res);
-      setMovie(body);
+      setMovie(!movie);
       setOpenAdd(false);
       setUrlIMG('');
       setUrlVideo('');
