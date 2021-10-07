@@ -126,6 +126,7 @@ export const MovieVideoTrailer = styled.div`
   top: 0;
   width: 100%;
   height: 100%;
+  z-index: 5;
   background-color: rgba(0, 0, 0, 0.7);
 
   img {
@@ -151,6 +152,7 @@ export const MovieDelete = styled.div`
   top: 0;
   width: 100%;
   height: 100%;
+  z-index: 5;
   background-color: rgba(0, 0, 0, 0.7);
 `;
 export const MovieFormDelete = styled.div`

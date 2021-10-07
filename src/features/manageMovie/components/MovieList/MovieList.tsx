@@ -1,38 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { MovieItem } from '@/features/manageMovie';
-import * as S from './MovieList.style';
+import * as S from './MovieList.style'; 
+import { MovieItemType } from '../../type';
 
-interface MovieListProps {}
+interface MovieListProps {
+  movieList:MovieItemType[]
+}
 
-export const MovieList: React.FC<MovieListProps> = () => {
-  const [movies] = useState([
-    {
-      name: 'A QUIET PLACE',
-      time: '90 phút',
-      detail:
-        'A Quiet Place 2 là bộ phim kinh dị được mong chờ nhất 2020. Mất đi người chồng người cha trụ cột, mẹ góa con côi nhà Abbott sẽ ra sao ở thế giới đầy bọn quái vật? Chắc chắn mẹ con Evelyn Abbott sẽ phải trải qua rất nhiều nguy hiểm để tìm cách sống còn.',
-      image: 'https://www.galaxycine.vn/media/2021/5/25/poster-vdcl-2-final_1621960082675.jpg',
-      trailer: 'https://www.youtube.com/embed/kpYSR-kY-4k',
-      daodien: 'Paramount Pictures',
-      dienvien: 'Emily Blunt, Cillian Murphy, Noah Jupe',
-      age: '18',
-    },
-  ]);
+export const MovieList: React.FC<MovieListProps> = ({movieList}) => {
   return (
     <S.Movie>
       <S.MovieTitle>List Movie</S.MovieTitle>
       <S.MovieList>
-        {movies.map((movie, index) => (
+        {movieList.map((movie:MovieItemType) => (
           <MovieItem
-            key={index}
+            key={movie._id}
+            _id={movie._id}
             name={movie.name}
-            time={movie.time}
-            detail={movie.detail}
+            moveDuration={movie.moveDuration}
+            description={movie.description}
             image={movie.image}
             trailer={movie.trailer}
-            daodien={movie.daodien}
-            dienvien={movie.dienvien}
+            director={movie.director}
+            cast={movie.cast}
             age={movie.age}
+            categories={movie.categories}
+            screens={movie.screens}
           />
         ))}
       </S.MovieList>

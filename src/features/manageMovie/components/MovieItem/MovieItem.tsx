@@ -5,30 +5,30 @@ import play from '@/assets/icon/play.svg';
 import edit from '@/assets/icon/edit.svg';
 import trash from '@/assets/icon/trash.svg';
 import x from '@/assets/icon/x.svg';
+import { MovieItemType } from '../../type';
+import { deleteMovie } from '../../api/deleteMovie';
 
-interface MovieItemProps {
-  name: string;
-  time: string;
-  detail: string;
-  image: string;
-  trailer: string;
-  daodien: string;
-  dienvien: string;
-  age: string;
-}
-
-export const MovieItem: React.FC<MovieItemProps> = ({
+export const MovieItem: React.FC<MovieItemType> = ({
+  _id,
   name,
-  time,
-  detail,
+  moveDuration,
   image,
   trailer,
-  daodien,
-  dienvien,
+  description,
+  director,
+  cast,
   age,
+  categories,
+  screens,
 }) => {
   const [openTrailer, setOpenTrailer] = useState(false);
-  const [deleteMovie, setDeleteMovie] = useState(false);
+  const [isMovie, setIsMovie] = useState(false);
+
+  const handleDeleteMovie = async (id: string) => {
+    await deleteMovie(id);
+    window.location.reload();
+  };
+
   return (
     <S.MovieItem>
       <S.MovieLeft>
@@ -41,30 +41,48 @@ export const MovieItem: React.FC<MovieItemProps> = ({
         <S.MovieTitle>{name}</S.MovieTitle>
         <S.MovieTime>
           <img src={clock} alt="" />
-          {time}
+          {moveDuration}
         </S.MovieTime>
         <S.MovieListSpan>
           <S.MovieSpan>Đạo diễn:</S.MovieSpan>
-          <S.MovieSpan>{daodien}</S.MovieSpan>
+          <S.MovieSpan>{director.name}</S.MovieSpan>
+        </S.MovieListSpan>
+        <S.MovieListSpan>
+          <S.MovieSpan>Thể loại:</S.MovieSpan>
+          <S.MovieSpan>
+            {categories.length > 1 &&
+              categories.map((category) => <span key={category._id}>{category.name}, </span>)}
+            {categories.length <= 1 &&
+              categories.map((category) => <span key={category._id}>{category.name}</span>)}
+          </S.MovieSpan>
         </S.MovieListSpan>
         <S.MovieListSpan>
           <S.MovieSpan>Diễn viên:</S.MovieSpan>
-          <S.MovieSpan>{dienvien}</S.MovieSpan>
+          <S.MovieSpan>{cast}</S.MovieSpan>
         </S.MovieListSpan>
         <S.MovieListSpan>
           <S.MovieSpan>Độ tuổi:</S.MovieSpan>
           <S.MovieSpan>{age}</S.MovieSpan>
         </S.MovieListSpan>
         <S.MovieListSpan>
+          <S.MovieSpan>Loại màn:</S.MovieSpan>
+          <S.MovieSpan>
+            {screens.length > 1 &&
+              screens.map((screen) => <span key={screen._id}>{screen.name}, </span>)}
+            {screens.length <= 1 &&
+              screens.map((screen) => <span key={screen._id}>{screen.name}</span>)}
+          </S.MovieSpan>
+        </S.MovieListSpan>
+        <S.MovieListSpan>
           <S.MovieSpan>Nội dung:</S.MovieSpan>
-          <S.MovieSpan>{detail}</S.MovieSpan>
+          <S.MovieSpan>{description}</S.MovieSpan>
         </S.MovieListSpan>
         <S.MovieListBtn>
           <S.MovieBtnEdit>
             <img src={edit} alt="" />
             Edit
           </S.MovieBtnEdit>
-          <S.MovieBtnDelete onClick={() => setDeleteMovie(true)}>
+          <S.MovieBtnDelete onClick={() => setIsMovie(true)}>
             <img src={trash} alt="" />
             Delete
           </S.MovieBtnDelete>
@@ -76,7 +94,7 @@ export const MovieItem: React.FC<MovieItemProps> = ({
           <S.MovieVideo src={trailer} frameBorder="0" allowFullScreen />
         </S.MovieVideoTrailer>
       )}
-      {deleteMovie && (
+      {isMovie && (
         <S.MovieDelete>
           <S.MovieFormDelete>
             <S.MovieFormTitle>
@@ -90,7 +108,7 @@ export const MovieItem: React.FC<MovieItemProps> = ({
                 y="0px"
                 viewBox="0 0 22.88 22.88"
                 xmlSpace="preserve"
-                onClick={() => setDeleteMovie(false)}
+                onClick={() => setIsMovie(false)}
               >
                 <path
                   style={{ fill: '#000' }}
@@ -111,8 +129,8 @@ export const MovieItem: React.FC<MovieItemProps> = ({
                 <S.MovieFormLi>Vô hiệu hóa khi người dùng truy cập vào Movie này.</S.MovieFormLi>
               </S.MovieFormUl>
               <S.MovieFormListBtn>
-                <S.MovieFormBtn onClick={() => setDeleteMovie(false)}>Hủy</S.MovieFormBtn>
-                <S.MovieFormBtn>Xóa, gỡ bỏ</S.MovieFormBtn>
+                <S.MovieFormBtn onClick={() => setIsMovie(false)}>Hủy</S.MovieFormBtn>
+                <S.MovieFormBtn onClick={() => handleDeleteMovie(_id)}>Xóa, gỡ bỏ</S.MovieFormBtn>
               </S.MovieFormListBtn>
             </S.MovieFormContent>
           </S.MovieFormDelete>

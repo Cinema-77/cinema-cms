@@ -73,10 +73,6 @@ export const rules = {
       value: true,
       message: 'Nội dung là bắt buộc nhập',
     },
-    maxLength: {
-      value: 160,
-      message: 'Nội dung có độ dài tối đa là 160 ký tự',
-    },
   },
   image: {
     required: {

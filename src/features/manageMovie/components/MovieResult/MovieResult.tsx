@@ -5,7 +5,7 @@ import { InputField, ErrorMessage, Form, SelectField } from '@/components/Form2'
 import { Controller, useForm } from 'react-hook-form';
 import { rules } from '@/utils/rules';
 import x2 from '@/assets/icon/x2.svg';
-import { MovieType } from '../../type';
+import { MovieItemType, MovieType } from '../../type';
 import { createMovie } from '../../api/createMovie';
 import { getCategoryAll } from '../../api/category';
 import { getDirectorAll } from '../../api/director';
@@ -13,7 +13,8 @@ import { CheckboxField } from '@/components/Form2/CheckboxField/CheckboxField';
 import { getScreenAll } from '../../api/screen';
 import { storage } from '@/lib/firebase';
 import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { MovieList } from '@/features/manageMovie';
+import { MovieList } from '../..';
+import { getMovieAll } from '../../api/movieAll';
 
 interface MovieResultProps {}
 
@@ -26,11 +27,11 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
   const [categoryValue, setCategoryValue] = useState<any>([]);
   const [urlIMG, setUrlIMG] = useState<any>('');
   const [urlVideo, setUrlVideo] = useState<any>('');
+  const [movieList, setMovieList] = useState<MovieItemType[]>([]);
 
   const {
     control,
     getValues,
-    reset,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -51,6 +52,7 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
     getCategoryAll().then((res: any) => setCategoryList(res.values.categories));
     getDirectorAll().then((res: any) => setDirectorList(res.values.directors));
     getScreenAll().then((res: any) => setScreenList(res.values.screens));
+    getMovieAll().then((res: any) => setMovieList(res.values.movies));
   }, []);
   const handleValue = async (data: MovieType) => {
     const body = {
@@ -58,22 +60,21 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
       moveDuration: data.moveDuration,
       image: urlIMG,
       trailer: urlVideo,
-      age: data.age,
       description: data.description,
       directorId: data.directorId,
       cast: data.cast,
+      age: Number(data.age),
       screensId: screenValue,
       categoryId: categoryValue,
     };
     console.log(body);
     try {
-      await createMovie(body)
-        .then((data) => console.log(data))
-        .catch((error) => console.log(error.response));
-      setOpenAdd(false);
-      setUrlIMG('');
-      setUrlVideo('');
-      reset();
+      await createMovie(body);
+      window.location.reload();
+      // setOpenAdd(false);
+      // setUrlIMG('');
+      // setUrlVideo('');
+      // reset();
     } catch (error) {
       console.log(error);
     }
@@ -325,7 +326,7 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
           </Form>
         )}
       </S.MovieResult>
-      <MovieList />
+      <MovieList movieList={movieList} />
     </>
   );
 };
