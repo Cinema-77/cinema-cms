@@ -1,5 +1,5 @@
-import { axios } from "@/lib/axios"
+import { axios } from '@/lib/axios';
 
-export const getMovieAll =()=>{
-    return axios.get('/movie/all')
-}
+export const getMovieAll = () => {
+  return axios.get('/movie/all');
+};

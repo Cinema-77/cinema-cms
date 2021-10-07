@@ -153,7 +153,7 @@ export const MovieDelete = styled.div`
   width: 100%;
   height: 100%;
   z-index: 5;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.3);
 `;
 export const MovieFormDelete = styled.div`
   position: absolute;

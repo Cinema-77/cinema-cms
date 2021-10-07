@@ -13,8 +13,9 @@ import { CheckboxField } from '@/components/Form2/CheckboxField/CheckboxField';
 import { getScreenAll } from '../../api/screen';
 import { storage } from '@/lib/firebase';
 import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { MovieList } from '../..';
+import { MovieItem } from '../..';
 import { getMovieAll } from '../../api/movieAll';
+import { deleteMovie } from '../../api/deleteMovie';
 
 interface MovieResultProps {}
 
@@ -28,10 +29,12 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
   const [urlIMG, setUrlIMG] = useState<any>('');
   const [urlVideo, setUrlVideo] = useState<any>('');
   const [movieList, setMovieList] = useState<MovieItemType[]>([]);
+  const [movie, setMovie] = useState<any>([]);
 
   const {
     control,
     getValues,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -53,7 +56,8 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
     getDirectorAll().then((res: any) => setDirectorList(res.values.directors));
     getScreenAll().then((res: any) => setScreenList(res.values.screens));
     getMovieAll().then((res: any) => setMovieList(res.values.movies));
-  }, []);
+  }, [movie]);
+
   const handleValue = async (data: MovieType) => {
     const body = {
       name: data.name,
@@ -69,12 +73,13 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
     };
     console.log(body);
     try {
-      await createMovie(body);
-      window.location.reload();
-      // setOpenAdd(false);
-      // setUrlIMG('');
-      // setUrlVideo('');
-      // reset();
+      const res = await createMovie(body);
+      console.log(res);
+      setMovie(body);
+      setOpenAdd(false);
+      setUrlIMG('');
+      setUrlVideo('');
+      reset();
     } catch (error) {
       console.log(error);
     }
@@ -114,6 +119,11 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
     } else {
       setScreenValue(screenValue.filter((value: any) => e.target.value !== value));
     }
+  };
+
+  const handleDeleteMovie = async (id: string) => {
+    await deleteMovie(id);
+    setMovieList(movieList.filter((movie) => movie._id !== id));
   };
 
   return (
@@ -326,7 +336,12 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
           </Form>
         )}
       </S.MovieResult>
-      <MovieList movieList={movieList} />
+      <S.Movie>
+        <S.MovieTitle>List Movie</S.MovieTitle>
+        <S.MovieList>
+          <MovieItem movieList={movieList} handleDeleteMovie={handleDeleteMovie} />
+        </S.MovieList>
+      </S.Movie>
     </>
   );
 };
