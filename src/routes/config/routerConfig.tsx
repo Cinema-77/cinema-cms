@@ -1,5 +1,7 @@
 import { Route } from 'react-router-dom';
+
 import { PrivateRoute } from './PrivateRoute';
+
 import { Head } from '@/components/Head';
 
 export function RouteWithSubRoutes(route: any) {

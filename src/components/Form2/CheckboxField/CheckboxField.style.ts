@@ -18,7 +18,7 @@ export const Checkbox = styled.div`
   font-weight: 400;
   gap: 0 10px;
 
-  input{
-      padding: 8px;
+  input {
+    padding: 8px;
   }
 `;

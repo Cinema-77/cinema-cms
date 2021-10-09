@@ -1,7 +1,9 @@
+import { useQuery } from 'react-query';
+
+import { AuthResponse, Cities, District } from '../types';
+
 import { axios } from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
-import { useQuery } from 'react-query';
-import { AuthResponse, Cities, District } from '../types';
 
 export const getUser = (): Promise<AuthResponse> => {
   return axios.get('/staff/me');

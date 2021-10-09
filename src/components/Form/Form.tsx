@@ -18,7 +18,6 @@ export const Form = <
 >({
   onSubmit,
   children,
-  className,
   options,
   id,
   schema,

@@ -1,7 +1,3 @@
-import { CheckBoxField, Form, RadioField, SelectField } from '@/components';
-import { RangeSelect, SingleSelect } from '@/components/DatePicker';
-import { SiteHeader } from '@/components/Layout';
-import { TimeSlot, useTimeSlots } from '@/features/room';
 import {
   Box,
   BreadcrumbItem,
@@ -14,8 +10,17 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import React from 'react';
+
 import { TimeSlotCreate } from '../components/TimeSlotCreate';
-interface ShowTimesCreateProps {}
+
+import { CheckBoxField, Form, RadioField, SelectField } from '@/components';
+import { RangeSelect, SingleSelect } from '@/components/DatePicker';
+import { SiteHeader } from '@/components/Layout';
+import { TimeSlot, useTimeSlots } from '@/features/room';
+
+interface ShowTimesCreateProps {
+  children?: React.ReactNode;
+}
 
 type ShowTimesValues = {
   roomId: string;
@@ -91,14 +96,20 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
                   <RadioField
                     label="Room"
                     registration={register('roomId')}
-                    options={['Sasuke', 'Itachi', 'Naruto']}
+                    options={['Room 1', 'Room 2', 'Room 3', 'Room 4', 'Room 5']}
                   />
 
                   <SelectField
                     label="Premiere"
                     registration={register('premiereId')}
                     error={formState.errors['premiereId']}
-                    options={[]}
+                    options={[
+                      { name: 'King Kong', code: '2D' },
+                      { name: 'King Kong', code: '3D' },
+                    ].map((d) => ({
+                      label: `${d.name} - ${d.code}`,
+                      value: d.code,
+                    }))}
                   />
 
                   {timeSlotQuery.data && (

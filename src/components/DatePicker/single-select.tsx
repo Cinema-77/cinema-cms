@@ -32,7 +32,6 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import { IoCalendarClearSharp, IoChevronBackSharp, IoChevronForwardSharp } from 'react-icons/io5';
-
 import { useLilius } from 'use-lilius';
 
 interface RangeSelectProps {

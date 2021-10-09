@@ -1,15 +1,19 @@
-import { Form, InputField, SelectField } from '@/components';
-import { InputNumberField } from '@/components/Form/InputNumberField';
-import { SiteHeader } from '@/components/Layout';
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/breadcrumb';
 import { Button } from '@chakra-ui/button';
 import { Box, Flex, Stack } from '@chakra-ui/layout';
 import { Spinner } from '@chakra-ui/spinner';
 import React from 'react';
-import { useScreens } from '../api/getScreens';
 import * as z from 'zod';
+
+import { useScreens } from '../api/getScreens';
+
+import { Form, InputField, SelectField } from '@/components';
+import { InputNumberField } from '@/components/Form/InputNumberField';
+import { SiteHeader } from '@/components/Layout';
 import { useAuth } from '@/lib/auth';
-interface RoomProps {}
+interface RoomProps {
+  children?: React.ReactNode;
+}
 
 type RoomValues = {
   name: string;

@@ -1,7 +1,8 @@
+import { useQuery } from 'react-query';
+
 import { Cities, District } from '@/features/auth';
 import { axios } from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
-import { useQuery } from 'react-query';
 export const getCites = (): Promise<Cities[]> => {
   return axios.get('https://provinces.open-api.vn/api/p/');
 };

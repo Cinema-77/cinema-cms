@@ -1,11 +1,13 @@
-import { axios } from '@/lib/axios';
-import { MutationConfig, queryClient } from '@/lib/react-query';
 import { createStandaloneToast } from '@chakra-ui/toast';
 import { useMutation } from 'react-query';
+
 import { TimSlotRespone } from '../type';
 
+import { axios } from '@/lib/axios';
+import { MutationConfig, queryClient } from '@/lib/react-query';
+
 export type CreateTimeSlotDTO = {
-  time: String;
+  time: string;
 };
 
 export const createTimeSlot = (data: CreateTimeSlotDTO): Promise<TimSlotRespone> => {

@@ -1,6 +1,7 @@
 import { Checkbox, CheckboxGroup, Wrap, WrapItem } from '@chakra-ui/react';
 import React from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
+
 import { FieldWrapper, FieldWrapperPassThroughProps } from '.';
 
 interface CheckBoxFieldProps extends FieldWrapperPassThroughProps {

@@ -13,15 +13,18 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
+  Avatar,
 } from '@chakra-ui/react';
-import { Avatar } from '@chakra-ui/react';
 import React, { useRef, useState } from 'react';
+import { FiTrash } from 'react-icons/fi';
 import { MdInfo } from 'react-icons/md';
 import { Link } from 'react-router-dom';
+
 import { CinemaType } from '..';
-import { CinemaModalUpdate } from './CinemaModalUpdate';
-import { FiTrash } from 'react-icons/fi';
 import { useDeleteCinema } from '../api/deleteCinema';
+
+import { CinemaModalUpdate } from './CinemaModalUpdate';
+
 import { useAuth } from '@/lib/auth';
 
 export const CinemaItem: React.FC<CinemaType> = (props) => {

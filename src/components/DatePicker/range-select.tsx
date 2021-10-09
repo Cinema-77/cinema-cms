@@ -27,14 +27,12 @@ import {
   startOfWeek,
 } from 'date-fns';
 import React, { useState } from 'react';
-
 import {
   IoArrowForwardSharp,
   IoCalendarClearSharp,
   IoChevronBackSharp,
   IoChevronForwardSharp,
 } from 'react-icons/io5';
-
 import { useLilius } from 'use-lilius';
 
 interface RangeSelectProps {
@@ -42,7 +40,7 @@ interface RangeSelectProps {
   dateEnd?: string;
 }
 
-export const RangeSelect: React.FC<RangeSelectProps> = ({ dateStart, dateEnd }) => {
+export const RangeSelect: React.FC<RangeSelectProps> = () => {
   const {
     calendar,
     deselect,

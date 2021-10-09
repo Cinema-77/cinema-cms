@@ -1,5 +1,3 @@
-import { InputField, SelectField } from '@/components';
-import { District, getDistrict, getWards, useCities, Ward } from '@/features/auth';
 import {
   Button,
   Modal,
@@ -15,7 +13,11 @@ import {
 import React, { useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { MdAdd } from 'react-icons/md';
+
 import { useCreateCinema } from '../api/createCinema';
+
+import { InputField, SelectField } from '@/components';
+import { District, getDistrict, getWards, useCities, Ward } from '@/features/auth';
 
 type Address = {
   districts: District[];
@@ -58,9 +60,9 @@ export const CinemaModalCreate: React.FC<any> = () => {
 
   const onCreateCinema: SubmitHandler<CinemaValues> = async (data: CinemaValues) => {
     const { name, address } = data;
-    let newCity = address.city.split('-');
-    let newWard = address.ward.split('-');
-    let newDistrict = address.district.split('-');
+    const newCity = address.city.split('-');
+    const newWard = address.ward.split('-');
+    const newDistrict = address.district.split('-');
     const values = {
       name,
       address: {
@@ -112,7 +114,7 @@ export const CinemaModalCreate: React.FC<any> = () => {
               error={formState.errors['address']?.city}
               options={
                 cityQuery.data &&
-                cityQuery?.data.map((city, _) => ({
+                cityQuery?.data.map((city) => ({
                   label: city.name,
                   value: `${city.code}-${city.name}`,
                 }))

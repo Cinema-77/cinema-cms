@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+
 import * as S from './MovieItem.style';
+
 import clock from '@/assets/icon/clock.svg';
-import play from '@/assets/icon/play.svg';
 import edit from '@/assets/icon/edit.svg';
+import play from '@/assets/icon/play.svg';
 import trash from '@/assets/icon/trash.svg';
 import x from '@/assets/icon/x.svg';
 
@@ -72,7 +74,7 @@ export const MovieItem: React.FC<MovieItemProps> = ({
       </S.MovieRight>
       {openTrailer && (
         <S.MovieVideoTrailer>
-          <img src={x} alt="" onClick={() => setOpenTrailer(false)} />
+          <img src={x} alt="" onClick={() => setOpenTrailer(false)} role="button" />
           <S.MovieVideo src={trailer} frameBorder="0" allowFullScreen />
         </S.MovieVideoTrailer>
       )}

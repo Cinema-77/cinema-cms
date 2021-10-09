@@ -1,14 +1,17 @@
-import { InputField } from '@/components/Form';
-import { useAuth } from '@/lib/auth';
 import { Button, Flex, Heading, Stack, useToast } from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Redirect } from 'react-router-dom';
 import * as z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { loginWithEmailAndPassword } from '@/features/auth';
 
-interface AuthProps {}
+import { InputField } from '@/components/Form';
+import { loginWithEmailAndPassword } from '@/features/auth';
+import { useAuth } from '@/lib/auth';
+
+interface AuthProps {
+  children: React.ReactNode;
+}
 
 type LoginValues = {
   username: string;

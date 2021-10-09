@@ -1,6 +1,7 @@
 import { Switch } from 'react-router-dom';
-import routes from './routes';
+
 import { RouteWithSubRoutes } from './config';
+import routes from './routes';
 
 export const AppRoutes = () => {
   return (

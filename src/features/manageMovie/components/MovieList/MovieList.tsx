@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { MovieItem } from '@/features/manageMovie';
+
 import * as S from './MovieList.style';
 
-interface MovieListProps {}
+import { MovieItem } from '@/features/manageMovie';
+
+interface MovieListProps {
+  children?: React.ReactNode;
+}
 
 export const MovieList: React.FC<MovieListProps> = () => {
   const [movies] = useState([

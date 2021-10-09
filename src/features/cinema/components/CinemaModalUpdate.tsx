@@ -1,5 +1,3 @@
-import { Form, InputField, SelectField } from '@/components';
-import { useCities, getDistrict, getWards, District, Ward } from '@/features/auth';
 import {
   Modal,
   ModalOverlay,
@@ -12,10 +10,13 @@ import {
   useDisclosure,
   useColorModeValue,
 } from '@chakra-ui/react';
-
 import React, { useRef, useState } from 'react';
 import { MdSettings } from 'react-icons/md';
+
 import { useUpdateCinema } from '../api/updateCinema';
+
+import { Form, InputField, SelectField } from '@/components';
+import { useCities, getDistrict, getWards, District, Ward } from '@/features/auth';
 
 type Address = {
   districts: District[];
@@ -60,9 +61,9 @@ export const CinemaModalUpdate: React.FC<CinemaValues> = (props) => {
 
   const onUpdateCinema = async (data: CinemaValues) => {
     const { name, address } = data;
-    let newCity = address.city.split('-');
-    let newWard = address.ward.split('-');
-    let newDistrict = address.district.split('-');
+    const newCity = address.city.split('-');
+    const newWard = address.ward.split('-');
+    const newDistrict = address.district.split('-');
 
     const values = {
       name,
@@ -115,7 +116,7 @@ export const CinemaModalUpdate: React.FC<CinemaValues> = (props) => {
                     defaultValue={props.address.city}
                     options={
                       cityQuery.data &&
-                      cityQuery?.data.map((city, _) => ({
+                      cityQuery?.data.map((city) => ({
                         label: city.name,
                         value: `${city.code}-${city.name}`,
                       }))

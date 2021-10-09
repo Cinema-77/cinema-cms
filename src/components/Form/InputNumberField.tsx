@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/number-input';
 import React from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
+
 import { FieldWrapper, FieldWrapperPassThroughProps } from '.';
 
 interface InputNumberFieldProps extends NumberInputProps, FieldWrapperPassThroughProps {

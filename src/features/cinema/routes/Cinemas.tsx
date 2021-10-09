@@ -1,11 +1,14 @@
-import { SiteHeader } from '@/components/Layout';
-import { Box } from '@chakra-ui/react';
+import { Box, Skeleton, Stack } from '@chakra-ui/react';
 import React from 'react';
+
 import { useCinemas } from '../api/getCinema';
 import { CinemaItem } from '../components';
 import { CinemaModalCreate } from '../components/CinemaModalCreate';
-import { Skeleton, Stack } from '@chakra-ui/react';
-interface CinemasProps {}
+
+import { SiteHeader } from '@/components/Layout';
+interface CinemasProps {
+  children: React.ReactNode;
+}
 
 export const Cinemas: React.FC<CinemasProps> = () => {
   const { isLoading, data } = useCinemas();

@@ -1,7 +1,8 @@
-import { AuthUser, getUser, UserResponse } from '@/features/auth';
-import storage from '@/utils/storage';
 import { Flex, Spinner } from '@chakra-ui/react';
 import { initReactQueryAuth } from 'react-query-auth';
+
+import { AuthUser, getUser, UserResponse } from '@/features/auth';
+import storage from '@/utils/storage';
 
 async function handleUserResponse(data: UserResponse) {
   const { token, staff } = data;
