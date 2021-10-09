@@ -12,17 +12,18 @@ import {
 import React from 'react';
 
 import { TimeSlotCreate } from '../components/TimeSlotCreate';
+import { TimeSlotList } from '../components/TimeSlotList';
 
-import { CheckBoxField, Form, RadioField, SelectField } from '@/components';
+import { Form, SelectField } from '@/components';
 import { RangeSelect, SingleSelect } from '@/components/DatePicker';
 import { SiteHeader } from '@/components/Layout';
-import { TimeSlot, useTimeSlots } from '@/features/room';
+import { useTimeSlots } from '@/features/room';
 
 interface ShowTimesCreateProps {
   children?: React.ReactNode;
 }
 
-type ShowTimesValues = {
+export type ShowTimesValues = {
   roomId: string;
   premiereId: string;
   timeSlotsId: string[];
@@ -33,15 +34,6 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
   const { isOpen, onToggle } = useDisclosure();
   const timeSlotQuery = useTimeSlots();
 
-  const compareTime = (a: TimeSlot, b: TimeSlot) => {
-    if (a.time > b.time) {
-      return 1;
-    }
-    if (a.time < b.time) {
-      return -1;
-    }
-    return 0;
-  };
   return (
     <>
       <SiteHeader menuName="Showtimes" heading={`Create a new Showtimes`}>
@@ -54,7 +46,7 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
         <Stack
           backgroundColor="white"
           borderRadius={[0, 8]}
-          maxWidth="800px"
+          maxWidth="100%"
           px={8}
           py={12}
           shadow={[null, 'md']}
@@ -64,7 +56,6 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
         >
           <TimeSlotCreate />
           <Box
-            maxWidth="600px"
             width="100%"
             margin="auto"
             border="1px"
@@ -93,12 +84,6 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
 
                   {isOpen ? <RangeSelect /> : <SingleSelect registration={register('date')} />}
 
-                  <RadioField
-                    label="Room"
-                    registration={register('roomId')}
-                    options={['Room 1', 'Room 2', 'Room 3', 'Room 4', 'Room 5']}
-                  />
-
                   <SelectField
                     label="Premiere"
                     registration={register('premiereId')}
@@ -113,12 +98,9 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
                   />
 
                   {timeSlotQuery.data && (
-                    <CheckBoxField
-                      label="Time"
-                      registration={register('timeSlotsId')}
-                      options={timeSlotQuery.data?.values.timeSlots
-                        .sort(compareTime)
-                        .map(({ time }) => time)}
+                    <TimeSlotList
+                      listTime={timeSlotQuery.data.values.timeSlots}
+                      register={register}
                     />
                   )}
 
@@ -130,6 +112,8 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
                     _hover={{
                       backgroundColor: 'cyan.700',
                     }}
+                    maxWidth="200px"
+                    alignSelf="flex-end"
                     // isLoading={cinemaUpdateMutation.isLoading}
                   >
                     Create Showtimes

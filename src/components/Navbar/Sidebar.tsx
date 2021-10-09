@@ -98,19 +98,7 @@ const LinkItems: Array<LinkItemProps> = [
   {
     name: 'ShowTimes',
     icon: AiOutlineSchedule,
-    accor: true,
-    linkChild: [
-      {
-        name: 'List',
-        icon: BsDot,
-        to: '/showtimes/list',
-      },
-      {
-        name: 'Create',
-        icon: BsDot,
-        to: '/showtimes/create',
-      },
-    ],
+    to: '/showtimes/create',
   },
   { name: 'Users', icon: FiUser, to: '/users' },
   { name: 'Favourites', icon: FiStar, to: '/favourites' },
