@@ -14,10 +14,16 @@ export const MovieSearch = styled.form`
   padding: 4px;
   background-color: #fff;
   border-radius: 20px;
-  min-width: 400px;
+  max-width: 400px;
 
   @media (max-width: 768px) {
-    min-width: 300px;
+    max-width: 300px;
+  }
+  @media (max-width: 414px) {
+    max-width: 200px;
+  }
+  @media (max-width: 414px) {
+    max-width: 150px;
   }
 `;
 export const MovieSearchInput = styled.input`
@@ -27,6 +33,9 @@ export const MovieSearchInput = styled.input`
   outline: none;
   font-size: 14px;
   font-weight: 500;
+  @media (max-width: 414px) {
+    padding: 4px 0px 4px 4px;
+  }
 `;
 export const MovieSearchBtn = styled.button`
   padding: 8px 0px 8px 8px;
@@ -122,71 +131,58 @@ export const MovieFormController = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: calc(100% / 4 - 10px);
+  width: calc(100% / 5 - 10px);
   :last-child {
-    width: 50%;
+    width: calc(60% - 10px);
+  }
+
+  @media (max-width: 768px) {
+    width: calc(100% / 4 - 10px);
+    :nth-of-type(5) {
+      width: calc(50% - 10px);
+    }
+    :nth-of-type(6),
+    :nth-of-type(7) {
+      width: calc(50% / 2 - 10px);
+    }
+    :last-child {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 414px) {
+    width: calc(100% / 2 - 10px);
+    :nth-of-type(6),
+    :nth-of-type(7) {
+      width: calc(100% / 2 - 10px);
+    }
   }
 `;
 export const MovieFormController2 = styled.div`
   width: calc(50% - 10px);
-`;
-export const MovieListVideo = styled.div`
-  height: 450px;
-  overflow-x: hidden;
-  border-radius: 6px;
-
-  iframe {
+  @media (max-width: 414px) {
     width: 100%;
-    height: 350px;
-    border-radius: 6px;
-    margin-top: 8px;
-  }
-
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: #eec0c6;
-    background-image: linear-gradient(315deg, #eec0c6 0%, #7ee8fa 74%);
-    border-radius: 6px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: #fad0c4;
-    background-image: linear-gradient(315deg, #fad0c4 0%, #f1a7f1 74%);
-    border-radius: 6px;
   }
 `;
-export const Iframe = styled.iframe``;
-export const MovieGetVideo = styled.button`
-  color: #fff;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 6px 12px;
-  border-radius: 6px;
+export const Movie = styled.section`
+  padding: 16px;
+`;
+export const MovieTitle = styled.h1`
+  font-size: 40px;
+  font-weight: 700;
+`;
+export const MovieList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px 0;
+  margin-top: 16px;
+`;
+export const MovieListItem = styled.div`
+  display: flex;
+`;
+export const MovieTitleName = styled.h2`
+  font-size: 16px;
   font-weight: 500;
-  margin: 0 auto;
-  width: 100%;
-`;
-export const FormVideo = styled.div`
-  position: relative;
-`;
-export const VideoBtn = styled.button`
-  position: absolute;
-  right: 0;
-  top: 0;
-  color: #fff;
-  background-color: #ff5c58;
-  padding: 8px 12px;
-  border-radius: 6px;
-  margin-top: 8px;
-`;
-export const VideoBtn2 = styled.button`
-  position: absolute;
-  right: 0;
-  top: 0;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 6px;
-  background-color: #9d9d9d;
+  text-align: center;
+  padding: 8px 0;
 `;

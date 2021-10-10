@@ -26,13 +26,14 @@ export const InputField: React.FC<InputFieldProps> = ({
       {title}
       {type === 'file' && (
         <>
-          <S.FileUploadLabel htmlFor={type}>Select a file...</S.FileUploadLabel>
-          <S.FileUpload id={type} type={type} name={name} onChange={change} />
-          {url && (
+          <S.FileUploadLabel htmlFor={name}>Select a {name}...</S.FileUploadLabel>
+          <S.FileUpload id={name} type={type} name={name} onChange={change} />
+          {url && name === 'image' && (
             <S.Image>
               <img src={url} alt="" />
             </S.Image>
           )}
+          {url && name !== 'image' && <S.Iframe src={url} allowFullScreen />}
         </>
       )}
       {type !== 'file' && !textarea && <S.Input name={name} onChange={change} value={value} />}

@@ -23,6 +23,15 @@ export const rules = {
         /^[0-9]*$/.test(value) || 'Thời lượng là số, không phải là ký tự.',
     },
   },
+  age: {
+    required: {
+      value: true,
+      message: 'Tuổi là bắt buộc nhập',
+    },
+    validate: {
+      thoiluong: (value: string) => /^[0-9]*$/.test(value) || 'Tuổi là số, không phải là ký tự.',
+    },
+  },
   daodien: {
     required: {
       value: true,
@@ -63,10 +72,6 @@ export const rules = {
     required: {
       value: true,
       message: 'Nội dung là bắt buộc nhập',
-    },
-    maxLength: {
-      value: 160,
-      message: 'Nội dung có độ dài tối đa là 160 ký tự',
     },
   },
   image: {

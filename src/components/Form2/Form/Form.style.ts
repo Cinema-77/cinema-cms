@@ -19,4 +19,12 @@ export const Form = styled.form`
   transform: translate(-50%, -50%);
   background-color: #fff;
   z-index: 1;
+
+  @media (max-width: 1200px) {
+    width: 100%;
+  }
+
+  @media (max-width: 414px) {
+    height: 100%;
+  }
 `;
