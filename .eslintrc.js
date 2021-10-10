@@ -6,7 +6,7 @@ module.exports = {
   },
   parserOptions: { ecmaVersion: 8, sourceType: 'module' },
   ignorePatterns: ['node_modules/*'],
-  extends: ['eslint:recommended'],
+  extends: ['eslint:recommended', 'prettier'],
   overrides: [
     {
       files: ['**/*.ts', '**/*.tsx'],
@@ -24,7 +24,6 @@ module.exports = {
       },
       extends: [
         'eslint:recommended',
-        'plugin:prettier/recommended',
         'plugin:import/errors',
         'plugin:import/warnings',
         'plugin:import/typescript',
@@ -32,6 +31,7 @@ module.exports = {
         'plugin:react/recommended',
         'plugin:react-hooks/recommended',
         'plugin:jsx-a11y/recommended',
+        'plugin:prettier/recommended',
         'plugin:testing-library/react',
         'plugin:jest-dom/recommended',
       ],
@@ -57,10 +57,15 @@ module.exports = {
         'import/default': 'off',
         'import/no-named-as-default-member': 'off',
         'import/no-named-as-default': 'off',
+
         'react/react-in-jsx-scope': 'off',
+
         'jsx-a11y/anchor-is-valid': 'off',
         'jsx-a11y/no-noninteractive-element-to-interactive-role': 'off',
+        'no-unused-vars': 'off',
+
         '@typescript-eslint/no-unused-vars': ['error'],
+
         '@typescript-eslint/explicit-function-return-type': ['off'],
         '@typescript-eslint/explicit-module-boundary-types': ['off'],
         '@typescript-eslint/no-empty-function': ['off'],

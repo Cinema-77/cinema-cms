@@ -1,4 +1,4 @@
-import { Checkbox, CheckboxGroup, Wrap, WrapItem } from '@chakra-ui/react';
+import { Checkbox, CheckboxGroup, SimpleGrid } from '@chakra-ui/react';
 import React from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
 
@@ -17,15 +17,13 @@ export const CheckBoxFieldGroup: React.FC<CheckBoxFieldGroupProps> = (props) => 
   return (
     <FieldWrapper label={label} error={error} fieldset={true}>
       <CheckboxGroup colorScheme="cyan" defaultValue={defaultValue}>
-        <Wrap>
+        <SimpleGrid columns={[2, null, 3]} spacing="5px">
           {options.map((o, index) => (
-            <WrapItem key={`${index}-${o}`}>
-              <Checkbox value={o} {...registration}>
-                {o}
-              </Checkbox>
-            </WrapItem>
+            <Checkbox value={o} {...registration} key={index}>
+              {o}
+            </Checkbox>
           ))}
-        </Wrap>
+        </SimpleGrid>
       </CheckboxGroup>
     </FieldWrapper>
   );

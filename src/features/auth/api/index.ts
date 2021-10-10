@@ -59,8 +59,8 @@ type UseCitiesOptions = {
 
 export const useCities = ({ config = {} }: UseCitiesOptions = {}) => {
   return useQuery({
-    ...config,
-    queryKey: ['cities'],
+    queryKey: ['cites'],
     queryFn: () => getCites(),
+    ...config,
   });
 };
