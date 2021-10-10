@@ -1,4 +1,3 @@
-import React, { ReactNode } from 'react';
 import {
   IconButton,
   Avatar,
@@ -27,6 +26,11 @@ import {
   AccordionItem,
   AccordionPanel,
 } from '@chakra-ui/react';
+import clsx from 'clsx';
+import React, { ReactNode, ReactText } from 'react';
+import { IconType } from 'react-icons';
+import { AiOutlineSchedule } from 'react-icons/ai';
+import { BsDot } from 'react-icons/bs';
 import {
   FiHome,
   FiTrendingUp,
@@ -42,13 +46,9 @@ import {
   FiBox,
   FiChevronDown,
 } from 'react-icons/fi';
-import { BsDot } from 'react-icons/bs';
-import { AiOutlineSchedule } from 'react-icons/ai';
-import { IconType } from 'react-icons';
-import { ReactText } from 'react';
 import { NavLink } from 'react-router-dom';
+
 import { useAuth } from '@/lib/auth';
-import clsx from 'clsx';
 
 interface LinkItemProps {
   name: string;
@@ -98,19 +98,7 @@ const LinkItems: Array<LinkItemProps> = [
   {
     name: 'ShowTimes',
     icon: AiOutlineSchedule,
-    accor: true,
-    linkChild: [
-      {
-        name: 'List',
-        icon: BsDot,
-        to: '/showtimes/list',
-      },
-      {
-        name: 'Create',
-        icon: BsDot,
-        to: '/showtimes/create',
-      },
-    ],
+    to: '/showtimes/create',
   },
   { name: 'Users', icon: FiUser, to: '/users' },
   { name: 'Favourites', icon: FiStar, to: '/favourites' },
@@ -123,7 +111,6 @@ export default function SidebarWithHeader({ children }: { children: ReactNode })
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <SidebarContent onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
       <Drawer
-        autoFocus={false}
         isOpen={isOpen}
         placement="left"
         onClose={onClose}
@@ -137,7 +124,7 @@ export default function SidebarWithHeader({ children }: { children: ReactNode })
       </Drawer>
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
+      <Box ml={{ base: 0, md: 60 }} py={4}>
         {children}
       </Box>
     </Box>
@@ -199,6 +186,7 @@ const LinkAccor = (link: LinkItemProps) => {
             color: 'white',
           }}
           className="link-item"
+          _expanded={{}}
         >
           {link.icon && (
             <Icon

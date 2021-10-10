@@ -1,23 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import * as S from './MovieResult.style';
-import search from '@/assets/icon/search.svg';
-import { InputField, ErrorMessage, Form, SelectField } from '@/components/Form2';
-import { Controller, useForm } from 'react-hook-form';
-import { rules } from '@/utils/rules';
-import x2 from '@/assets/icon/x2.svg';
-import { MovieItemType, MovieType } from '../../type';
-import { createMovie } from '../../api/createMovie';
-import { getCategoryAll } from '../../api/category';
-import { getDirectorAll } from '../../api/director';
-import { CheckboxField } from '@/components/Form2/CheckboxField/CheckboxField';
-import { getScreenAll } from '../../api/screen';
-import { storage } from '@/lib/firebase';
 import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { MovieItem } from '../..';
-import { getMovieAll } from '../../api/movieAll';
-import { deleteMovie } from '../../api/deleteMovie';
+import React, { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
-interface MovieResultProps {}
+import { MovieItem } from '../..';
+import { getCategoryAll } from '../../api/category';
+import { createMovie } from '../../api/createMovie';
+import { deleteMovie } from '../../api/deleteMovie';
+import { getDirectorAll } from '../../api/director';
+import { getMovieAll } from '../../api/movieAll';
+import { getScreenAll } from '../../api/screen';
+import { MovieItemType, MovieType } from '../../type';
+
+import * as S from './MovieResult.style';
+
+import search from '@/assets/icon/search.svg';
+import x2 from '@/assets/icon/x2.svg';
+import { InputField, ErrorMessage, Form, SelectField } from '@/components/Form2';
+import { CheckboxField } from '@/components/Form2/CheckboxField/CheckboxField';
+import { storage } from '@/lib/firebase';
+import { rules } from '@/utils/rules';
+
+interface MovieResultProps {
+  children?: React.ReactNode;
+}
 
 export const MovieResult: React.FC<MovieResultProps> = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -150,7 +155,7 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
           <Form submit={handleSubmit(handleValue)}>
             <S.MovieFormTitle>
               Add Movie
-              <img src={x2} alt="" onClick={() => setOpenAdd(false)} />
+              <img src={x2} alt="" onClick={() => setOpenAdd(false)} role="button" />
             </S.MovieFormTitle>
             <S.MovieForm>
               <S.MovieFormController>

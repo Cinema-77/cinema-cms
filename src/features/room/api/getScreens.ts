@@ -1,5 +1,6 @@
-import { ScreenRespone } from './../type';
 import { useQuery } from 'react-query';
+
+import { ScreenRespone } from './../type';
 
 import { axios } from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';

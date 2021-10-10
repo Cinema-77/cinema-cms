@@ -1,5 +1,6 @@
-import { useAuth } from '@/lib/auth';
 import { Redirect, Route } from 'react-router-dom';
+
+import { useAuth } from '@/lib/auth';
 
 export function PrivateRoute(props: any) {
   const auth = useAuth();

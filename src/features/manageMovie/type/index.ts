@@ -12,37 +12,37 @@ export interface MovieType {
 }
 
 export interface MovieItemType {
-  _id:string;
-  name:string;
-  moveDuration:string;
-  image:string;
-  trailer:string;
+  _id: string;
+  name: string;
+  moveDuration: string;
+  image: string;
+  trailer: string;
   description: string;
-  director:{
-    createAt:string;
-    _id:string;
-    name:string;
-    dateOfBirth:string;
-    image:string;
-    joinDate:string;
-    address:string;
-    phoneNumber:string;
-    email:string;
-    introduce:string;
-    male:boolean;
+  director: {
+    createAt: string;
+    _id: string;
+    name: string;
+    dateOfBirth: string;
+    image: string;
+    joinDate: string;
+    address: string;
+    phoneNumber: string;
+    email: string;
+    introduce: string;
+    male: boolean;
   };
-  cast:string;
-  age:number;
-  categories:{
-    _id:string;
-    name:string;
-    image:string;
+  cast: string;
+  age: number;
+  categories: {
+    _id: string;
+    name: string;
+    image: string;
   }[];
-  screens:{
-    _id:string;
-    name:string;
-    weekdayPrice:number;
-    weekendPrice:number;
+  screens: {
+    _id: string;
+    name: string;
+    weekdayPrice: number;
+    weekendPrice: number;
   }[];
 }
 

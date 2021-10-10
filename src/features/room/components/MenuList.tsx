@@ -19,7 +19,7 @@ interface MenuListRoomProps {
   roomId: string;
 }
 
-export const MenuListRoom: React.FC<MenuListRoomProps> = ({ roomId }) => {
+export const MenuListRoom: React.FC<MenuListRoomProps> = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef: any = useRef();
   const onDelete = () => console.log('delete');

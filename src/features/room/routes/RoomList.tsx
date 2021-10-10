@@ -1,6 +1,5 @@
-import { Table, Td, Th, Tr } from '@/components';
-import { SiteHeader } from '@/components/Layout';
 import {
+  Badge,
   Box,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -12,9 +11,15 @@ import {
 import React from 'react';
 import { MdAdd } from 'react-icons/md';
 import { Link } from 'react-router-dom';
+
 import { MenuListRoom } from '../components/MenuList';
 
-interface RoomListProps {}
+import { Table, Td, Th, Tr } from '@/components';
+import { SiteHeader } from '@/components/Layout';
+
+interface RoomListProps {
+  children?: React.ReactNode;
+}
 
 export const RoomList: React.FC<RoomListProps> = () => {
   const bg = useColorModeValue('gray.900', 'white');
@@ -65,14 +70,42 @@ export const RoomList: React.FC<RoomListProps> = () => {
                   <Th>Name</Th>
                   <Th>Screen</Th>
                   <Th>Row Number</Th>
-                  <Th>List Time</Th>
+                  <Th>Seat In Row</Th>
                   <Th width="50px"></Th>
                 </Tr>
               </thead>
               <tbody>
                 <Box as="tr">
                   <Td>Phòng A1</Td>
-                  <Td>2D</Td>
+                  <Td>
+                    <Badge fontSize="1em">2D</Badge>
+                  </Td>
+                  <Td>10</Td>
+                  <Td>10</Td>
+                  <Td>
+                    <MenuListRoom roomId={`22`} />
+                  </Td>
+                </Box>
+                <Box as="tr">
+                  <Td>Phòng A2</Td>
+                  <Td>
+                    <Badge fontSize="1em" colorScheme="purple">
+                      3D
+                    </Badge>
+                  </Td>
+                  <Td>10</Td>
+                  <Td>10</Td>
+                  <Td>
+                    <MenuListRoom roomId={`22`} />
+                  </Td>
+                </Box>
+                <Box as="tr">
+                  <Td>Phòng A3</Td>
+                  <Td>
+                    <Badge fontSize="1em" colorScheme="red">
+                      IMax
+                    </Badge>
+                  </Td>
                   <Td>10</Td>
                   <Td>10</Td>
                   <Td>

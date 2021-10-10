@@ -13,7 +13,6 @@ const { CreateRoom } = lazyImport(() => import('@/features/room'), 'CreateRoom')
 const { RoomList } = lazyImport(() => import('@/features/room'), 'RoomList');
 const { ShowTimesCreate } = lazyImport(() => import('@/features/showtimes'), 'ShowTimesCreate');
 
-
 const routes: any[] = [
   {
     path: '/',
@@ -48,13 +47,11 @@ const routes: any[] = [
         title: 'Cinema',
       },
       {
-
         path: '/managemovie',
         component: manageMovie,
         title: 'Manage Movie',
-
-        },{
-        
+      },
+      {
         path: '/room/createRoom',
         component: CreateRoom,
         title: 'Create Room',
@@ -68,7 +65,6 @@ const routes: any[] = [
         path: '/showtimes/create',
         component: ShowTimesCreate,
         title: 'Create ShowTime',
-
       },
     ],
   },

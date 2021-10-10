@@ -1,5 +1,6 @@
-import { TimSlotRespone } from './../type';
 import { useQuery } from 'react-query';
+
+import { TimSlotRespone } from './../type';
 
 import { axios } from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';

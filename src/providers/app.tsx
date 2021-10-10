@@ -1,13 +1,13 @@
+import { Button, Flex, Heading, Spinner } from '@chakra-ui/react';
 import * as React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { HelmetProvider } from 'react-helmet-async';
 import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { AuthProvider } from '@/lib/auth';
 import { queryClient } from '@/lib/react-query';
-import { HelmetProvider } from 'react-helmet-async';
-import { Button, Flex, Heading, Spinner } from '@chakra-ui/react';
 
 const ErrorFallback = () => {
   return (

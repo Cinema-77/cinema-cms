@@ -1,6 +1,8 @@
-import { RouteWithSubRoutes } from '@/routes/config';
 import React from 'react';
+
 import SidebarWithHeader from '../Navbar/Sidebar';
+
+import { RouteWithSubRoutes } from '@/routes/config';
 
 interface MainLayoutProps {
   routes: any;

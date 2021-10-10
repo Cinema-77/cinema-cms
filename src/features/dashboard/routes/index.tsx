@@ -10,8 +10,8 @@ import {
   Icon,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { IoAnalyticsSharp, IoLogoBitcoin, IoSearchSharp } from 'react-icons/io5';
 import { ReactElement } from 'react';
+import { IoAnalyticsSharp, IoLogoBitcoin, IoSearchSharp } from 'react-icons/io5';
 
 interface FeatureProps {
   text: string;
@@ -30,7 +30,9 @@ const Feature = ({ text, icon, iconBg }: FeatureProps) => {
   );
 };
 
-interface DashBoardProps {}
+interface DashBoardProps {
+  children: React.ReactNode;
+}
 
 export const DashBoard: React.FC<DashBoardProps> = () => {
   return (

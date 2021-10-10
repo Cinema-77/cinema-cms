@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+
+import { MovieItemType } from '../../type';
+
 import * as S from './MovieItem.style';
+
 import clock from '@/assets/icon/clock.svg';
-import play from '@/assets/icon/play.svg';
 import edit from '@/assets/icon/edit.svg';
+import play from '@/assets/icon/play.svg';
 import trash from '@/assets/icon/trash.svg';
 import x from '@/assets/icon/x.svg';
-import { MovieItemType } from '../../type';
 
 interface MovieItemProps {
   movieList: MovieItemType[];
@@ -83,7 +86,7 @@ export const MovieItem: React.FC<MovieItemProps> = ({ movieList, handleDeleteMov
           </S.MovieRight>
           {openTrailer && (
             <S.MovieVideoTrailer>
-              <img src={x} alt="" onClick={() => setOpenTrailer(false)} />
+              <img src={x} alt="" onClick={() => setOpenTrailer(false)} role="button" />
               <S.MovieVideo src={movie.trailer} frameBorder="0" allowFullScreen />
             </S.MovieVideoTrailer>
           )}

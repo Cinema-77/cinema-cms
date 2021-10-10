@@ -1,9 +1,19 @@
-import { SiteHeader } from '@/components/Layout';
-import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
+import {
+  BreadcrumbItem,
+  BreadcrumbLink,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+} from '@chakra-ui/react';
 import React from 'react';
 
-interface CinemaProps {}
+import { SiteHeader } from '@/components/Layout';
+
+interface CinemaProps {
+  children: React.ReactNode;
+}
 
 export const Cinema: React.FC<CinemaProps> = () => {
   return (

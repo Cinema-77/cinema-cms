@@ -1,42 +1,57 @@
-import { CheckBoxField, Form, RadioField, SelectField } from '@/components';
-import { RangeSelect, SingleSelect } from '@/components/DatePicker';
-import { SiteHeader } from '@/components/Layout';
-import { TimeSlot, useTimeSlots } from '@/features/room';
 import {
   Box,
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
+  Center,
+  Divider,
   Flex,
+  Heading,
   Stack,
-  Switch,
-  Text,
-  useDisclosure,
+  VStack,
 } from '@chakra-ui/react';
 import React from 'react';
-import { TimeSlotCreate } from '../components/TimeSlotCreate';
-interface ShowTimesCreateProps {}
+import { UseFormRegister } from 'react-hook-form';
 
-type ShowTimesValues = {
+import { TimeSlotCreate } from '../components/TimeSlotCreate';
+
+import {
+  CheckBoxField,
+  CheckBoxFieldGroup,
+  Form,
+  SelectField,
+  SingleSelect,
+  SiteHeader,
+  Table,
+  Td,
+  Th,
+  Tr,
+} from '@/components';
+import { TimeSlot, useTimeSlots } from '@/features/room';
+
+interface ShowTimesCreateProps {
+  children?: React.ReactNode;
+}
+
+interface TimeStamp {
+  roomId: string;
+  timeSlotsId: string[];
+  dateStart: string;
+  dateEnd: string;
+}
+
+export type ShowTimesValues = {
   roomId: string;
   premiereId: string;
-  timeSlotsId: string[];
   date: string;
+  dateStart: string;
+  dateEnd: string;
+  timeStamp: TimeStamp[];
 };
 
 export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
-  const { isOpen, onToggle } = useDisclosure();
   const timeSlotQuery = useTimeSlots();
 
-  const compareTime = (a: TimeSlot, b: TimeSlot) => {
-    if (a.time > b.time) {
-      return 1;
-    }
-    if (a.time < b.time) {
-      return -1;
-    }
-    return 0;
-  };
   return (
     <>
       <SiteHeader menuName="Showtimes" heading={`Create a new Showtimes`}>
@@ -48,8 +63,7 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
       <Flex justifyContent="center">
         <Stack
           backgroundColor="white"
-          borderRadius={[0, 8]}
-          maxWidth="800px"
+          maxWidth="100%"
           px={8}
           py={12}
           shadow={[null, 'md']}
@@ -59,7 +73,6 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
         >
           <TimeSlotCreate />
           <Box
-            maxWidth="600px"
             width="100%"
             margin="auto"
             border="1px"
@@ -74,40 +87,35 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
             >
               {({ register, formState }) => (
                 <Stack spacing={4} direction="column">
-                  <Flex justifyContent="space-between" direction="row" alignItems="center">
-                    <Text as="label" fontSize="md" fontWeight="500">
-                      Change pick type
-                    </Text>
-                    <Switch
-                      id="change-type-date"
-                      colorScheme="green"
-                      size="md"
-                      onChange={onToggle}
-                    />
+                  <Flex alignItems="center" justifyContent="space-between">
+                    <Stack direction="column" flex={1}>
+                      <SingleSelect registration={register('date')} label="Date Create" />
+                      <SelectField
+                        label="Premiere"
+                        registration={register('premiereId')}
+                        error={formState.errors['premiereId']}
+                        options={[
+                          { name: 'King Kong', code: '2D' },
+                          { name: 'King Kong', code: '3D' },
+                        ].map((d) => ({
+                          label: `${d.name} - ${d.code}`,
+                          value: d.code,
+                        }))}
+                      />
+                    </Stack>
+                    <Center flexShrink={0} mx={3} height="50px">
+                      <Divider orientation="vertical" />
+                    </Center>
+                    <Stack direction="column" flex={1}>
+                      <SingleSelect registration={register('dateStart')} label="From" />
+                      <SingleSelect registration={register('dateEnd')} label="To" />
+                    </Stack>
                   </Flex>
 
-                  {isOpen ? <RangeSelect /> : <SingleSelect registration={register('date')} />}
-
-                  <RadioField
-                    label="Room"
-                    registration={register('roomId')}
-                    options={['Sasuke', 'Itachi', 'Naruto']}
-                  />
-
-                  <SelectField
-                    label="Premiere"
-                    registration={register('premiereId')}
-                    error={formState.errors['premiereId']}
-                    options={[]}
-                  />
-
                   {timeSlotQuery.data && (
-                    <CheckBoxField
-                      label="Time"
-                      registration={register('timeSlotsId')}
-                      options={timeSlotQuery.data?.values.timeSlots
-                        .sort(compareTime)
-                        .map(({ time }) => time)}
+                    <TimeSlotList
+                      listTime={timeSlotQuery.data.values.timeSlots}
+                      register={register}
                     />
                   )}
 
@@ -119,6 +127,8 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
                     _hover={{
                       backgroundColor: 'cyan.700',
                     }}
+                    maxWidth="200px"
+                    alignSelf="flex-end"
                     // isLoading={cinemaUpdateMutation.isLoading}
                   >
                     Create Showtimes
@@ -130,5 +140,91 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
         </Stack>
       </Flex>
     </>
+  );
+};
+
+interface TimeSlotListProps {
+  children?: React.ReactNode;
+  listTime: TimeSlot[];
+  register: UseFormRegister<ShowTimesValues>;
+}
+
+export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register }) => {
+  const compareTime = (a: TimeSlot, b: TimeSlot) => {
+    if (a.time > b.time) {
+      return 1;
+    }
+    if (a.time < b.time) {
+      return -1;
+    }
+    return 0;
+  };
+  return (
+    <Flex justifyContent="center">
+      <Stack
+        backgroundColor="white"
+        borderRadius={[0, 8]}
+        maxWidth="1000px"
+        px={8}
+        py={12}
+        shadow={[null, 'md']}
+        spacing={4}
+        w="100%"
+      >
+        <Box>
+          <Table w="full">
+            <thead>
+              <Tr>
+                <Th>Room</Th>
+                <Th>Time Slot</Th>
+                <Th>Date</Th>
+              </Tr>
+            </thead>
+            <tbody>
+              {[...Array(2)].map((_, index) => (
+                <Box as="tr" key={index}>
+                  <Td>
+                    <CheckBoxField
+                      registration={register(`timeStamp.${index}.roomId`)}
+                      value="1122"
+                      name="P1"
+                      colorScheme="cyan"
+                      size="lg"
+                    />
+                  </Td>
+                  <Td maxWidth="220px">
+                    <CheckBoxFieldGroup
+                      registration={register(`timeStamp.${index}.timeSlotsId`)}
+                      options={listTime.sort(compareTime).map(({ time }) => time)}
+                    />
+                  </Td>
+                  <Td maxWidth="200px">
+                    <VStack spacing={4} align="stretch">
+                      <Flex flex="1" alignItems="center">
+                        <Heading as="h6" size="xs" flex="1">
+                          From
+                        </Heading>
+
+                        <Box>
+                          <SingleSelect registration={register(`timeStamp.${index}.dateStart`)} />
+                        </Box>
+                      </Flex>
+                      <Flex flex="1" alignItems="center">
+                        <Heading as="h6" size="xs" flex="1">
+                          To
+                        </Heading>
+                        <Box>
+                          <SingleSelect registration={register(`timeStamp.${index}.dateEnd`)} />
+                        </Box>
+                      </Flex>
+                    </VStack>
+                  </Td>
+                </Box>
+              ))}
+            </tbody>
+          </Table>
+        </Box>
+      </Stack>
+    </Flex>
   );
 };

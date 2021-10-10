@@ -1,5 +1,3 @@
-import { Form, InputField } from '@/components';
-import { useCreateTimeSlot } from '@/features/room';
 import {
   Box,
   Button,
@@ -13,7 +11,12 @@ import {
 import React from 'react';
 import FocusLock from 'react-focus-lock';
 import { z } from 'zod';
-interface TimeSlotCreateProps {}
+
+import { Form, InputField } from '@/components';
+import { useCreateTimeSlot } from '@/features/room';
+interface TimeSlotCreateProps {
+  children?: React.ReactNode;
+}
 
 type TimeValues = {
   time: string;
@@ -23,7 +26,7 @@ const schema = z.object({
   time: z
     .string()
     .nonempty({ message: 'time field is required' })
-    .regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+    .regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/, 'time is invalid'),
 });
 
 export const TimeSlotCreate: React.FC<TimeSlotCreateProps> = () => {

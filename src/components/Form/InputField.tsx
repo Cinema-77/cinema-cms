@@ -1,6 +1,7 @@
 import { Input, FormControlProps } from '@chakra-ui/react';
 import React from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
+
 import { FieldWrapper, FieldWrapperPassThroughProps } from './FieldWrapper';
 
 interface InputFieldProps extends FieldWrapperPassThroughProps, FormControlProps {
@@ -13,7 +14,7 @@ export const InputField: React.FC<InputFieldProps> = (props) => {
 
   return (
     <FieldWrapper label={label} error={error}>
-      <Input type={type} autoFocus aria-label={label} {...registration} {...formProps} />
+      <Input type={type} aria-label={label} {...registration} {...formProps} />
     </FieldWrapper>
   );
 };
