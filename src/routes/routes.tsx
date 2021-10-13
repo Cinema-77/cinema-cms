@@ -12,7 +12,6 @@ const { manageMovie } = lazyImport(() => import('@/features/manageMovie'), 'mana
 const { CreateRoom } = lazyImport(() => import('@/features/room'), 'CreateRoom');
 const { RoomList } = lazyImport(() => import('@/features/room'), 'RoomList');
 const { ShowTimesCreate } = lazyImport(() => import('@/features/showtimes'), 'ShowTimesCreate');
-
 const routes: any[] = [
   {
     path: '/',

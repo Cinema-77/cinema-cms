@@ -4,7 +4,6 @@ import { useForm, UseFormReturn, SubmitHandler, UseFormProps } from 'react-hook-
 import { ZodType, ZodTypeDef } from 'zod';
 
 type FormProps<TFormValues, Schema> = {
-  className?: string;
   onSubmit: SubmitHandler<TFormValues>;
   children: (methods: UseFormReturn<TFormValues>) => React.ReactNode;
   options?: UseFormProps<TFormValues>;

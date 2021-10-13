@@ -5,6 +5,7 @@ import { Spinner } from '@chakra-ui/spinner';
 import React from 'react';
 import * as z from 'zod';
 
+import { useCreateRoom } from '../api/createRoom';
 import { useScreens } from '../api/getScreens';
 
 import { Form, InputField, SelectField } from '@/components';
@@ -31,6 +32,7 @@ const schema = z.object({
 
 export const CreateRoom: React.FC<RoomProps> = () => {
   const screensQuery = useScreens();
+  const RoomCreateMutation = useCreateRoom();
   const { user } = useAuth();
 
   return (
@@ -66,10 +68,15 @@ export const CreateRoom: React.FC<RoomProps> = () => {
             ) : (
               <Form<RoomValues, typeof schema>
                 onSubmit={async (data) => {
-                  const cinemaId = user?.cinema._id;
+                  const cinemaId = user?.cinema._id as string;
                   const rowNumber = parseInt(data.rowNumber, 10);
                   const seatsInRow = parseInt(data.seatsInRow, 10);
-                  console.log({ ...data, cinemaId, rowNumber, seatsInRow });
+                  await RoomCreateMutation.mutateAsync({
+                    ...data,
+                    cinemaId,
+                    rowNumber,
+                    seatsInRow,
+                  });
                 }}
                 schema={schema}
               >
@@ -115,7 +122,7 @@ export const CreateRoom: React.FC<RoomProps> = () => {
                       _hover={{
                         backgroundColor: 'cyan.700',
                       }}
-                      // isLoading={cinemaUpdateMutation.isLoading}
+                      isLoading={RoomCreateMutation.isLoading}
                     >
                       Tạo phòng
                     </Button>

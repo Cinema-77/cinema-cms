@@ -5,6 +5,7 @@ import {
   BreadcrumbLink,
   Button,
   Flex,
+  Spinner,
   Stack,
   useColorModeValue,
 } from '@chakra-ui/react';
@@ -12,6 +13,7 @@ import React from 'react';
 import { MdAdd } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
+import { useRooms } from '..';
 import { MenuListRoom } from '../components/MenuList';
 
 import { Table, Td, Th, Tr } from '@/components';
@@ -21,9 +23,17 @@ interface RoomListProps {
   children?: React.ReactNode;
 }
 
+const colorBadge = {
+  '2D': 'gray',
+  '3D': 'purple',
+  IMAX: 'red',
+};
+
 export const RoomList: React.FC<RoomListProps> = () => {
   const bg = useColorModeValue('gray.900', 'white');
   const color = useColorModeValue('white', 'gray.900');
+  const roomsQuery = useRooms();
+
   return (
     <>
       <SiteHeader
@@ -64,56 +74,46 @@ export const RoomList: React.FC<RoomListProps> = () => {
           w="100%"
         >
           <Box overflowX="scroll">
-            <Table w="full">
-              <thead>
-                <Tr>
-                  <Th>Name</Th>
-                  <Th>Screen</Th>
-                  <Th>Row Number</Th>
-                  <Th>Seat In Row</Th>
-                  <Th width="50px"></Th>
-                </Tr>
-              </thead>
-              <tbody>
-                <Box as="tr">
-                  <Td>Phòng A1</Td>
-                  <Td>
-                    <Badge fontSize="1em">2D</Badge>
-                  </Td>
-                  <Td>10</Td>
-                  <Td>10</Td>
-                  <Td>
-                    <MenuListRoom roomId={`22`} />
-                  </Td>
-                </Box>
-                <Box as="tr">
-                  <Td>Phòng A2</Td>
-                  <Td>
-                    <Badge fontSize="1em" colorScheme="purple">
-                      3D
-                    </Badge>
-                  </Td>
-                  <Td>10</Td>
-                  <Td>10</Td>
-                  <Td>
-                    <MenuListRoom roomId={`22`} />
-                  </Td>
-                </Box>
-                <Box as="tr">
-                  <Td>Phòng A3</Td>
-                  <Td>
-                    <Badge fontSize="1em" colorScheme="red">
-                      IMax
-                    </Badge>
-                  </Td>
-                  <Td>10</Td>
-                  <Td>10</Td>
-                  <Td>
-                    <MenuListRoom roomId={`22`} />
-                  </Td>
-                </Box>
-              </tbody>
-            </Table>
+            {roomsQuery.isLoading ? (
+              <Flex justifyContent="center">
+                <Spinner
+                  thickness="4px"
+                  speed="0.65s"
+                  emptyColor="gray.200"
+                  color="blue.500"
+                  size="xl"
+                />
+              </Flex>
+            ) : (
+              <Table w="full">
+                <thead>
+                  <Tr>
+                    <Th>Name</Th>
+                    <Th>Screen</Th>
+                    <Th>Row Number</Th>
+                    <Th>Seat In Row</Th>
+                    <Th width="50px"></Th>
+                  </Tr>
+                </thead>
+                <tbody>
+                  {roomsQuery.data?.values.rooms.map((room) => (
+                    <Box as="tr" key={room._id}>
+                      <Td>{`Phòng ${room.name}`}</Td>
+                      <Td>
+                        <Badge fontSize="1em" colorScheme={colorBadge['2D']}>
+                          2D
+                        </Badge>
+                      </Td>
+                      <Td>{room.rowNumber}</Td>
+                      <Td>{room.seatsInRow}</Td>
+                      <Td>
+                        <MenuListRoom roomId={room._id} />
+                      </Td>
+                    </Box>
+                  ))}
+                </tbody>
+              </Table>
+            )}
           </Box>
         </Stack>
       </Flex>

@@ -31,6 +31,7 @@ import {
   startOfMonth,
 } from 'date-fns';
 import React, { useEffect, useRef, useState } from 'react';
+import FocusLock from 'react-focus-lock';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import { IoCalendarClearSharp, IoChevronBackSharp, IoChevronForwardSharp } from 'react-icons/io5';
 import { useLilius } from 'use-lilius';
@@ -39,6 +40,9 @@ import { FieldWrapperPassThroughProps, FieldWrapper } from '..';
 
 interface RangeSelectProps extends FieldWrapperPassThroughProps, FormControlProps {
   registration: Partial<UseFormRegisterReturn>;
+  setValues?: any;
+  nameToSet?: string;
+  sizeOfTimeStamp?: number;
 }
 
 export const SingleSelect: React.FC<RangeSelectProps> = (props) => {
@@ -57,16 +61,17 @@ export const SingleSelect: React.FC<RangeSelectProps> = (props) => {
     viewPreviousMonth,
     viewToday,
   } = useLilius();
-  const { registration, label, error } = props;
+  const { registration, label, error, setValues, nameToSet, sizeOfTimeStamp } = props;
 
   const styles = useMultiStyleConfig('Datepicker', {});
 
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const inputRef: any = useRef();
+  const inputRef: any = useRef(null);
   // Only accept digits and forward slash as input.
   const onInputChange = (input: string) => {
     setInputValue(input.trim().replace(/[^\d/]+/g, ''));
+    setDate(new Date(), input.trim().replace(/[^\d/]+/g, ''));
   };
 
   // When the input field loses focus, we need to parse
@@ -119,10 +124,25 @@ export const SingleSelect: React.FC<RangeSelectProps> = (props) => {
 
     if (isValid(parsed)) {
       select(parsed, true);
+
+      setDate(parsed);
     } else if (selected.length > 0) {
       setInputValue(format(selected[0], 'MM/dd/yyyy'));
     } else {
       setInputValue('');
+    }
+  };
+
+  const setDate = (value: Date, valueString?: string) => {
+    if (setValues) {
+      const valueFormat = !valueString ? format(value, 'MM/dd/yyyy') : valueString;
+      for (let i = 0; i < (sizeOfTimeStamp as number); i++) {
+        if (nameToSet == 'dateStart') {
+          setValues(`timeStamp.${i}.dateStart`, valueFormat);
+        } else {
+          setValues(`timeStamp.${i}.dateEnd`, valueFormat);
+        }
+      }
     }
   };
 
@@ -136,124 +156,129 @@ export const SingleSelect: React.FC<RangeSelectProps> = (props) => {
   return (
     <Box width="100%">
       <FieldWrapper label={label} error={error}>
-        <Popover initialFocusRef={inputRef} isOpen={isOpen} onClose={() => setIsOpen(false)}>
-          <PopoverTrigger>
-            <InputGroup>
+        <Popover
+          initialFocusRef={inputRef}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          closeOnBlur={true}
+          returnFocusOnClose
+        >
+          <InputGroup>
+            <PopoverTrigger>
               <Input
-                aria-label={label}
                 ref={inputRef}
+                aria-label={label}
                 value={inputValue}
                 placeholder="Select a Date"
+                {...registration}
                 onBlur={() => onInputBlur()}
                 onChange={(e) => onInputChange(e.target.value)}
-                {...registration}
               />
-              <InputRightElement>
-                <IconButton
-                  aria-label="Open Calendar"
-                  colorScheme={isOpen ? 'blue' : 'gray'}
-                  icon={<IoCalendarClearSharp />}
-                  minWidth="auto"
-                  onClick={() => {
-                    setIsOpen(!isOpen);
-                  }}
-                  variant="link"
-                  _focus={{
-                    outline: 'none',
-                  }}
-                />
-              </InputRightElement>
-            </InputGroup>
-          </PopoverTrigger>
+            </PopoverTrigger>
+            <InputRightElement>
+              <IconButton
+                aria-label="Open Calendar"
+                colorScheme={isOpen ? 'blue' : 'gray'}
+                icon={<IoCalendarClearSharp />}
+                minWidth="auto"
+                variant="link"
+                _focus={{
+                  outline: 'none',
+                }}
+                onClick={() => {
+                  setIsOpen(!isOpen);
+                }}
+              />
+            </InputRightElement>
+          </InputGroup>
 
           <PopoverContent sx={styles.popContent}>
-            <PopoverBody sx={styles.popBody}>
-              <ButtonGroup sx={styles.shortcutButtonGroup}>
-                <Button
-                  onClick={() => select(clearTime(new Date()), true)}
-                  size="sm"
-                  sx={styles.shortcutButton}
-                >
-                  Today
-                </Button>
+            <FocusLock returnFocus persistentFocus={false}>
+              <PopoverBody sx={styles.popBody}>
+                <ButtonGroup sx={styles.shortcutButtonGroup}>
+                  <Button
+                    onClick={() => select(clearTime(new Date()), true)}
+                    size="sm"
+                    sx={styles.shortcutButton}
+                  >
+                    Today
+                  </Button>
 
-                <Button
-                  onClick={() => select(addDays(clearTime(new Date()), 1), true)}
-                  size="sm"
-                  sx={styles.shortcutButton}
-                >
-                  Tomorrow
-                </Button>
+                  <Button
+                    onClick={() => select(addDays(clearTime(new Date()), 1), true)}
+                    size="sm"
+                    sx={styles.shortcutButton}
+                  >
+                    Tomorrow
+                  </Button>
 
-                <Button
-                  onClick={() => select(nextMonday(clearTime(new Date())), true)}
-                  size="sm"
-                  sx={styles.shortcutButton}
-                >
-                  Next Monday
-                </Button>
-              </ButtonGroup>
+                  <Button
+                    onClick={() => select(nextMonday(clearTime(new Date())), true)}
+                    size="sm"
+                    sx={styles.shortcutButton}
+                  >
+                    Next Monday
+                  </Button>
+                </ButtonGroup>
 
-              <Divider sx={styles.divider} />
+                <Divider sx={styles.divider} />
 
-              <Box sx={styles.navigationContainer}>
-                <IconButton
-                  aria-label="Previous Month"
-                  icon={<IoChevronBackSharp />}
-                  onClick={viewPreviousMonth}
-                  size="sm"
-                  sx={styles.navigationButton}
-                />
+                <Box sx={styles.navigationContainer}>
+                  <IconButton
+                    aria-label="Previous Month"
+                    icon={<IoChevronBackSharp />}
+                    onClick={viewPreviousMonth}
+                    size="sm"
+                    sx={styles.navigationButton}
+                  />
 
-                <Text sx={styles.navigationLabel}>{format(viewing, 'MMMM yyyy')}</Text>
+                  <Text sx={styles.navigationLabel}>{format(viewing, 'MMMM yyyy')}</Text>
 
-                <IconButton
-                  aria-label="Next Month"
-                  icon={<IoChevronForwardSharp />}
-                  onClick={viewNextMonth}
-                  size="sm"
-                  sx={styles.navigationButton}
-                />
-              </Box>
+                  <IconButton
+                    aria-label="Next Month"
+                    icon={<IoChevronForwardSharp />}
+                    onClick={viewNextMonth}
+                    size="sm"
+                    sx={styles.navigationButton}
+                  />
+                </Box>
 
-              <Box sx={styles.calendarContainer}>
-                <Box sx={styles.dayLabelContainer}>
-                  {calendar[0][0].map((day) => (
-                    <Box key={`${day}`} sx={styles.dayLabel}>
-                      {['Sun', 'Mon', 'Tue', 'Wed', 'Tue', 'Thu', 'Fri', 'Sat'][getDay(day)]}
+                <Box sx={styles.calendarContainer}>
+                  <Box sx={styles.dayLabelContainer}>
+                    {calendar[0][0].map((day) => (
+                      <Box key={`${day}`} sx={styles.dayLabel}>
+                        {['Sun', 'Mon', 'Tue', 'Wed', 'Tue', 'Thu', 'Fri', 'Sat'][getDay(day)]}
+                      </Box>
+                    ))}
+                  </Box>
+
+                  {calendar[0].map((week) => (
+                    <Box key={`week-${week[0]}`} sx={styles.calendarMatrixContainer}>
+                      {week.map((day) => (
+                        <Box
+                          data-in-range={inRange(day, startOfMonth(viewing), endOfMonth(viewing))}
+                          data-selected={isSelected(day)}
+                          data-today={isToday(day)}
+                          key={`${day}`}
+                          onClick={() => toggle(day, true)}
+                          sx={styles.calendarMatrixDay}
+                        >
+                          <Text>{format(day, 'dd')}</Text>
+                        </Box>
+                      ))}
                     </Box>
                   ))}
                 </Box>
 
-                {calendar[0].map((week) => (
-                  <Box key={`week-${week[0]}`} sx={styles.calendarMatrixContainer}>
-                    {week.map((day) => (
-                      <Box
-                        data-in-range={inRange(day, startOfMonth(viewing), endOfMonth(viewing))}
-                        data-selected={isSelected(day)}
-                        data-today={isToday(day)}
-                        key={`${day}`}
-                        onClick={() => {
-                          toggle(day, true);
-                          setIsOpen(!isOpen);
-                        }}
-                        sx={styles.calendarMatrixDay}
-                      >
-                        <Text>{format(day, 'dd')}</Text>
-                      </Box>
-                    ))}
-                  </Box>
-                ))}
-              </Box>
+                <Divider sx={styles.divider} />
 
-              <Divider sx={styles.divider} />
-
-              <ButtonGroup sx={styles.todayButtonGroup}>
-                <Button onClick={viewToday} size="sm" sx={styles.todayButton}>
-                  Today
-                </Button>
-              </ButtonGroup>
-            </PopoverBody>
+                <ButtonGroup sx={styles.todayButtonGroup}>
+                  <Button onClick={viewToday} size="sm" sx={styles.todayButton}>
+                    Today
+                  </Button>
+                </ButtonGroup>
+              </PopoverBody>
+            </FocusLock>
           </PopoverContent>
         </Popover>
       </FieldWrapper>

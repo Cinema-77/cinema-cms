@@ -10,9 +10,10 @@ import {
   Stack,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { UseFormRegister } from 'react-hook-form';
 
+import { useFormatMovie } from '../api/getFormatMovie';
 import { TimeSlotCreate } from '../components/TimeSlotCreate';
 
 import {
@@ -27,7 +28,7 @@ import {
   Th,
   Tr,
 } from '@/components';
-import { TimeSlot, useTimeSlots } from '@/features/room';
+import { TimeSlot, useRoomsByScreen, useTimeSlots } from '@/features/room';
 
 interface ShowTimesCreateProps {
   children?: React.ReactNode;
@@ -41,7 +42,7 @@ interface TimeStamp {
 }
 
 export type ShowTimesValues = {
-  roomId: string;
+  roomId: string | boolean;
   premiereId: string;
   date: string;
   dateStart: string;
@@ -51,6 +52,13 @@ export type ShowTimesValues = {
 
 export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
   const timeSlotQuery = useTimeSlots();
+  const formatMovieQuery = useFormatMovie();
+  const [idScreen, setIdScreen] = useState('61644b12df1b9d2700e43b27');
+
+  const onChangePremiere = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setIdScreen(value);
+  };
 
   return (
     <>
@@ -82,33 +90,48 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
           >
             <Form<ShowTimesValues>
               onSubmit={async (data) => {
-                console.log(data);
+                const timeStamp = data.timeStamp.filter((t) => Boolean(t.roomId) !== false);
+                console.log({ ...data, timeStamp });
               }}
             >
-              {({ register, formState }) => (
+              {({ register, formState, setValue }) => (
                 <Stack spacing={4} direction="column">
                   <Flex alignItems="center" justifyContent="space-between">
                     <Stack direction="column" flex={1}>
                       <SingleSelect registration={register('date')} label="Date Create" />
-                      <SelectField
-                        label="Premiere"
-                        registration={register('premiereId')}
-                        error={formState.errors['premiereId']}
-                        options={[
-                          { name: 'King Kong', code: '2D' },
-                          { name: 'King Kong', code: '3D' },
-                        ].map((d) => ({
-                          label: `${d.name} - ${d.code}`,
-                          value: d.code,
-                        }))}
-                      />
+                      {formatMovieQuery.data && (
+                        <SelectField
+                          label="Premiere"
+                          registration={register('premiereId')}
+                          error={formState.errors['premiereId']}
+                          options={formatMovieQuery.data?.values.screenDetails.map(
+                            ({ screen, movie }) => ({
+                              label: `${movie.name} - ${screen.name}`,
+                              value: screen._id,
+                            })
+                          )}
+                          onChanging={onChangePremiere}
+                        />
+                      )}
                     </Stack>
                     <Center flexShrink={0} mx={3} height="50px">
                       <Divider orientation="vertical" />
                     </Center>
                     <Stack direction="column" flex={1}>
-                      <SingleSelect registration={register('dateStart')} label="From" />
-                      <SingleSelect registration={register('dateEnd')} label="To" />
+                      <SingleSelect
+                        registration={register('dateStart')}
+                        label="From"
+                        setValues={setValue}
+                        nameToSet="dateStart"
+                        sizeOfTimeStamp={2}
+                      />
+                      <SingleSelect
+                        registration={register('dateEnd')}
+                        label="To"
+                        setValues={setValue}
+                        nameToSet="dateEnd"
+                        sizeOfTimeStamp={2}
+                      />
                     </Stack>
                   </Flex>
 
@@ -116,6 +139,7 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
                     <TimeSlotList
                       listTime={timeSlotQuery.data.values.timeSlots}
                       register={register}
+                      idScreen={idScreen}
                     />
                   )}
 
@@ -147,9 +171,10 @@ interface TimeSlotListProps {
   children?: React.ReactNode;
   listTime: TimeSlot[];
   register: UseFormRegister<ShowTimesValues>;
+  idScreen: string;
 }
 
-export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register }) => {
+export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register, idScreen }) => {
   const compareTime = (a: TimeSlot, b: TimeSlot) => {
     if (a.time > b.time) {
       return 1;
@@ -159,6 +184,28 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register }
     }
     return 0;
   };
+
+  const roomsByScreenQuery = useRoomsByScreen({ idScreen });
+  if (roomsByScreenQuery.isLoading) {
+    return null;
+  }
+
+  if (!roomsByScreenQuery?.data?.rooms.length)
+    return (
+      <Box
+        role="list"
+        aria-label="comments"
+        backgroundColor="white"
+        textColor="gray.500"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        flexDirection="column"
+        height="40"
+      >
+        <Heading as="h4">No Room Found</Heading>
+      </Box>
+    );
   return (
     <Flex justifyContent="center">
       <Stack
@@ -181,13 +228,13 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register }
               </Tr>
             </thead>
             <tbody>
-              {[...Array(2)].map((_, index) => (
+              {roomsByScreenQuery.data?.rooms.map((room, index) => (
                 <Box as="tr" key={index}>
                   <Td>
                     <CheckBoxField
                       registration={register(`timeStamp.${index}.roomId`)}
-                      value="1122"
-                      name="P1"
+                      value={room._id}
+                      name={room.name}
                       colorScheme="cyan"
                       size="lg"
                     />

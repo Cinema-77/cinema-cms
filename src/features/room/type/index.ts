@@ -11,7 +11,7 @@ export interface TimSlotRespone {
   };
 }
 
-export interface Screen {
+export interface ScreenType {
   _id: string;
   name: string;
   weekdayPrice: number;
@@ -22,16 +22,17 @@ export interface ScreenRespone {
   success: boolean;
   message: string;
   values: {
-    screens: Screen[];
+    screens: ScreenType[];
   };
 }
 
 export interface Room {
+  _id: string;
   name: string;
   rowNumber: number;
-  seatsInRow: 10;
-  screenId: string;
-  cinemaId: string;
+  seatsInRow: number;
+  screen: string;
+  cinema: string;
 }
 export interface RoomRespone {
   success: boolean;
@@ -39,4 +40,10 @@ export interface RoomRespone {
   values: {
     rooms: Room[];
   };
+}
+
+export interface RoomByScreenRespone {
+  success: boolean;
+  message: string;
+  rooms: Room[];
 }

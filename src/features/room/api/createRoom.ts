@@ -6,11 +6,15 @@ import { RoomRespone } from '../type';
 import { axios } from '@/lib/axios';
 import { MutationConfig, queryClient } from '@/lib/react-query';
 
-export type CreateTimeSlotDTO = {
-  time: string;
+export type CreateRoomDTO = {
+  cinemaId: string;
+  name: string;
+  rowNumber: number;
+  seatsInRow: number;
+  screenId: string;
 };
 
-export const createRoom = (data: CreateTimeSlotDTO): Promise<RoomRespone> => {
+export const createRoom = (data: CreateRoomDTO): Promise<RoomRespone> => {
   return axios.post('/room/add', data);
 };
 
