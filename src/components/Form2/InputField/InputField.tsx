@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { ChangeEventHandler } from 'react';
 
 import * as S from './InputField.style';
 
 interface InputFieldProps {
   title: string;
   name: string;
-  value?: string;
-  change: React.ChangeEventHandler;
+  value?: string | number;
+  change: ChangeEventHandler;
   textarea?: string | boolean;
   type?: string;
   url?: string;

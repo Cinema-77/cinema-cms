@@ -6,22 +6,34 @@ interface SelectFieldProps {
   title: string;
   List: any;
   change: any;
+  value?: string;
 }
 
-export const SelectField: React.FC<SelectFieldProps> = ({ List, change, title, name }) => {
+export const SelectField: React.FC<SelectFieldProps> = ({ List, change, title, name, value }) => {
   return (
     <S.SelectField>
       {title}
-      <S.Select name={name} onChange={change}>
-        <S.Option value="" hidden>
-          Mời chọn {title}
-        </S.Option>
-        {List.map((item: any) => (
-          <S.Option key={item._id} value={item._id}>
-            {item.name}
+      {value && (
+        <S.Select name={name} onChange={change} value={value}>
+          {List.map((item: any) => (
+            <S.Option key={item._id} value={item._id}>
+              {item.name}
+            </S.Option>
+          ))}
+        </S.Select>
+      )}
+      {!value && (
+        <S.Select name={name} onChange={change}>
+          <S.Option value="" hidden>
+            Mời bạn chọn...
           </S.Option>
-        ))}
-      </S.Select>
+          {List.map((item: any) => (
+            <S.Option key={item._id} value={item._id}>
+              {item.name}
+            </S.Option>
+          ))}
+        </S.Select>
+      )}
     </S.SelectField>
   );
 };

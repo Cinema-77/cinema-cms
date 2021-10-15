@@ -23,7 +23,7 @@ export const Area = styled.textarea`
   line-height: 24px;
   padding: 8px 16px;
   margin-top: 8px;
-  height: 42px;
+  height: max-content;
 `;
 export const FileUpload = styled.input`
   display: none;
