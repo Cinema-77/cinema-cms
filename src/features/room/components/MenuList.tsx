@@ -15,14 +15,20 @@ import {
 } from '@chakra-ui/react';
 import React, { useRef } from 'react';
 import { FiMoreVertical, FiEdit2, FiTrash2 } from 'react-icons/fi';
+
+import { useDeleteRoom } from '../api/deleteRoom';
 interface MenuListRoomProps {
   roomId: string;
 }
 
-export const MenuListRoom: React.FC<MenuListRoomProps> = () => {
+export const MenuListRoom: React.FC<MenuListRoomProps> = ({ roomId }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef: any = useRef();
-  const onDelete = () => console.log('delete');
+  const deleteRoomMutation = useDeleteRoom();
+  const onDelete = async () => {
+    await deleteRoomMutation.mutateAsync({ roomId });
+  };
+
   return (
     <Menu>
       <MenuButton

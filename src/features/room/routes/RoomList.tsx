@@ -23,7 +23,7 @@ interface RoomListProps {
   children?: React.ReactNode;
 }
 
-const colorBadge = {
+const colorBadge: any = {
   '2D': 'gray',
   '3D': 'purple',
   IMAX: 'red',
@@ -34,6 +34,7 @@ export const RoomList: React.FC<RoomListProps> = () => {
   const color = useColorModeValue('white', 'gray.900');
   const roomsQuery = useRooms();
 
+  // console.log(colorBadge['2D'])
   return (
     <>
       <SiteHeader
@@ -96,21 +97,24 @@ export const RoomList: React.FC<RoomListProps> = () => {
                   </Tr>
                 </thead>
                 <tbody>
-                  {roomsQuery.data?.values.rooms.map((room) => (
-                    <Box as="tr" key={room._id}>
-                      <Td>{`Phòng ${room.name}`}</Td>
-                      <Td>
-                        <Badge fontSize="1em" colorScheme={colorBadge['2D']}>
-                          2D
-                        </Badge>
-                      </Td>
-                      <Td>{room.rowNumber}</Td>
-                      <Td>{room.seatsInRow}</Td>
-                      <Td>
-                        <MenuListRoom roomId={room._id} />
-                      </Td>
-                    </Box>
-                  ))}
+                  {roomsQuery.data?.values.rooms.map((room) => {
+                    const name = room.screen?.name;
+                    return (
+                      <Box as="tr" key={room._id}>
+                        <Td>{`Phòng ${room.name}`}</Td>
+                        <Td>
+                          <Badge fontSize="1em" colorScheme={colorBadge[name]}>
+                            {name}
+                          </Badge>
+                        </Td>
+                        <Td>{room.rowNumber}</Td>
+                        <Td>{room.seatsInRow}</Td>
+                        <Td>
+                          <MenuListRoom roomId={room._id} />
+                        </Td>
+                      </Box>
+                    );
+                  })}
                 </tbody>
               </Table>
             )}

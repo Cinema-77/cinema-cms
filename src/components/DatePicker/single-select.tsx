@@ -124,8 +124,6 @@ export const SingleSelect: React.FC<RangeSelectProps> = (props) => {
 
     if (isValid(parsed)) {
       select(parsed, true);
-
-      setDate(parsed);
     } else if (selected.length > 0) {
       setInputValue(format(selected[0], 'MM/dd/yyyy'));
     } else {
@@ -138,9 +136,9 @@ export const SingleSelect: React.FC<RangeSelectProps> = (props) => {
       const valueFormat = !valueString ? format(value, 'MM/dd/yyyy') : valueString;
       for (let i = 0; i < (sizeOfTimeStamp as number); i++) {
         if (nameToSet == 'dateStart') {
-          setValues(`timeStamp.${i}.dateStart`, valueFormat);
+          setValues(`showTimes.${i}.dateStart`, valueFormat);
         } else {
-          setValues(`timeStamp.${i}.dateEnd`, valueFormat);
+          setValues(`showTimes.${i}.dateEnd`, valueFormat);
         }
       }
     }
@@ -151,6 +149,10 @@ export const SingleSelect: React.FC<RangeSelectProps> = (props) => {
   useEffect(() => {
     setInputValue(selected.length > 0 ? format(selected[0], 'MM/dd/yyyy') : '');
     setViewing(selected.length > 0 ? selected[0] : new Date());
+    if (selected.length > 0) {
+      setDate(selected[0]);
+    }
+    // eslint-disable-next-line
   }, [selected, setViewing]);
 
   return (
@@ -170,9 +172,9 @@ export const SingleSelect: React.FC<RangeSelectProps> = (props) => {
                 aria-label={label}
                 value={inputValue}
                 placeholder="Select a Date"
-                {...registration}
                 onBlur={() => onInputBlur()}
                 onChange={(e) => onInputChange(e.target.value)}
+                {...registration}
               />
             </PopoverTrigger>
             <InputRightElement>
@@ -247,7 +249,7 @@ export const SingleSelect: React.FC<RangeSelectProps> = (props) => {
                   <Box sx={styles.dayLabelContainer}>
                     {calendar[0][0].map((day) => (
                       <Box key={`${day}`} sx={styles.dayLabel}>
-                        {['Sun', 'Mon', 'Tue', 'Wed', 'Tue', 'Thu', 'Fri', 'Sat'][getDay(day)]}
+                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][getDay(day)]}
                       </Box>
                     ))}
                   </Box>

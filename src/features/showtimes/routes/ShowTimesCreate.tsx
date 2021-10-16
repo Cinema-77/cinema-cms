@@ -13,8 +13,10 @@ import {
 import React, { useState } from 'react';
 import { UseFormRegister } from 'react-hook-form';
 
+import { useCreateShowTime } from '../api/createShowtimes';
 import { useFormatMovie } from '../api/getFormatMovie';
-import { TimeSlotCreate } from '../components/TimeSlotCreate';
+import { TimeSlotCreate, ShowTimesList } from '../components';
+import { TimeStamp } from '../type';
 
 import {
   CheckBoxField,
@@ -29,55 +31,52 @@ import {
   Tr,
 } from '@/components';
 import { TimeSlot, useRoomsByScreen, useTimeSlots } from '@/features/room';
+import { useAuth } from '@/lib/auth';
 
 interface ShowTimesCreateProps {
   children?: React.ReactNode;
 }
 
-interface TimeStamp {
-  roomId: string;
-  timeSlotsId: string[];
-  dateStart: string;
-  dateEnd: string;
-}
-
 export type ShowTimesValues = {
-  roomId: string | boolean;
-  premiereId: string;
-  date: string;
   dateStart: string;
   dateEnd: string;
-  timeStamp: TimeStamp[];
+  screenDetailId: string;
+  cinemaId: string;
+  showTimes: TimeStamp[];
 };
 
 export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
   const timeSlotQuery = useTimeSlots();
   const formatMovieQuery = useFormatMovie();
   const [idScreen, setIdScreen] = useState('61644b12df1b9d2700e43b27');
+  const { user } = useAuth();
 
   const onChangePremiere = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
     setIdScreen(value);
   };
 
+  const createShowTimeMutation = useCreateShowTime();
+
   return (
-    <>
+    <Box overflowX="scroll">
       <SiteHeader menuName="Showtimes" heading={`Create a new Showtimes`}>
         <BreadcrumbItem isCurrentPage>
           <BreadcrumbLink>New Showtimes</BreadcrumbLink>
         </BreadcrumbItem>
       </SiteHeader>
 
-      <Flex justifyContent="center">
+      <Flex justifyContent="flex-start">
         <Stack
           backgroundColor="white"
-          maxWidth="100%"
+          maxWidth="800px"
           px={8}
           py={12}
           shadow={[null, 'md']}
           spacing={4}
           w="100%"
           alignItems="center"
+          flexShrink={0}
         >
           <TimeSlotCreate />
           <Box
@@ -90,20 +89,25 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
           >
             <Form<ShowTimesValues>
               onSubmit={async (data) => {
-                const timeStamp = data.timeStamp.filter((t) => Boolean(t.roomId) !== false);
-                console.log({ ...data, timeStamp });
+                const times = data.showTimes.filter((t) => Boolean(t.roomId) !== false);
+                const newShowTimes = {
+                  ...data,
+                  showTimes: times,
+                  cinemaId: user?.cinema._id as string,
+                };
+                await createShowTimeMutation.mutateAsync({ data: newShowTimes });
               }}
             >
               {({ register, formState, setValue }) => (
                 <Stack spacing={4} direction="column">
                   <Flex alignItems="center" justifyContent="space-between">
                     <Stack direction="column" flex={1}>
-                      <SingleSelect registration={register('date')} label="Date Create" />
+                      {/* <SingleSelect registration={register('date')} label="Date Create" /> */}
                       {formatMovieQuery.data && (
                         <SelectField
                           label="Premiere"
-                          registration={register('premiereId')}
-                          error={formState.errors['premiereId']}
+                          registration={register('screenDetailId')}
+                          error={formState.errors['screenDetailId']}
                           options={formatMovieQuery.data?.values.screenDetails.map(
                             ({ screen, movie }) => ({
                               label: `${movie.name} - ${screen.name}`,
@@ -135,9 +139,9 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
                     </Stack>
                   </Flex>
 
-                  {timeSlotQuery.data && (
+                  {timeSlotQuery.data && !timeSlotQuery.isLoading && (
                     <TimeSlotList
-                      listTime={timeSlotQuery.data.values.timeSlots}
+                      listTime={timeSlotQuery.data.values?.timeSlots}
                       register={register}
                       idScreen={idScreen}
                     />
@@ -153,7 +157,7 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
                     }}
                     maxWidth="200px"
                     alignSelf="flex-end"
-                    // isLoading={cinemaUpdateMutation.isLoading}
+                    isLoading={createShowTimeMutation.isLoading}
                   >
                     Create Showtimes
                   </Button>
@@ -162,8 +166,21 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
             </Form>
           </Box>
         </Stack>
+        <Stack
+          backgroundColor="white"
+          maxWidth="1200px"
+          minWidth="800px"
+          px={8}
+          py={12}
+          shadow={[null, 'md']}
+          spacing={4}
+          alignItems="center"
+          flex={1}
+        >
+          <ShowTimesList />
+        </Stack>
       </Flex>
-    </>
+    </Box>
   );
 };
 
@@ -232,7 +249,7 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register, 
                 <Box as="tr" key={index}>
                   <Td>
                     <CheckBoxField
-                      registration={register(`timeStamp.${index}.roomId`)}
+                      registration={register(`showTimes.${index}.roomId`)}
                       value={room._id}
                       name={room.name}
                       colorScheme="cyan"
@@ -241,11 +258,14 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register, 
                   </Td>
                   <Td maxWidth="220px">
                     <CheckBoxFieldGroup
-                      registration={register(`timeStamp.${index}.timeSlotsId`)}
-                      options={listTime.sort(compareTime).map(({ time }) => time)}
+                      registration={register(`showTimes.${index}.times`)}
+                      options={listTime.sort(compareTime).map(({ time, _id }) => ({
+                        label: time,
+                        value: _id,
+                      }))}
                     />
                   </Td>
-                  <Td maxWidth="200px">
+                  <Td>
                     <VStack spacing={4} align="stretch">
                       <Flex flex="1" alignItems="center">
                         <Heading as="h6" size="xs" flex="1">
@@ -253,7 +273,7 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register, 
                         </Heading>
 
                         <Box>
-                          <SingleSelect registration={register(`timeStamp.${index}.dateStart`)} />
+                          <SingleSelect registration={register(`showTimes.${index}.dateStart`)} />
                         </Box>
                       </Flex>
                       <Flex flex="1" alignItems="center">
@@ -261,7 +281,7 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register, 
                           To
                         </Heading>
                         <Box>
-                          <SingleSelect registration={register(`timeStamp.${index}.dateEnd`)} />
+                          <SingleSelect registration={register(`showTimes.${index}.dateEnd`)} />
                         </Box>
                       </Flex>
                     </VStack>

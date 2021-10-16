@@ -1,8 +1,15 @@
 import { MovieType } from '@/features/manageMovie';
-import { ScreenType } from '@/features/room';
+import { ScreenType, Room } from '@/features/room';
 
+export interface showTime {
+  _id: string;
+  date: string;
+  room: Room[];
+}
 export interface ShowTimesResponse {
-  dateStart: string;
+  success: boolean;
+  message: string;
+  showTimes: showTime[];
 }
 
 interface FormatMovie {
@@ -17,4 +24,11 @@ export interface FormatMovieResponse {
   values: {
     screenDetails: FormatMovie[];
   };
+}
+
+export interface TimeStamp {
+  roomId: string;
+  times: string[];
+  dateStart: string;
+  dateEnd: string;
 }

@@ -1,3 +1,4 @@
+import { CinemaType } from '@/features/cinema';
 export interface TimeSlot {
   _id: string;
   time: string;
@@ -31,8 +32,8 @@ export interface Room {
   name: string;
   rowNumber: number;
   seatsInRow: number;
-  screen: string;
-  cinema: string;
+  screen: ScreenType;
+  cinema: CinemaType;
 }
 export interface RoomRespone {
   success: boolean;

@@ -1,20 +1,24 @@
-// import { useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 
 import { axios } from '@/lib/axios';
-// import { QueryConfig } from '@/lib/react-query';
+import { QueryConfig } from '@/lib/react-query';
 
 export const getShowTimes = (data: any): Promise<any> => {
-  return axios.get(`/showTime/all`, data);
+  return axios.post(`/showTime/get-list-showtime`, data);
 };
 
-// type UseShowTimesOptions = {
-//   config?: QueryConfig<typeof getShowTimes>;
-// };
+type UseShowTimesOptions = {
+  config?: QueryConfig<typeof getShowTimes>;
+  data: {
+    dateStart: string;
+    dateEnd: string;
+  };
+};
 
-// export const useTimeSlots = ({ config }: UseShowTimesOptions = {}) => {
-//   return useQuery({
-//     ...config,
-//     queryKey: ['timeSlots'],
-//     queryFn: () => getShowTimes(),
-//   });
-// };
+export const useShowTimes = ({ config, data }: UseShowTimesOptions) => {
+  return useQuery({
+    ...config,
+    queryKey: ['showTimes'],
+    queryFn: () => getShowTimes(data),
+  });
+};

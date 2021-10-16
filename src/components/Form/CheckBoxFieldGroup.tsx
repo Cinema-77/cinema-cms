@@ -4,10 +4,14 @@ import { UseFormRegisterReturn } from 'react-hook-form';
 
 import { FieldWrapper, FieldWrapperPassThroughProps } from '.';
 
+type Option = {
+  label: React.ReactNode;
+  value: string | number;
+};
 interface CheckBoxFieldGroupProps extends FieldWrapperPassThroughProps {
   defaultValue?: string[];
   registration: Partial<UseFormRegisterReturn>;
-  options: string[];
+  options: Option[];
   children?: React.ReactNode;
 }
 
@@ -18,9 +22,9 @@ export const CheckBoxFieldGroup: React.FC<CheckBoxFieldGroupProps> = (props) => 
     <FieldWrapper label={label} error={error} fieldset={true}>
       <CheckboxGroup colorScheme="cyan" defaultValue={defaultValue}>
         <SimpleGrid columns={[2, null, 3]} spacing="5px">
-          {options.map((o, index) => (
-            <Checkbox value={o} {...registration} key={index}>
-              {o}
+          {options.map((o) => (
+            <Checkbox value={o.value} {...registration} key={o.value}>
+              {o.label}
             </Checkbox>
           ))}
         </SimpleGrid>
