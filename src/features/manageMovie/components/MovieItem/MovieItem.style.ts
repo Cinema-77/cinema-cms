@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const MovieItem = styled.h2`
+export const MovieItem = styled.div`
   display: flex;
   gap: 0 20px;
   border: 1px solid #ccc;
@@ -120,6 +120,12 @@ export const MovieBtnDelete = styled(Button)`
   opacity: 0.8;
   background-color: red;
 `;
+export const MovieVideoDiv = styled.div`
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
 export const MovieVideoTrailer = styled.div`
   position: absolute;
   left: 0;
@@ -127,17 +133,18 @@ export const MovieVideoTrailer = styled.div`
   width: 100%;
   height: 100%;
   z-index: 5;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.5);
 
   img {
-    cursor: pointer;
     position: absolute;
-    right: 20px;
-    top: 20px;
+    cursor: pointer;
+    right: 25%;
     width: 25px;
     height: 25px;
+    transform: translate(116px, -332px);
   }
 `;
+
 export const MovieVideo = styled.iframe`
   position: absolute;
   left: 50%;

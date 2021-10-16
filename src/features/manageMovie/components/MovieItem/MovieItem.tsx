@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
+import { getMovie } from '../..';
 import { MovieItemType } from '../../type';
+import { MovieEdit } from '../MovieEdit/MovieEdit';
 
 import * as S from './MovieItem.style';
 
@@ -12,13 +14,31 @@ import x from '@/assets/icon/x.svg';
 
 interface MovieItemProps {
   movieList: MovieItemType[];
+  setMovie: any;
+  movie: any;
   handleDeleteMovie: (id: string) => void;
 }
 
-export const MovieItem: React.FC<MovieItemProps> = ({ movieList, handleDeleteMovie }) => {
+export const MovieItem: React.FC<MovieItemProps> = ({
+  movieList,
+  handleDeleteMovie,
+  setMovie,
+  movie,
+}) => {
   const [openTrailer, setOpenTrailer] = useState(false);
   const [isMovie, setIsMovie] = useState(false);
+  const [idMovie, setIdMovie] = useState<string>('');
+  const [movieValue, setMovieValue] = useState<any>('');
 
+  const handleDelete = (id: string) => {
+    setIsMovie(true);
+    setIdMovie(id);
+  };
+  const handleEdit = async (id: string) => {
+    await getMovie(id)
+      .then((res: any) => setMovieValue(res.values.movie))
+      .catch((err) => console.log('err', err));
+  };
   return (
     <>
       {movieList.map((movie: MovieItemType) => (
@@ -40,17 +60,21 @@ export const MovieItem: React.FC<MovieItemProps> = ({ movieList, handleDeleteMov
               <S.MovieSpan>{movie.director.name}</S.MovieSpan>
             </S.MovieListSpan>
             <S.MovieListSpan>
-              <S.MovieSpan>Thể loại:</S.MovieSpan>
-              <S.MovieSpan>
-                {movie.categories.length > 1 &&
-                  movie.categories.map((category) => (
-                    <span key={category._id}>{category.name}, </span>
-                  ))}
-                {movie.categories.length <= 1 &&
-                  movie.categories.map((category) => (
-                    <span key={category._id}>{category.name}</span>
-                  ))}
-              </S.MovieSpan>
+              {movie.categories.length > 0 && (
+                <>
+                  <S.MovieSpan>Thể loại:</S.MovieSpan>
+                  <S.MovieSpan>
+                    {movie.categories.length > 1 &&
+                      movie.categories.map((category) => (
+                        <span key={category._id}>{category.name}, </span>
+                      ))}
+                    {movie.categories.length === 1 &&
+                      movie.categories.map((category) => (
+                        <span key={category._id}>{category.name}</span>
+                      ))}
+                  </S.MovieSpan>
+                </>
+              )}
             </S.MovieListSpan>
             <S.MovieListSpan>
               <S.MovieSpan>Diễn viên:</S.MovieSpan>
@@ -61,24 +85,28 @@ export const MovieItem: React.FC<MovieItemProps> = ({ movieList, handleDeleteMov
               <S.MovieSpan>{movie.age}</S.MovieSpan>
             </S.MovieListSpan>
             <S.MovieListSpan>
-              <S.MovieSpan>Loại màn:</S.MovieSpan>
-              <S.MovieSpan>
-                {movie.screens.length > 1 &&
-                  movie.screens.map((screen) => <span key={screen._id}>{screen.name}, </span>)}
-                {movie.screens.length <= 1 &&
-                  movie.screens.map((screen) => <span key={screen._id}>{screen.name}</span>)}
-              </S.MovieSpan>
+              {movie.screens.length > 0 && (
+                <>
+                  <S.MovieSpan>Loại màn:</S.MovieSpan>
+                  <S.MovieSpan>
+                    {movie.screens.length > 1 &&
+                      movie.screens.map((screen) => <span key={screen._id}>{screen.name}, </span>)}
+                    {movie.screens.length === 1 &&
+                      movie.screens.map((screen) => <span key={screen._id}>{screen.name}</span>)}
+                  </S.MovieSpan>
+                </>
+              )}
             </S.MovieListSpan>
             <S.MovieListSpan>
               <S.MovieSpan>Nội dung:</S.MovieSpan>
               <S.MovieSpan>{movie.description}</S.MovieSpan>
             </S.MovieListSpan>
             <S.MovieListBtn>
-              <S.MovieBtnEdit>
+              <S.MovieBtnEdit onClick={() => handleEdit(movie._id)}>
                 <img src={edit} alt="" />
                 Edit
               </S.MovieBtnEdit>
-              <S.MovieBtnDelete onClick={() => setIsMovie(true)}>
+              <S.MovieBtnDelete onClick={() => handleDelete(movie._id)}>
                 <img src={trash} alt="" />
                 Delete
               </S.MovieBtnDelete>
@@ -86,8 +114,10 @@ export const MovieItem: React.FC<MovieItemProps> = ({ movieList, handleDeleteMov
           </S.MovieRight>
           {openTrailer && (
             <S.MovieVideoTrailer>
-              <img src={x} alt="" onClick={() => setOpenTrailer(false)} role="button" />
-              <S.MovieVideo src={movie.trailer} frameBorder="0" allowFullScreen />
+              <S.MovieVideoDiv>
+                <S.MovieVideo src={movie.trailer} frameBorder="0" allowFullScreen />
+                <img src={x} alt="" onClick={() => setOpenTrailer(false)} role="button" />
+              </S.MovieVideoDiv>
             </S.MovieVideoTrailer>
           )}
           {isMovie && (
@@ -130,7 +160,7 @@ export const MovieItem: React.FC<MovieItemProps> = ({ movieList, handleDeleteMov
                     <S.MovieFormBtn onClick={() => setIsMovie(false)}>Hủy</S.MovieFormBtn>
                     <S.MovieFormBtn
                       onClick={() => {
-                        handleDeleteMovie(movie._id);
+                        handleDeleteMovie(idMovie);
                         setIsMovie(false);
                       }}
                     >
@@ -143,6 +173,14 @@ export const MovieItem: React.FC<MovieItemProps> = ({ movieList, handleDeleteMov
           )}
         </S.MovieItem>
       ))}
+      {movieValue && (
+        <MovieEdit
+          movieValue={movieValue}
+          setMovieValue={setMovieValue}
+          setMovie={setMovie}
+          movie={movie}
+        />
+      )}
     </>
   );
 };
