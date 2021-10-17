@@ -59,3 +59,10 @@ export interface MovieRespon {
     movie: MovieType;
   };
 }
+export interface MoviesResponse {
+  success: boolean;
+  message: string;
+  values: {
+    movies: MovieItemType[];
+  };
+}

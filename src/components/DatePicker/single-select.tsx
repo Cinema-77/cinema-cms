@@ -134,11 +134,13 @@ export const SingleSelect: React.FC<RangeSelectProps> = (props) => {
   const setDate = (value: Date, valueString?: string) => {
     if (setValues) {
       const valueFormat = !valueString ? format(value, 'MM/dd/yyyy') : valueString;
-      for (let i = 0; i < (sizeOfTimeStamp as number); i++) {
-        if (nameToSet == 'dateStart') {
-          setValues(`showTimes.${i}.dateStart`, valueFormat);
-        } else {
-          setValues(`showTimes.${i}.dateEnd`, valueFormat);
+      if (sizeOfTimeStamp && sizeOfTimeStamp > 0) {
+        for (let i = 0; i < (sizeOfTimeStamp as number); i++) {
+          if (nameToSet == 'dateStart') {
+            setValues(`showTimes.${i}.dateStart`, valueFormat);
+          } else {
+            setValues(`showTimes.${i}.dateEnd`, valueFormat);
+          }
         }
       }
     }

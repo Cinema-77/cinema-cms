@@ -32,3 +32,19 @@ export interface TimeStamp {
   dateStart: string;
   dateEnd: string;
 }
+
+export interface ShowTimesListByDayRange {
+  date: string;
+  times: {
+    time: string;
+    movieRoom: {
+      room: Room;
+      movie: MovieType;
+    }[];
+  }[];
+}
+export interface ShowTimesListByDayRangeResponse {
+  message: string;
+  success: boolean;
+  showTimes: ShowTimesListByDayRange[];
+}

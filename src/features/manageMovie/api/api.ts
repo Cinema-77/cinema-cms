@@ -1,4 +1,4 @@
-import { MovieType, MovieRespon } from '../type';
+import { MovieType, MovieRespon, MoviesResponse } from '../type';
 
 import { axios } from '@/lib/axios';
 
@@ -18,7 +18,7 @@ export const getDirectorAll = () => {
   return axios.get('/director/all');
 };
 
-export const getMovieAll = () => {
+export const getMovieAll = (): Promise<MoviesResponse> => {
   return axios.get('/movie/all');
 };
 

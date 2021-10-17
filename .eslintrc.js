@@ -58,6 +58,7 @@ module.exports = {
         'import/no-named-as-default-member': 'off',
         'import/no-named-as-default': 'off',
 
+        'react-hooks/rules-of-hooks': 'off',
         'react/react-in-jsx-scope': 'off',
 
         'jsx-a11y/anchor-is-valid': 'off',

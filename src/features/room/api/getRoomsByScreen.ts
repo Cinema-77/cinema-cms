@@ -1,15 +1,11 @@
 import { useQuery } from 'react-query';
 
-import { RoomByScreenRespone } from '../type';
+import { RoomByTRespone } from '../type';
 
 import { axios } from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 
-export const getRoomsByScreen = ({
-  idScreen,
-}: {
-  idScreen: string;
-}): Promise<RoomByScreenRespone> => {
+export const getRoomsByScreen = ({ idScreen }: { idScreen: string }): Promise<RoomByTRespone> => {
   return axios.get(`/room/get-room-by-screen/${idScreen}`);
 };
 

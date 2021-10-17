@@ -9,13 +9,16 @@ import {
   Heading,
   Stack,
   VStack,
+  Spinner,
+  Badge,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { UseFormRegister } from 'react-hook-form';
+import { UseQueryResult } from 'react-query';
 
 import { useCreateShowTime } from '../api/createShowtimes';
-import { useFormatMovie } from '../api/getFormatMovie';
-import { TimeSlotCreate, ShowTimesList } from '../components';
+import { useMovies } from '../api/getFormatMovie';
+import { ShowTimesList, TimeSlotCreate } from '../components';
 import { TimeStamp } from '../type';
 
 import {
@@ -30,7 +33,13 @@ import {
   Th,
   Tr,
 } from '@/components';
-import { TimeSlot, useRoomsByScreen, useTimeSlots } from '@/features/room';
+import {
+  colorBadge,
+  RoomByTRespone,
+  TimeSlot,
+  useRoomsByMovie,
+  useTimeSlots,
+} from '@/features/room';
 import { useAuth } from '@/lib/auth';
 
 interface ShowTimesCreateProps {
@@ -38,38 +47,41 @@ interface ShowTimesCreateProps {
 }
 
 export type ShowTimesValues = {
+  date?: string;
   dateStart: string;
   dateEnd: string;
-  screenDetailId: string;
+  movieId: string;
   cinemaId: string;
   showTimes: TimeStamp[];
 };
 
 export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
+  const [idMovie, setIdMovie] = useState('');
   const timeSlotQuery = useTimeSlots();
-  const formatMovieQuery = useFormatMovie();
-  const [idScreen, setIdScreen] = useState('61644b12df1b9d2700e43b27');
+  const moviesQuery = useMovies();
+  const roomsByMovieQuery = useRoomsByMovie({ config: { enabled: !!idMovie }, idMovie });
+
   const { user } = useAuth();
 
-  const onChangePremiere = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const onChangeMovie = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    setIdScreen(value);
+    setIdMovie(value);
   };
 
   const createShowTimeMutation = useCreateShowTime();
 
   return (
     <Box overflowX="scroll">
-      <SiteHeader menuName="Showtimes" heading={`Create a new Showtimes`}>
+      <SiteHeader menuName="Lịch chiếu" heading={`Tạo lịch chiếu `}>
         <BreadcrumbItem isCurrentPage>
-          <BreadcrumbLink>New Showtimes</BreadcrumbLink>
+          <BreadcrumbLink>Lịch chiếu mới</BreadcrumbLink>
         </BreadcrumbItem>
       </SiteHeader>
 
       <Flex justifyContent="flex-start">
         <Stack
           backgroundColor="white"
-          maxWidth="800px"
+          maxWidth="1000px"
           px={8}
           py={12}
           shadow={[null, 'md']}
@@ -78,93 +90,110 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
           alignItems="center"
           flexShrink={0}
         >
-          <TimeSlotCreate />
-          <Box
-            width="100%"
-            margin="auto"
-            border="1px"
-            borderColor="gray.200"
-            borderStyle="solid"
-            padding="5"
-          >
-            <Form<ShowTimesValues>
-              onSubmit={async (data) => {
-                const times = data.showTimes.filter((t) => Boolean(t.roomId) !== false);
-                const newShowTimes = {
-                  ...data,
-                  showTimes: times,
-                  cinemaId: user?.cinema._id as string,
-                };
-                await createShowTimeMutation.mutateAsync({ data: newShowTimes });
-              }}
-            >
-              {({ register, formState, setValue }) => (
-                <Stack spacing={4} direction="column">
-                  <Flex alignItems="center" justifyContent="space-between">
-                    <Stack direction="column" flex={1}>
-                      {/* <SingleSelect registration={register('date')} label="Date Create" /> */}
-                      {formatMovieQuery.data && (
-                        <SelectField
-                          label="Premiere"
-                          registration={register('screenDetailId')}
-                          error={formState.errors['screenDetailId']}
-                          options={formatMovieQuery.data?.values.screenDetails.map(
-                            ({ screen, movie }) => ({
-                              label: `${movie.name} - ${screen.name}`,
-                              value: screen._id,
-                            })
+          {moviesQuery.isLoading ? (
+            <Flex justifyContent="center">
+              <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+                size="xl"
+              />
+            </Flex>
+          ) : (
+            <>
+              <TimeSlotCreate />
+              <Box
+                width="100%"
+                margin="auto"
+                border="1px"
+                borderColor="gray.200"
+                borderStyle="solid"
+                padding="5"
+              >
+                <Form<ShowTimesValues>
+                  onSubmit={async (data) => {
+                    const times = data.showTimes.filter((t) => Boolean(t.roomId) !== false);
+                    const newShowTimes = {
+                      ...data,
+                      showTimes: times,
+                      cinemaId: user?.cinema._id as string,
+                    };
+                    await createShowTimeMutation.mutateAsync({ data: newShowTimes });
+                  }}
+                >
+                  {({ register, formState, setValue }) => (
+                    <Stack spacing={4} direction="column">
+                      <Flex alignItems="center" justifyContent="space-between">
+                        <Stack direction="column" flex={1}>
+                          <SingleSelect registration={register('date')} label="Ngày tạo" />
+                          {moviesQuery.data && (
+                            <SelectField
+                              label="Phim"
+                              placeholder="Chọn 1 bộ phim"
+                              registration={register('movieId')}
+                              error={formState.errors['movieId']}
+                              options={moviesQuery.data?.values?.movies.map(({ name, _id }) => ({
+                                label: name,
+                                value: _id,
+                              }))}
+                              onChanging={onChangeMovie}
+                            />
                           )}
-                          onChanging={onChangePremiere}
+                        </Stack>
+                        <Center flexShrink={0} mx={3} height="50px">
+                          <Divider orientation="vertical" />
+                        </Center>
+                        <Stack direction="column" flex={1}>
+                          <SingleSelect
+                            registration={register('dateStart')}
+                            label="Từ"
+                            setValues={setValue}
+                            nameToSet="dateStart"
+                            sizeOfTimeStamp={
+                              roomsByMovieQuery && roomsByMovieQuery.data?.values.rooms.length
+                            }
+                          />
+                          <SingleSelect
+                            registration={register('dateEnd')}
+                            label="Đến"
+                            setValues={setValue}
+                            nameToSet="dateEnd"
+                            sizeOfTimeStamp={
+                              roomsByMovieQuery && roomsByMovieQuery.data?.values.rooms.length
+                            }
+                          />
+                        </Stack>
+                      </Flex>
+
+                      {timeSlotQuery.data && (
+                        <TimeSlotList
+                          listTime={timeSlotQuery.data.values?.timeSlots}
+                          register={register}
+                          roomsByMovieQuery={roomsByMovieQuery}
                         />
                       )}
-                    </Stack>
-                    <Center flexShrink={0} mx={3} height="50px">
-                      <Divider orientation="vertical" />
-                    </Center>
-                    <Stack direction="column" flex={1}>
-                      <SingleSelect
-                        registration={register('dateStart')}
-                        label="From"
-                        setValues={setValue}
-                        nameToSet="dateStart"
-                        sizeOfTimeStamp={2}
-                      />
-                      <SingleSelect
-                        registration={register('dateEnd')}
-                        label="To"
-                        setValues={setValue}
-                        nameToSet="dateEnd"
-                        sizeOfTimeStamp={2}
-                      />
-                    </Stack>
-                  </Flex>
 
-                  {timeSlotQuery.data && !timeSlotQuery.isLoading && (
-                    <TimeSlotList
-                      listTime={timeSlotQuery.data.values?.timeSlots}
-                      register={register}
-                      idScreen={idScreen}
-                    />
+                      <Button
+                        backgroundColor="cyan.400"
+                        color="white"
+                        fontWeight="medium"
+                        type="submit"
+                        _hover={{
+                          backgroundColor: 'cyan.700',
+                        }}
+                        maxWidth="200px"
+                        alignSelf="flex-end"
+                        isLoading={createShowTimeMutation.isLoading}
+                      >
+                        Tạo lịch chiếu
+                      </Button>
+                    </Stack>
                   )}
-
-                  <Button
-                    backgroundColor="cyan.400"
-                    color="white"
-                    fontWeight="medium"
-                    type="submit"
-                    _hover={{
-                      backgroundColor: 'cyan.700',
-                    }}
-                    maxWidth="200px"
-                    alignSelf="flex-end"
-                    isLoading={createShowTimeMutation.isLoading}
-                  >
-                    Create Showtimes
-                  </Button>
-                </Stack>
-              )}
-            </Form>
-          </Box>
+                </Form>
+              </Box>
+            </>
+          )}
         </Stack>
         <Stack
           backgroundColor="white"
@@ -188,10 +217,14 @@ interface TimeSlotListProps {
   children?: React.ReactNode;
   listTime: TimeSlot[];
   register: UseFormRegister<ShowTimesValues>;
-  idScreen: string;
+  roomsByMovieQuery: UseQueryResult<RoomByTRespone, unknown>;
 }
 
-export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register, idScreen }) => {
+export const TimeSlotList: React.FC<TimeSlotListProps> = ({
+  listTime,
+  register,
+  roomsByMovieQuery,
+}) => {
   const compareTime = (a: TimeSlot, b: TimeSlot) => {
     if (a.time > b.time) {
       return 1;
@@ -202,12 +235,19 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register, 
     return 0;
   };
 
-  const roomsByScreenQuery = useRoomsByScreen({ idScreen });
-  if (roomsByScreenQuery.isLoading) {
+  if (!roomsByMovieQuery) {
     return null;
   }
 
-  if (!roomsByScreenQuery?.data?.rooms.length)
+  if (roomsByMovieQuery.isLoading) {
+    return (
+      <Flex justifyContent="center">
+        <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
+      </Flex>
+    );
+  }
+
+  if (!roomsByMovieQuery?.data?.values?.rooms.length)
     return (
       <Box
         role="list"
@@ -220,7 +260,9 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register, 
         flexDirection="column"
         height="40"
       >
-        <Heading as="h4">No Room Found</Heading>
+        <Heading as="h4" size="xl">
+          Không có phòng được tìm thấy
+        </Heading>
       </Box>
     );
   return (
@@ -228,7 +270,6 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register, 
       <Stack
         backgroundColor="white"
         borderRadius={[0, 8]}
-        maxWidth="1000px"
         px={8}
         py={12}
         shadow={[null, 'md']}
@@ -239,14 +280,15 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register, 
           <Table w="full">
             <thead>
               <Tr>
-                <Th>Room</Th>
-                <Th>Time Slot</Th>
-                <Th>Date</Th>
+                <Th>Phòng</Th>
+                <Th>Màn hình</Th>
+                <Th>Suất chiếu</Th>
+                <Th>Ngày</Th>
               </Tr>
             </thead>
             <tbody>
-              {roomsByScreenQuery.data?.rooms.map((room, index) => (
-                <Box as="tr" key={index}>
+              {roomsByMovieQuery.data?.values?.rooms.map((room, index) => (
+                <Box as="tr" key={room._id}>
                   <Td>
                     <CheckBoxField
                       registration={register(`showTimes.${index}.roomId`)}
@@ -256,7 +298,10 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register, 
                       size="lg"
                     />
                   </Td>
-                  <Td maxWidth="220px">
+                  <Td>
+                    <Badge colorScheme={colorBadge[room.screen.name]}>{room.screen.name}</Badge>
+                  </Td>
+                  <Td>
                     <CheckBoxFieldGroup
                       registration={register(`showTimes.${index}.times`)}
                       options={listTime.sort(compareTime).map(({ time, _id }) => ({
@@ -269,7 +314,7 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register, 
                     <VStack spacing={4} align="stretch">
                       <Flex flex="1" alignItems="center">
                         <Heading as="h6" size="xs" flex="1">
-                          From
+                          Từ
                         </Heading>
 
                         <Box>
@@ -278,7 +323,7 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({ listTime, register, 
                       </Flex>
                       <Flex flex="1" alignItems="center">
                         <Heading as="h6" size="xs" flex="1">
-                          To
+                          Đến
                         </Heading>
                         <Box>
                           <SingleSelect registration={register(`showTimes.${index}.dateEnd`)} />

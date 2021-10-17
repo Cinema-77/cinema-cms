@@ -23,7 +23,7 @@ interface RoomListProps {
   children?: React.ReactNode;
 }
 
-const colorBadge: any = {
+export const colorBadge: any = {
   '2D': 'gray',
   '3D': 'purple',
   IMAX: 'red',
@@ -34,7 +34,6 @@ export const RoomList: React.FC<RoomListProps> = () => {
   const color = useColorModeValue('white', 'gray.900');
   const roomsQuery = useRooms();
 
-  // console.log(colorBadge['2D'])
   return (
     <>
       <SiteHeader

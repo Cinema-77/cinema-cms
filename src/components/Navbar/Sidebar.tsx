@@ -58,11 +58,11 @@ interface LinkItemProps {
   linkChild?: LinkItemProps[];
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: 'Home', icon: FiHome, to: '/dashboard' },
-  { name: 'Manage Movie', icon: FiFilm, to: '/managemovie' },
-  { name: 'Revenue', icon: FiTrendingUp, to: '/revenue' },
+  { name: 'Trang chủ', icon: FiHome, to: '/dashboard' },
+  { name: 'Phim', icon: FiFilm, to: '/managemovie' },
+  { name: 'Doanh thu', icon: FiTrendingUp, to: '/revenue' },
   {
-    name: 'Cinema',
+    name: 'Rạp',
     icon: FiCompass,
     accor: true,
     linkChild: [
@@ -79,7 +79,7 @@ const LinkItems: Array<LinkItemProps> = [
     ],
   },
   {
-    name: 'Room',
+    name: 'Phòng',
     icon: FiBox,
     accor: true,
     linkChild: [
@@ -96,13 +96,13 @@ const LinkItems: Array<LinkItemProps> = [
     ],
   },
   {
-    name: 'ShowTimes',
+    name: 'Lịch chiếu',
     icon: AiOutlineSchedule,
     to: '/showtimes/create',
   },
-  { name: 'Users', icon: FiUser, to: '/users' },
-  { name: 'Favourites', icon: FiStar, to: '/favourites' },
-  { name: 'Settings', icon: FiSettings, to: '/as' },
+  { name: 'Nhân viên', icon: FiUser, to: '/users' },
+  { name: 'Yêu thích', icon: FiStar, to: '/favourites' },
+  { name: 'Cài đặt', icon: FiSettings, to: '/as' },
 ];
 
 export default function SidebarWithHeader({ children }: { children: ReactNode }) {

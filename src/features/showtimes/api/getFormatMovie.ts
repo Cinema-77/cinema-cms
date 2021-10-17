@@ -2,6 +2,7 @@ import { useQuery } from 'react-query';
 
 import { FormatMovieResponse } from '..';
 
+import { getMovieAll } from '@/features/manageMovie';
 import { axios } from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 
@@ -18,5 +19,17 @@ export const useFormatMovie = ({ config }: UseFormatOptions = {}) => {
     ...config,
     queryKey: ['formatMovie'],
     queryFn: () => getFormatMovie(),
+  });
+};
+
+type UseMoviesOptions = {
+  config?: QueryConfig<typeof getMovieAll>;
+};
+
+export const useMovies = ({ config }: UseMoviesOptions = {}) => {
+  return useQuery({
+    ...config,
+    queryKey: ['movies'],
+    queryFn: () => getMovieAll(),
   });
 };

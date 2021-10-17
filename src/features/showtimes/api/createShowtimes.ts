@@ -10,7 +10,7 @@ export type CreateShowTimesDTO = {
   data: {
     dateStart: string;
     dateEnd: string;
-    screenDetailId: string;
+    movieId: string;
     cinemaId: string;
     showTimes: TimeStamp[];
   };

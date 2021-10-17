@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Flex, Stack, Heading, Spinner } from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Stack, Heading, Spinner, SimpleGrid } from '@chakra-ui/react';
 import React from 'react';
 // import { MdAdd } from 'react-icons/md';
 // import { Link } from 'react-router-dom';
@@ -6,39 +6,76 @@ import React from 'react';
 import { useShowTimes } from '../api/getShowtimes';
 
 import { Table, Td, Th, Tr } from '@/components';
+import { colorBadge } from '@/features/room';
+import {
+  getCurrentMonday,
+  getCurrentSunday,
+  getDay,
+  getNextMonday,
+  getNextSunday,
+  getPrevMonday,
+  getPrevSunday,
+} from '@/utils/format';
 
 interface ShowTimeListProps {
   children?: React.ReactNode;
 }
 
 export const ShowTimesList: React.FC<ShowTimeListProps> = () => {
-  const showTimesQuery = useShowTimes({ data: { dateStart: '11/1/2021', dateEnd: '11/7/2021' } });
+  const [currentMonSun, setCurrentMonSun] = React.useState({
+    mon: getCurrentMonday(),
+    sun: getCurrentSunday(),
+  });
+  const [dataShowTimes, setDataShowTimes] = React.useState({
+    dateStart: currentMonSun.mon,
+    dateEnd: currentMonSun.sun,
+  });
 
-  if (!showTimesQuery.data?.showTimes?.length) {
-    return null;
-  }
+  const showTimesQuery = useShowTimes({
+    data: dataShowTimes,
+  });
 
-  console.log(showTimesQuery.data);
+  const onPrevWeek = () => {
+    setCurrentMonSun({
+      ...currentMonSun,
+      mon: getPrevMonday(currentMonSun.mon),
+      sun: getPrevSunday(currentMonSun.sun),
+    });
+
+    setDataShowTimes({
+      dateStart: getPrevMonday(currentMonSun.mon),
+      dateEnd: getPrevSunday(currentMonSun.sun),
+    });
+  };
+
+  const onNextWeek = () => {
+    setCurrentMonSun({
+      ...currentMonSun,
+      mon: getNextMonday(currentMonSun.mon),
+      sun: getNextSunday(currentMonSun.sun),
+    });
+
+    setDataShowTimes({
+      dateStart: getNextMonday(currentMonSun.mon),
+      dateEnd: getNextSunday(currentMonSun.sun),
+    });
+  };
+
   return (
     <Box width="100%">
-      <Flex justifyContent="space-between" alignItems="center">
-        <Heading as="h1">List ShowTimes</Heading>
+      <Heading as="h2" size="lg">
+        Danh sách lịch chiếu - suất chiếu
+      </Heading>
+      <Flex justifyContent="space-between" alignItems="center" mt={2}>
+        <Heading as="h5" size="md">
+          {`${currentMonSun.mon} - ${currentMonSun.sun}`}
+        </Heading>
         <Stack spacing={3} direction="row">
-          <Button colorScheme="cyan" variant="outline">
-            Now
+          <Button colorScheme="cyan" variant="outline" onClick={onPrevWeek}>
+            Trước
           </Button>
-          <Button
-            color="white"
-            // bg="gray.900"
-            variant="solid"
-            // _hover={{ bg: 'gray.700' }}
-            // _active={{
-            //   bg: 'gray.800',
-            //   transform: 'scale(0.95)',
-            // }}
-            colorScheme="cyan"
-          >
-            Next
+          <Button color="white" variant="solid" colorScheme="cyan" onClick={onNextWeek}>
+            Sau
           </Button>
         </Stack>
       </Flex>
@@ -65,25 +102,63 @@ export const ShowTimesList: React.FC<ShowTimeListProps> = () => {
                   size="xl"
                 />
               </Flex>
+            ) : !showTimesQuery.data?.showTimes?.length ? (
+              <Box
+                role="list"
+                aria-label="comments"
+                backgroundColor="white"
+                textColor="gray.500"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                flexDirection="column"
+                height="40"
+              >
+                <Heading as="h4" size="xl">
+                  Không có lịch chiếu được tìm thấy
+                </Heading>
+              </Box>
             ) : (
               <Table w="full">
                 <thead>
                   <Tr>
-                    <Th>Day</Th>
-                    <Th>Time</Th>
-                    <Th>Room</Th>
-                    <Th>Movie</Th>
+                    <Th>Thứ</Th>
+                    <Th>Ngày</Th>
+                    <Th>Khung giờ</Th>
                   </Tr>
                 </thead>
                 <tbody>
-                  {showTimesQuery.data.showTimes.map((a: any) => (
-                    <Box as="tr" key={a._id}>
-                      <Td>{a.date}</Td>
+                  {showTimesQuery.data.showTimes.map((st) => (
+                    <Box as="tr" key={st.date}>
+                      <Td>{getDay(st.date)}</Td>
+                      <Td>{st.date}</Td>
                       <Td>
-                        <Badge fontSize="1em">{a.timeSlot.time}</Badge>
+                        <Stack spacing={2} direction="column">
+                          {st.times.map((t, index: number) => (
+                            <Stack
+                              direction="row"
+                              alignItems="flex-start"
+                              justifyContent="space-between"
+                              key={`${t.time}-${index}`}
+                            >
+                              <Badge fontSize="1em">{t.time}</Badge>
+                              <SimpleGrid columns={[2, null, 3]} spacing="40px">
+                                {t.movieRoom.map((r, index: number) => (
+                                  <Box key={`${r.room.name}-${index}`}>
+                                    <Badge
+                                      fontSize="1em"
+                                      colorScheme={colorBadge[r.room.screen.name]}
+                                    >
+                                      {r.room.name}
+                                    </Badge>
+                                    <Box>{r.movie.name}</Box>
+                                  </Box>
+                                ))}
+                              </SimpleGrid>
+                            </Stack>
+                          ))}
+                        </Stack>
                       </Td>
-                      <Td>{a.room.name}</Td>
-                      <Td>P2</Td>
                     </Box>
                   ))}
                 </tbody>

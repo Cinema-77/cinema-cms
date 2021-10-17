@@ -43,8 +43,10 @@ export interface RoomRespone {
   };
 }
 
-export interface RoomByScreenRespone {
+export interface RoomByTRespone {
   success: boolean;
   message: string;
-  rooms: Room[];
+  values: {
+    rooms: Room[];
+  };
 }

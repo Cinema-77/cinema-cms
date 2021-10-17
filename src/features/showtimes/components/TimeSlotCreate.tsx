@@ -43,7 +43,7 @@ export const TimeSlotCreate: React.FC<TimeSlotCreateProps> = () => {
         minWidth="100%"
       >
         <Text as="label" fontSize="md" fontWeight="500">
-          Wanna add more time ?
+          Tạo khung giờ mới ?
         </Text>
         <Switch id="change-type-date" colorScheme="green" size="md" onChange={onToggle} />
       </Flex>
@@ -68,7 +68,7 @@ export const TimeSlotCreate: React.FC<TimeSlotCreateProps> = () => {
                 <Stack spacing={4}>
                   <InputField
                     type="text"
-                    label="Add time"
+                    label="Tạo khung giờ"
                     registration={register('time')}
                     error={formState.errors['time']}
                   />
@@ -79,7 +79,7 @@ export const TimeSlotCreate: React.FC<TimeSlotCreateProps> = () => {
                       isLoading={timeSlotMutation.isLoading}
                       color="white"
                     >
-                      Save
+                      Lưu
                     </Button>
                   </ButtonGroup>
                 </Stack>
