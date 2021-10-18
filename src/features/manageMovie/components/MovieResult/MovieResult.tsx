@@ -1,3 +1,4 @@
+import { useToast } from '@chakra-ui/toast';
 import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import React, { ChangeEventHandler, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -36,6 +37,7 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
   const [urlVideo, setUrlVideo] = useState<string>('');
   const [movieList, setMovieList] = useState<MovieItemType[]>([]);
   const [movie, setMovie] = useState(false);
+  const toast = useToast();
   const { control, getValues, reset, handleSubmit } = useForm({
     defaultValues: {
       name: '',
@@ -59,7 +61,7 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
   const handleValue = async (data: MovieType) => {
     const body = {
       name: data.name,
-      moveDuration: data.moveDuration,
+      moveDuration: Number(data.moveDuration),
       image: urlIMG,
       trailer: urlVideo,
       description: data.description,
@@ -71,14 +73,110 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
     };
     try {
       const res = await createMovie(body);
-      console.log(res);
-      setMovie(!movie);
-      setOpenAdd(false);
-      setUrlIMG('');
-      setUrlVideo('');
-      setScreenValue([]);
-      setCategoryValue([]);
-      reset();
+      if (!body.moveDuration) {
+        toast({
+          title: 'Vui lòng nhập thời lượng là số',
+          position: 'top-right',
+          status: 'error',
+          duration: 3000,
+        });
+        return;
+      }
+      if (!body.age) {
+        toast({
+          title: 'Vui lòng độ tuổi là số',
+          position: 'top-right',
+          status: 'error',
+          duration: 3000,
+        });
+        return;
+      }
+
+      if (categoryValue.length === 0) {
+        toast({
+          title: 'Vui lòng chọn thể loại',
+          position: 'top-right',
+          status: 'error',
+          duration: 3000,
+        });
+        return;
+      }
+      if (screenValue.length === 0) {
+        toast({
+          title: 'Vui lòng chọn loại màn hình',
+          position: 'top-right',
+          status: 'error',
+          duration: 3000,
+        });
+        return;
+      }
+      if (!body.description) {
+        toast({
+          title: 'Vui lòng nhập nổi dụng của film',
+          position: 'top-right',
+          status: 'error',
+          duration: 3000,
+        });
+        return;
+      }
+
+      if (res.success === false) {
+        if (res.errors.name) {
+          toast({
+            title: res.errors.name,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
+        }
+        if (res.errors.directorId) {
+          toast({
+            title: res.errors.directorId,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
+        }
+        if (res.errors.image) {
+          toast({
+            title: res.errors.image,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
+        }
+        if (res.errors.cast) {
+          toast({
+            title: res.errors.cast,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
+        }
+        if (res.errors.trailer) {
+          toast({
+            title: res.errors.trailer,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
+        }
+        return;
+      } else {
+        toast({
+          title: res.message,
+          position: 'top-right',
+          status: 'success',
+          duration: 3000,
+        });
+        setMovie(!movie);
+        setOpenAdd(false);
+        setUrlIMG('');
+        setUrlVideo('');
+        setScreenValue([]);
+        setCategoryValue([]);
+        reset();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -121,9 +219,13 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
   };
 
   const handleDeleteMovie = async (id: string) => {
-    console.log(id);
-    await deleteMovie(id);
-    setMovieList(movieList.filter((movie) => movie._id !== id));
+    const res = await deleteMovie(id);
+    if (res.success === true) {
+      setMovieList(movieList.filter((movie) => movie._id !== id));
+      toast({ title: res.message, position: 'top-right', status: 'success', duration: 3000 });
+    } else {
+      toast({ title: res.message, position: 'top-right', status: 'error', duration: 3000 });
+    }
   };
 
   const handleAdd = async () => {

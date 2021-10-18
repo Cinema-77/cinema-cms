@@ -56,6 +56,7 @@ export interface MovieRespon {
   success: boolean;
   message: string;
   value: {
-    movie: MovieType;
+    movie: MovieType[];
   };
+  errors: MovieType;
 }
