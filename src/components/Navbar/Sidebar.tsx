@@ -101,7 +101,7 @@ const LinkItems: Array<LinkItemProps> = [
     to: '/showtimes/create',
   },
   { name: 'Nhân viên', icon: FiUser, to: '/users' },
-  { name: 'Yêu thích', icon: FiStar, to: '/favourites' },
+  { name: 'Bán vé', icon: FiStar, to: '/seller' },
   { name: 'Cài đặt', icon: FiSettings, to: '/as' },
 ];
 

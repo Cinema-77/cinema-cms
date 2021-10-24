@@ -2,6 +2,7 @@ import { CinemaType } from '@/features/cinema';
 export interface TimeSlot {
   _id: string;
   time: string;
+  disabled: boolean;
 }
 
 export interface TimSlotRespone {
@@ -34,6 +35,7 @@ export interface Room {
   seatsInRow: number;
   screen: ScreenType;
   cinema: CinemaType;
+  timeSlots: TimeSlot[];
 }
 export interface RoomRespone {
   success: boolean;

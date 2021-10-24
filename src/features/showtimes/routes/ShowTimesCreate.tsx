@@ -12,18 +12,16 @@ import {
   Spinner,
   Badge,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import * as React from 'react';
 import { UseFormRegister } from 'react-hook-form';
-import { UseQueryResult } from 'react-query';
 
 import { useCreateShowTime } from '../api/createShowtimes';
 import { useMovies } from '../api/getFormatMovie';
-import { ShowTimesList, TimeSlotCreate } from '../components';
+import { ShowTimesList, TimeSlotCreate, CheckBoxTimeGroup } from '../components';
 import { TimeStamp } from '../type';
 
 import {
   CheckBoxField,
-  CheckBoxFieldGroup,
   Form,
   SelectField,
   SingleSelect,
@@ -33,14 +31,9 @@ import {
   Th,
   Tr,
 } from '@/components';
-import {
-  colorBadge,
-  RoomByTRespone,
-  TimeSlot,
-  useRoomsByMovie,
-  useTimeSlots,
-} from '@/features/room';
+import { colorBadge, Room } from '@/features/room';
 import { useAuth } from '@/lib/auth';
+import { useRoomsByMovieStore } from '@/store/timeSlot';
 
 interface ShowTimesCreateProps {
   children?: React.ReactNode;
@@ -56,16 +49,14 @@ export type ShowTimesValues = {
 };
 
 export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
-  const [idMovie, setIdMovie] = useState('');
-  const timeSlotQuery = useTimeSlots();
   const moviesQuery = useMovies();
-  const roomsByMovieQuery = useRoomsByMovie({ config: { enabled: !!idMovie }, idMovie });
+  const { listRoomByMovie, fetchRooms, checkedTimes, loading } = useRoomsByMovieStore();
 
   const { user } = useAuth();
 
   const onChangeMovie = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    setIdMovie(value);
+    fetchRooms(value);
   };
 
   const createShowTimeMutation = useCreateShowTime();
@@ -150,29 +141,24 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
                             label="Từ"
                             setValues={setValue}
                             nameToSet="dateStart"
-                            sizeOfTimeStamp={
-                              roomsByMovieQuery && roomsByMovieQuery.data?.values.rooms.length
-                            }
+                            sizeOfTimeStamp={listRoomByMovie.length}
                           />
                           <SingleSelect
                             registration={register('dateEnd')}
                             label="Đến"
                             setValues={setValue}
                             nameToSet="dateEnd"
-                            sizeOfTimeStamp={
-                              roomsByMovieQuery && roomsByMovieQuery.data?.values.rooms.length
-                            }
+                            sizeOfTimeStamp={listRoomByMovie.length}
                           />
                         </Stack>
                       </Flex>
 
-                      {timeSlotQuery.data && (
-                        <TimeSlotList
-                          listTime={timeSlotQuery.data.values?.timeSlots}
-                          register={register}
-                          roomsByMovieQuery={roomsByMovieQuery}
-                        />
-                      )}
+                      <TimeSlotList
+                        register={register}
+                        rooms={listRoomByMovie}
+                        checkedTimes={checkedTimes}
+                        isLoading={loading}
+                      />
 
                       <Button
                         backgroundColor="cyan.400"
@@ -215,31 +201,24 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
 
 interface TimeSlotListProps {
   children?: React.ReactNode;
-  listTime: TimeSlot[];
   register: UseFormRegister<ShowTimesValues>;
-  roomsByMovieQuery: UseQueryResult<RoomByTRespone, unknown>;
+  rooms: Room[];
+  checkedTimes: ({
+    _id,
+    roomName,
+    screenName,
+  }: {
+    _id: string;
+    roomName: string;
+    screenName: string;
+  }) => void;
+  isLoading: boolean;
 }
 
-export const TimeSlotList: React.FC<TimeSlotListProps> = ({
-  listTime,
-  register,
-  roomsByMovieQuery,
-}) => {
-  const compareTime = (a: TimeSlot, b: TimeSlot) => {
-    if (a.time > b.time) {
-      return 1;
-    }
-    if (a.time < b.time) {
-      return -1;
-    }
-    return 0;
-  };
+export const TimeSlotList: React.FC<TimeSlotListProps> = (props) => {
+  const { register, rooms, checkedTimes, isLoading } = props;
 
-  if (!roomsByMovieQuery) {
-    return null;
-  }
-
-  if (roomsByMovieQuery.isLoading) {
+  if (isLoading) {
     return (
       <Flex justifyContent="center">
         <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
@@ -247,7 +226,7 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({
     );
   }
 
-  if (!roomsByMovieQuery?.data?.values?.rooms.length)
+  if (!rooms.length)
     return (
       <Box
         role="list"
@@ -265,6 +244,7 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({
         </Heading>
       </Box>
     );
+
   return (
     <Flex justifyContent="center">
       <Stack
@@ -287,7 +267,7 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({
               </Tr>
             </thead>
             <tbody>
-              {roomsByMovieQuery.data?.values?.rooms.map((room, index) => (
+              {rooms.map((room, index) => (
                 <Box as="tr" key={room._id}>
                   <Td>
                     <CheckBoxField
@@ -302,12 +282,16 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = ({
                     <Badge colorScheme={colorBadge[room.screen.name]}>{room.screen.name}</Badge>
                   </Td>
                   <Td>
-                    <CheckBoxFieldGroup
+                    <CheckBoxTimeGroup
                       registration={register(`showTimes.${index}.times`)}
-                      options={listTime.sort(compareTime).map(({ time, _id }) => ({
+                      options={room.timeSlots.map(({ time, _id, disabled }) => ({
                         label: time,
                         value: _id,
+                        disable: disabled,
                       }))}
+                      roomName={room.name}
+                      screenName={room.screen.name}
+                      onCheck={checkedTimes}
                     />
                   </Td>
                   <Td>

@@ -1,20 +1,24 @@
-// import { MainLayout } from '@/components/Layout';
 import { MainLayout } from '@/components/Layout';
+import { ROUTES } from '@/constants';
 import { lazyImport } from '@/utils/lazyImport';
 
 const { Auth } = lazyImport(() => import('@/features/auth'), 'Auth');
 const { DashBoard } = lazyImport(() => import('@/features/dashboard'), 'DashBoard');
 const { Cinemas } = lazyImport(() => import('@/features/cinema'), 'Cinemas');
 const { Cinema } = lazyImport(() => import('@/features/cinema'), 'Cinema');
-
 const { manageMovie } = lazyImport(() => import('@/features/manageMovie'), 'manageMovie');
-
 const { CreateRoom } = lazyImport(() => import('@/features/room'), 'CreateRoom');
 const { RoomList } = lazyImport(() => import('@/features/room'), 'RoomList');
 const { ShowTimesCreate } = lazyImport(() => import('@/features/showtimes'), 'ShowTimesCreate');
+const { SellerPage } = lazyImport(() => import('@/features/seller'), 'SellerPage');
+const { SellerTicketWithRouter } = lazyImport(
+  () => import('@/features/seller'),
+  'SellerTicketWithRouter'
+);
+
 const routes: any[] = [
   {
-    path: '/',
+    path: ROUTES.AUTH,
     component: Auth,
     title: 'Đăng nhập',
     exact: true,
@@ -24,46 +28,51 @@ const routes: any[] = [
     component: MainLayout,
     routes: [
       {
-        path: '/dashboard',
+        path: ROUTES.DASHBOARD,
         component: DashBoard,
         title: 'DashBoard',
       },
       {
         exact: true,
-        path: '/cinema/list',
+        path: ROUTES.CINEMA_LIST,
         component: Cinemas,
         title: 'List Cinemas',
       },
       {
-        exact: true,
-        path: '/cinema/create',
-        component: DashBoard,
-        title: 'List Cinemas',
-      },
-      {
-        path: '/cinema/detail/:_id',
+        path: ROUTES.CINEMA_DETAIL,
         component: Cinema,
         title: 'Cinema',
       },
       {
-        path: '/managemovie',
+        path: ROUTES.MOVIE,
         component: manageMovie,
         title: 'Manage Movie',
       },
       {
-        path: '/room/createRoom',
+        path: ROUTES.ROOM_CREATE,
         component: CreateRoom,
         title: 'Create Room',
       },
       {
-        path: '/room/listRoom',
+        path: ROUTES.ROOM_LIST,
         component: RoomList,
         title: 'List Room',
       },
       {
-        path: '/showtimes/create',
+        path: ROUTES.SHOWTIMES_CREATE,
         component: ShowTimesCreate,
         title: 'Create ShowTime',
+      },
+      {
+        path: ROUTES.SELLER,
+        component: SellerPage,
+        title: 'Lịch chiếu | Giá vé',
+        exact: true,
+      },
+      {
+        path: ROUTES.SELLER_TICKET_ID,
+        component: SellerTicketWithRouter,
+        title: 'Lịch chiếu | Giá vé',
       },
     ],
   },

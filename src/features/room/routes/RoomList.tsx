@@ -53,12 +53,12 @@ export const RoomList: React.FC<RoomListProps> = () => {
               transform: 'scale(0.95)',
             }}
           >
-            New Room
+            Tạo phòng
           </Button>
         }
       >
         <BreadcrumbItem isCurrentPage>
-          <BreadcrumbLink>Room List</BreadcrumbLink>
+          <BreadcrumbLink>Danh sách phòng chiếu</BreadcrumbLink>
         </BreadcrumbItem>
       </SiteHeader>
 
@@ -88,10 +88,10 @@ export const RoomList: React.FC<RoomListProps> = () => {
               <Table w="full">
                 <thead>
                   <Tr>
-                    <Th>Name</Th>
-                    <Th>Screen</Th>
-                    <Th>Row Number</Th>
-                    <Th>Seat In Row</Th>
+                    <Th>Tên</Th>
+                    <Th>Màn hình</Th>
+                    <Th>Số lượng ghế</Th>
+                    <Th>Số ghế một hàng</Th>
                     <Th width="50px"></Th>
                   </Tr>
                 </thead>

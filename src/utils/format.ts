@@ -7,11 +7,12 @@ import {
   endOfWeek,
   startOfWeek,
   parse,
+  eachDayOfInterval,
 } from 'date-fns';
 
 export const formatDate = (date: number) => format(date, 'MM/dd/yyyy');
 
-export const getDay = (date: string) => {
+export const getDay = (date: string | Date) => {
   let day;
 
   switch (new Date(date).getDay()) {
@@ -56,3 +57,15 @@ export const getCurrentMonday = () =>
 
 export const getCurrentSunday = () =>
   format(endOfWeek(new Date(), { weekStartsOn: 1 }), 'MM/dd/yyyy');
+
+interface dataEachDay {
+  start: Date | number;
+  end: Date | number;
+}
+
+export const getEachDayOfInterval = ({ start, end }: dataEachDay) => {
+  return eachDayOfInterval({
+    start,
+    end,
+  });
+};

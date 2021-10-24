@@ -40,7 +40,8 @@
     "use-lilius": "^2.0.0",
     "web-vitals": "^1.0.1",
     "yarn": "^1.22.15",
-    "zod": "^3.8.2"
+    "zod": "^3.8.2",
+    "zustand": "^3.6.0"
   },
   "scripts": {
     "start": "craco start",
