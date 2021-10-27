@@ -1,59 +1,95 @@
-import { Box, Button, Flex, Heading, Image, Stack, Text } from '@chakra-ui/react';
-import React from 'react';
+import { Box, Button, Flex, Heading, Img, Stack, Text } from '@chakra-ui/react';
+import * as React from 'react';
+import { Link } from 'react-router-dom';
 
-// interface formatType {
-//   title: string;
-//   timeSlots: string[];
-// }
+import { ShowTimesListByDate, ShowTimesDetail } from '..';
 
-// interface ShowTimesItemProps {
-//   poster: string;
-//   title: string;
-//   subTitle: string;
-//   ageLimit: string;
-//   format: formatType[];
-// }
+export const ShowTimesItem: React.FC<ShowTimesListByDate> = (props) => {
+  const { movie, screen2D, screen3D, screenIMAX } = props;
+  const shouldHide = (showtimes: ShowTimesDetail[]) => !showtimes.length;
 
-export const ShowTimesItem: React.FC<any> = () => {
   return (
     <Box rounded="md" border="1px" borderColor="gray.300">
       <Box flex="1 1 auto" p={3}>
         <Flex flexWrap="wrap" mx="-3">
-          <Box px={3}>
-            <Image
-              boxSize="200px"
-              objectFit="cover"
-              src="https://images.unsplash.com/photo-1579762689878-ce41dd75ad98?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=900&q=80"
-              alt="Dan Abramov"
+          <Box px={3} flexShrink={0}>
+            <Img
+              src={movie.image}
+              alt={movie.name}
               rounded={4}
+              loading="lazy"
+              htmlHeight="300px"
+              htmlWidth="250px"
             />
           </Box>
-          <Stack px={3} spacing={2}>
+          <Stack px={3} spacing={2} flex={1}>
             <Heading as="h4" fontSize="md">
-              Lật Mặt 5: 48H
+              {movie.name}
             </Heading>
             <Text fontSize="md" color="gray.400">
-              {' '}
-              Face Off - NC18{' '}
+              {/* {movie.moveDuration} phút */}
+              {movie.description}
             </Text>
-            <Box>
-              <Text fontSize="md" fontWeight="bold">
-                2D Phụ đề Anh
-              </Text>
-              <Stack spacing={1} direction="row" mt={2}>
-                <Button variant="outline">18:15</Button>
-                <Button variant="outline">20:00</Button>
-              </Stack>
-            </Box>
-            <Box>
-              <Text fontSize="md" fontWeight="bold">
-                3D Phụ đề Anh
-              </Text>
-              <Stack spacing={1} direction="row" mt={2}>
-                <Button variant="outline">19:00</Button>
-                <Button variant="outline">21:00</Button>
-              </Stack>
-            </Box>
+
+            {!shouldHide(screen2D.showTimesDetails) && (
+              <Box>
+                <Text fontSize="md" fontWeight="bold">
+                  {screen2D.title} phụ đề Anh
+                </Text>
+                <Stack spacing={1} direction="row" mt={2}>
+                  {screen2D.showTimesDetails.map((showtime) => (
+                    <Button
+                      as={Link}
+                      to={`/seller/bookTicket/${showtime._id}`}
+                      variant="outline"
+                      key={showtime._id}
+                    >
+                      {showtime.timeSlot.time}
+                    </Button>
+                  ))}
+                </Stack>
+              </Box>
+            )}
+
+            {!shouldHide(screen3D.showTimesDetails) && (
+              <Box>
+                <Text fontSize="md" fontWeight="bold">
+                  {screen3D.title} phụ đề Anh
+                </Text>
+                <Stack spacing={1} direction="row" mt={2}>
+                  {screen3D.showTimesDetails.map((showtime) => (
+                    <Button
+                      as={Link}
+                      to={`/seller/bookTicket/${showtime._id}`}
+                      variant="outline"
+                      key={showtime._id}
+                    >
+                      {showtime.timeSlot.time}
+                    </Button>
+                  ))}
+                </Stack>
+              </Box>
+            )}
+
+            {!shouldHide(screenIMAX.showTimesDetails) && (
+              <Box>
+                <Text fontSize="md" fontWeight="bold">
+                  {screenIMAX.title} phụ đề Anh
+                </Text>
+                <Stack spacing={1} direction="row" mt={2}>
+                  {screenIMAX.showTimesDetails.map((showtime) => (
+                    <Button
+                      as={Link}
+                      to={`/seller/bookTicket/${showtime._id}`}
+                      variant="outline"
+                      key={showtime._id}
+                    >
+                      {showtime.timeSlot.time}
+                    </Button>
+                  ))}
+                </Stack>
+              </Box>
+            )}
           </Stack>
         </Flex>
       </Box>

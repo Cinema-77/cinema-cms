@@ -12,4 +12,7 @@ export const ROUTES = {
   SELLER_TICKET_ID: '/seller/bookTicket/:_id',
 };
 
-export const keyChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+export const SITE_MODAL_TYPES = Object.freeze({
+  MEMBER_FORM: 'memberForm',
+  BONUS_FORM: 'bonusForm',
+});

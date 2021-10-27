@@ -15,7 +15,6 @@ type RoomsByMovie = {
     roomName: string;
     screenName: string;
   }) => void;
-  dismissTimeScreen: (id: string) => void;
 };
 
 export const useRoomsByMovieStore = create<RoomsByMovie>((set) => ({
@@ -73,7 +72,4 @@ export const useRoomsByMovieStore = create<RoomsByMovie>((set) => ({
           return { ...state, listRoomByMovie: [...state.listRoomByMovie] };
       }
     }),
-  dismissTimeScreen: (id: string) => {
-    console.log(id);
-  },
 }));

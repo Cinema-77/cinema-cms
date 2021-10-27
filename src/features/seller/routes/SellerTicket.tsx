@@ -4,8 +4,6 @@ import {
   BreadcrumbLink,
   Flex,
   Heading,
-  List,
-  ListItem,
   Stack,
   Tag,
   Text,
@@ -15,73 +13,72 @@ import {
   Radio,
   RadioGroup,
   SimpleGrid,
-  FormControl,
-  FormLabel,
   Input,
   Checkbox,
-  NumberInput,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInputField,
-  NumberInputStepper,
+  Spinner,
+  FormControl,
+  FormLabel,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { BsArrowRight, BsArrowLeft } from 'react-icons/bs';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import { SiteHeader } from '@/components';
-import { keyChar } from '@/constants';
+import { SITE_MODAL_TYPES } from '@/constants';
+import {
+  Ticket,
+  useTicketsByShowTimes,
+  mapToShowtimeDetails,
+  CustomerInfo,
+  SeatList,
+  MemberFormModal,
+  BonusFormModal,
+} from '@/features/seller';
+import { ModalType, useSellerStore } from '@/stores/seller';
 
-interface SellerTicketProps extends RouteComponentProps {
+interface TParams {
+  _id: string;
+}
+interface SellerTicketProps extends RouteComponentProps<TParams> {
   session: any;
 }
 
+export const getModal = (modalType: ModalType) => {
+  switch (modalType) {
+    case SITE_MODAL_TYPES.MEMBER_FORM:
+      return <MemberFormModal />;
+    case SITE_MODAL_TYPES.BONUS_FORM:
+      return <BonusFormModal />;
+    default:
+      return undefined;
+  }
+};
+
 const SellerTicket: React.FC<SellerTicketProps> = (props) => {
   const { match } = props;
-  const arrayChar = keyChar.split('');
-  //get movie by id
-  console.log(match);
+  const { isLoading, data } = useTicketsByShowTimes({ showtimesId: match.params._id });
+  const { modalType, setModal, step, nextStep, previousStep } = useSellerStore();
+  const [selectedSeats, setSelectedSeats] = React.useState<Ticket[]>([]);
 
-  const mapToButton = () => {
-    const arraySeat = [];
-    for (let i = 0; i < 10; i += 1) {
-      const nameRow = String.fromCharCode(i + 65);
-      const arrayName = [];
-      for (let j = 1; j <= 10; j += 1) {
-        arrayName.push({ isChecked: false, nameSeat: nameRow + j, status: nameRow == 'A' ? 1 : 0 });
-      }
-      arraySeat.push({ nameRow, arrayName });
-    }
-    return arraySeat;
-  };
+  if (isLoading) {
+    return (
+      <Flex justifyContent="center">
+        <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
+      </Flex>
+    );
+  }
 
-  const [arrayButton, setArrayButton] = React.useState(mapToButton());
+  if (!data?.values) {
+    return null;
+  }
 
-  const onSelectSeat = (nameRow: string, nameSeat: string) => {
-    const selectedRow = arrayButton.find((b) => b.nameRow == nameRow);
-    if (selectedRow) {
-      const selectedSeat = selectedRow.arrayName.find((seat) => seat.nameSeat == nameSeat);
-      if (selectedSeat) {
-        selectedSeat.isChecked = !selectedSeat.isChecked;
-        setArrayButton([...arrayButton]);
-      }
-    }
-  };
-
-  const getColorScheme = (button: any) => {
-    if (button.status == 1) {
-      return 'red';
-    }
-    if (button.isChecked) {
-      return 'cyan';
-    }
-    return undefined;
-  };
+  const { showTimeDetail: detail } = data.values;
+  const showTimeDetail = mapToShowtimeDetails(detail);
 
   return (
     <Box>
       <SiteHeader menuName="Lịch chiếu" heading={`Chi tiết lịch chiếu `}>
-        <BreadcrumbItem isCurrentPage>
+        <BreadcrumbItem>
           <BreadcrumbLink>Suất chiếu phim</BreadcrumbLink>
         </BreadcrumbItem>
       </SiteHeader>
@@ -104,34 +101,14 @@ const SellerTicket: React.FC<SellerTicketProps> = (props) => {
               </Heading>
               {/*Seet Wrapper */}
               <Box px={2}>
-                <Box>
-                  <Stack spacing={2} alignItems="center" direction="column-reverse">
-                    {arrayButton.map((b, index) => (
-                      <List display="flex" key={`${index}`}>
-                        <Button as={ListItem} width="20px" variant="outline">
-                          {b.nameRow}
-                        </Button>
-                        <Stack as={List} mx={3} spacing={2} direction="row">
-                          {b.arrayName.map((s, index) => (
-                            <Button
-                              key={`${index} + a`}
-                              width="20px"
-                              colorScheme={getColorScheme(s)}
-                              isDisabled={s.status == 1}
-                              color={s.isChecked ? 'white' : undefined}
-                              onClick={() => onSelectSeat(b.nameRow, s.nameSeat)}
-                            >
-                              {index + 1}
-                            </Button>
-                          ))}
-                        </Stack>
-                        <Button as={ListItem} width="20px" variant="outline">
-                          {arrayChar[index]}
-                        </Button>
-                      </List>
-                    ))}
-                  </Stack>
-                </Box>
+                {/*Seet List */}
+                <SeatList
+                  seats={[]}
+                  selectedSeats={selectedSeats}
+                  setSelectedSeats={setSelectedSeats}
+                />
+
+                {/*Screen */}
 
                 <Box
                   border="3px"
@@ -145,6 +122,7 @@ const SellerTicket: React.FC<SellerTicketProps> = (props) => {
                 >
                   Màn hình
                 </Box>
+
                 <Stack spacing={3} direction="row" justifyContent="center">
                   <Box display="flex">
                     <Tag mr={3} colorScheme="cyan" />
@@ -164,6 +142,7 @@ const SellerTicket: React.FC<SellerTicketProps> = (props) => {
                   </Box>
                 </Stack>
               </Box>
+
               <SimpleGrid
                 mt={5}
                 borderTop="1px solid"
@@ -177,52 +156,39 @@ const SellerTicket: React.FC<SellerTicketProps> = (props) => {
                   </Heading>
                   <RadioGroup defaultValue="1">
                     <SimpleGrid columns={2} spacing={5}>
-                      <Radio colorScheme="red" value="nl">
+                      <Radio colorScheme="cyan" value="nl">
                         Nguời lớn
                       </Radio>
-                      <Radio colorScheme="green" value="sv">
+                      <Radio colorScheme="cyan" value="sv">
                         Sinh viên
                       </Radio>
-                      <Radio colorScheme="orange" value="te" defaultChecked>
+                      <Radio colorScheme="cyan" value="te" defaultChecked>
                         Trẻ em
                       </Radio>
                     </SimpleGrid>
                   </RadioGroup>
                   <FormControl id="first-name" mt={3}>
                     <FormLabel>Giá vé</FormLabel>
-                    <Input defaultValue="60.000,00 VNĐ" />
+                    <Input defaultValue="60.000,00 VNĐ" isReadOnly />
                   </FormControl>
                 </Box>
+
                 <Box>
                   <Heading as="h5" fontWeight="500" fontSize="md" my={3}>
                     Thành viên
                   </Heading>
-                  <Checkbox defaultIsChecked>Khách hàng thành viên</Checkbox>
-                  <FormControl id="first-name" mt={3} display="flex">
-                    <FormLabel>Tên khách hàng</FormLabel>
-                    <Input defaultValue="Nguyễn Văn A" />
-                  </FormControl>
-                  <FormControl id="first-name" mt={3} display="flex">
-                    <FormLabel>Điểm tích luỹ</FormLabel>
-                    <Input defaultValue="30" />
-                  </FormControl>
-                  <FormControl id="first-name" mt={3} display="flex">
-                    <FormLabel>Điểm cộng thêm</FormLabel>
-                    <Input defaultValue="2" />
-                  </FormControl>
-                  <FormControl id="first-name" my={3}>
-                    <FormLabel>Đổi vé miễn phí</FormLabel>
-                    <NumberInput step={1} defaultValue={1} min={1} max={5}>
-                      <NumberInputField />
-                      <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                      </NumberInputStepper>
-                    </NumberInput>
-                  </FormControl>
-                  <Button colorScheme="cyan" color="white">
-                    Đổi vé
-                  </Button>
+                  <Checkbox onChange={() => setModal(SITE_MODAL_TYPES.MEMBER_FORM)}>
+                    Khách hàng thành viên
+                  </Checkbox>
+
+                  {/* {MemberPopUp} */}
+
+                  <CustomerInfo
+                    name="test"
+                    point="30"
+                    newPoint="2"
+                    setModal={() => setModal(SITE_MODAL_TYPES.BONUS_FORM)}
+                  />
                 </Box>
               </SimpleGrid>
             </Box>
@@ -232,27 +198,29 @@ const SellerTicket: React.FC<SellerTicketProps> = (props) => {
                 <Image
                   boxSize="200px"
                   objectFit="cover"
-                  src="https://images.unsplash.com/photo-1579762689878-ce41dd75ad98?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=900&q=80"
-                  alt="Dan Abramov"
+                  src={showTimeDetail.moviePoster}
+                  alt={showTimeDetail.movieName}
                   margin="0 auto"
                 />
                 <Heading as="h4" fontSize="md" textTransform="uppercase" mt={4}>
-                  Lật mặt 48h
+                  {showTimeDetail.movieName}
                 </Heading>
                 <Box display="flex" alignItems="flex-start" my={5} flexDirection="column">
                   <Badge colorScheme="cyan" variant="solid">
-                    C18
+                    C{showTimeDetail.movieLimitAge}
                   </Badge>
-                  <Text color="red" fontSize="md">
-                    (*) Phim dành cho khán giả từ 18 tuổi trở lên
-                  </Text>
+                  {showTimeDetail.movieLimitAge > 17 && (
+                    <Text color="red" fontSize="md">
+                      (*) Phim dành cho khán giả từ 18 tuổi trở lên
+                    </Text>
+                  )}
                 </Box>
                 <Stack spacing={2}>
                   <Box paddingBottom="8px" borderBottom="1px solid">
                     <b>Rạp : </b> Movieer Tân Phú
                   </Box>
                   <Box paddingBottom="8px" borderBottom="1px solid">
-                    <b>Suất chiếu : </b> 20:00 | Thứ 5, 21/10/2021
+                    <b>Suất chiếu : </b> {`${showTimeDetail.time} ${showTimeDetail.date}`}
                   </Box>
                   <Box paddingBottom="8px" borderBottom="1px solid">
                     <b>Combo : </b>
@@ -267,10 +235,21 @@ const SellerTicket: React.FC<SellerTicketProps> = (props) => {
                     </Text>
                   </Box>
                   <Stack spacing={2} direction="row">
-                    <Button leftIcon={<BsArrowLeft />} colorScheme="cyan" color="white">
+                    <Button
+                      leftIcon={<BsArrowLeft />}
+                      colorScheme="cyan"
+                      color="white"
+                      isDisabled={step === 1}
+                      onClick={previousStep}
+                    >
                       Quay lại
                     </Button>
-                    <Button rightIcon={<BsArrowRight />} colorScheme="cyan" color="white">
+                    <Button
+                      rightIcon={<BsArrowRight />}
+                      colorScheme="cyan"
+                      color="white"
+                      onClick={nextStep}
+                    >
                       Tiếp tục
                     </Button>
                   </Stack>
@@ -280,6 +259,7 @@ const SellerTicket: React.FC<SellerTicketProps> = (props) => {
           </Stack>
         </Stack>
       </Flex>
+      {getModal(modalType)}
     </Box>
   );
 };

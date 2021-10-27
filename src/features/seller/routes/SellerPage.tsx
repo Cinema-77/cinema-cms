@@ -1,23 +1,30 @@
-import { Box, BreadcrumbItem, BreadcrumbLink, Button, Flex, Stack } from '@chakra-ui/react';
+import {
+  Box,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  Button,
+  Flex,
+  Spinner,
+  Stack,
+} from '@chakra-ui/react';
 import { format } from 'date-fns';
 import * as React from 'react';
 
 import { SiteHeader } from '@/components';
-import { ShowTimesItem } from '@/features/showtimes';
-import { getDay, getEachDayOfInterval } from '@/utils/format';
+import { getRangeDate } from '@/features/seller';
+import { ShowTimesItem, useShowTimesByDate } from '@/features/showtimes';
+import { getDay } from '@/utils/format';
 
 interface SellerPageProps {
   children?: React.ReactNode;
 }
 
 export const SellerPage: React.FC<SellerPageProps> = () => {
-  const today = new Date();
-  const endDay = today.setDate(today.getDate() + 5);
-  const result = getEachDayOfInterval({
-    start: new Date(),
-    end: endDay,
-  });
-  const [activeDate, setActiveDate] = React.useState(0);
+  const { rangeDate, startDay } = getRangeDate();
+
+  const [activeDate, setActiveDate] = React.useState<string>(format(startDay, 'MM/dd/yyyy'));
+
+  const showTimesByDateQuery = useShowTimesByDate({ date: activeDate });
 
   return (
     <Box>
@@ -38,21 +45,25 @@ export const SellerPage: React.FC<SellerPageProps> = () => {
           flexShrink={0}
         >
           <Stack spacing={2} direction="row">
-            {result
+            {rangeDate
               .map((d) => ({
                 date: format(d, 'MM/dd/yyyy'),
                 day: getDay(d),
               }))
-              .map((b, i) => {
-                const isActive = i === activeDate;
+              .map((b) => {
+                const isActive = b.date === activeDate;
                 return (
                   <Button
                     key={b.date}
                     size="lg"
                     colorScheme={isActive ? 'cyan' : undefined}
                     color={isActive ? 'white' : undefined}
-                    onClick={() => setActiveDate(i)}
+                    onClick={() => setActiveDate(b.date)}
                     fontSize="medium"
+                    _hover={{
+                      backgroundColor: 'cyan.400',
+                      color: 'white',
+                    }}
                   >
                     {b.date}
                     <br /> {b.day}
@@ -60,10 +71,23 @@ export const SellerPage: React.FC<SellerPageProps> = () => {
                 );
               })}
           </Stack>
-          <Stack spacing={3} w="100%">
-            <ShowTimesItem />
-            <ShowTimesItem />
-          </Stack>
+          {showTimesByDateQuery.isLoading ? (
+            <Flex justifyContent="center">
+              <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+                size="xl"
+              />
+            </Flex>
+          ) : (
+            <Stack spacing={3} w="100%">
+              {showTimesByDateQuery.data?.showTimes.map((showtime) => (
+                <ShowTimesItem {...showtime} key={showtime.movie.name} />
+              ))}
+            </Stack>
+          )}
         </Stack>
       </Flex>
     </Box>

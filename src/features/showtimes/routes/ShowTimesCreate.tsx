@@ -33,7 +33,7 @@ import {
 } from '@/components';
 import { colorBadge, Room } from '@/features/room';
 import { useAuth } from '@/lib/auth';
-import { useRoomsByMovieStore } from '@/store/timeSlot';
+import { useRoomsByMovieStore } from '@/stores/timeSlot';
 
 interface ShowTimesCreateProps {
   children?: React.ReactNode;
