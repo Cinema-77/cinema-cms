@@ -15,48 +15,47 @@ import { Form, InputField } from '@/components';
 import { useSellerStore } from '@/stores/seller';
 
 type PhoneValue = {
-  phone: string;
+  phoneNumber: string;
 };
 
 export const MemberFormModal: React.FC<any> = () => {
-  const { openModal, closeModal } = useSellerStore();
+  const { openModal, closeModal, fetchMember, isLoading } = useSellerStore();
 
   return (
     <Modal onClose={closeModal} isOpen={openModal} isCentered>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Khách hàng thành viên</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Form<PhoneValue>
-            onSubmit={async (data) => {
-              console.log(data);
-            }}
-          >
-            {({ register, formState }) => (
-              <Stack spacing={4}>
-                <InputField
-                  type="text"
-                  label="Nhập số điện thoại khách hàng"
-                  registration={register('phone')}
-                  error={formState.errors['phone']}
-                />
-              </Stack>
-            )}
-          </Form>
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            colorScheme="cyan"
-            type="submit"
-            // isLoading={timeSlotMutation.isLoading}
-            color="white"
-            mr={3}
-          >
-            Lưu
-          </Button>
-          <Button onClick={closeModal}>Trở lại</Button>
-        </ModalFooter>
+        <Form<PhoneValue>
+          onSubmit={async ({ phoneNumber }) => {
+            await fetchMember(phoneNumber);
+            closeModal();
+          }}
+        >
+          {({ register, formState }) => (
+            <>
+              <ModalHeader>Khách hàng thành viên</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Stack spacing={4}>
+                  <InputField
+                    type="text"
+                    label="Nhập số điện thoại khách hàng"
+                    registration={register('phoneNumber')}
+                    error={formState.errors['phoneNumber']}
+                  />
+                </Stack>
+              </ModalBody>
+              <ModalFooter>
+                <Button onClick={closeModal} mr={3}>
+                  Trở lại
+                </Button>
+                <Button colorScheme="cyan" type="submit" isLoading={isLoading} color="white">
+                  Xác nhận
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </Form>
       </ModalContent>
     </Modal>
   );

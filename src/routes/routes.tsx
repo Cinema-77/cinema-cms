@@ -11,10 +11,7 @@ const { CreateRoom } = lazyImport(() => import('@/features/room'), 'CreateRoom')
 const { RoomList } = lazyImport(() => import('@/features/room'), 'RoomList');
 const { ShowTimesCreate } = lazyImport(() => import('@/features/showtimes'), 'ShowTimesCreate');
 const { SellerPage } = lazyImport(() => import('@/features/seller'), 'SellerPage');
-const { SellerTicketWithRouter } = lazyImport(
-  () => import('@/features/seller'),
-  'SellerTicketWithRouter'
-);
+const { SellerTicket } = lazyImport(() => import('@/features/seller'), 'SellerTicket');
 
 const routes: any[] = [
   {
@@ -71,7 +68,7 @@ const routes: any[] = [
       },
       {
         path: ROUTES.SELLER_TICKET_ID,
-        component: SellerTicketWithRouter,
+        component: SellerTicket,
         title: 'Lịch chiếu | Giá vé',
       },
     ],

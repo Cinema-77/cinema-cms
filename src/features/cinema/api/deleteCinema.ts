@@ -27,7 +27,7 @@ export const useDeleteCinema = ({ config }: UseDeleteCinematOptions = {}) => {
         ...previousCinemas,
         values: {
           cinemas: previousCinemas?.values.cinemas.filter(
-            (cinema) => cinema._id !== deleteCinema.cinemaId
+            (cinema) => cinema._id !== deleteCinema.cinemaId,
           ),
         },
       });

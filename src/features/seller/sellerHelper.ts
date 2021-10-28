@@ -1,7 +1,4 @@
-import { isWeekend } from 'date-fns';
-import { v4 as uuidv4 } from 'uuid';
-
-import { Ticket } from '@/features/seller';
+import { TicketType } from '@/features/seller';
 import { ShowTimesDetail } from '@/features/showtimes';
 import { getDay, getEachDayOfInterval } from '@/utils/format';
 
@@ -37,31 +34,12 @@ export const mapToShowtimeDetails = (showtime: ShowTimesDetail) => {
   };
 };
 
-export interface SeatType {
-  nameRow: string;
-  seatsName: Ticket[];
-}
-
-export const mapToSeat = (showTime: ShowTimesDetail): SeatType[] => {
-  const { rowNumber, seatsInRow, _id, weekdayPrice, weekendPrice } = mapToShowtimeDetails(showTime);
-  const seats = [];
-
-  for (let i = 0; i < rowNumber; i += 1) {
-    const nameRow = String.fromCharCode(i + 65);
-    const seatsName: Ticket[] = [];
-
-    for (let j = 1; j <= seatsInRow; j += 1) {
-      const priceSeat = isWeekend(new Date()) ? weekendPrice : weekdayPrice;
-      const newSeat: Ticket = {
-        idSeat: uuidv4(),
-        seatName: nameRow + j,
-        price: priceSeat,
-        status: 0,
-        showTimeDetail: _id,
-      };
-      seatsName.push(newSeat);
+export const getOldPrice = (seatRows: TicketType[]) => {
+  for (const row of seatRows) {
+    const seat = row.nameSeats.find((s) => s.status === 0);
+    if (seat) {
+      return seat.price;
     }
-    seats.push({ nameRow, seatsName });
   }
-  return seats;
+  return 0;
 };

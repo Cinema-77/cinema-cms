@@ -34,6 +34,7 @@ axios.interceptors.response.use(
       status: 'error',
       position: 'top-right',
     });
+
     return Promise.reject(error);
-  }
+  },
 );

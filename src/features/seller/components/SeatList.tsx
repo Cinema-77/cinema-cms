@@ -1,21 +1,38 @@
 import { Box, ListItem, List, Button, Stack } from '@chakra-ui/react';
 import * as React from 'react';
 
-import { Ticket, SeatType } from '@/features/seller';
+import { TicketType, SeatType, UserType } from '@/features/seller';
 
 interface SeatListProps {
-  seats: SeatType[];
-  selectedSeats: Ticket[];
-  setSelectedSeats: (value: React.SetStateAction<Ticket[]>) => void;
+  seats: TicketType[];
+  selectedSeats: SeatType[];
+  setSelectedSeats: (value: React.SetStateAction<SeatType[]>) => void;
+  setDisplayPrice: (value: React.SetStateAction<number>) => void;
+  setValueUserType: (value: React.SetStateAction<string>) => void;
+  oldPrice: number;
 }
 
-export const SeatList: React.FC<SeatListProps> = ({ seats, selectedSeats, setSelectedSeats }) => {
-  const onSelectSeat = (seat: Ticket) => {
+export const SeatList: React.FC<SeatListProps> = ({
+  seats,
+  selectedSeats,
+  setSelectedSeats,
+  setDisplayPrice,
+  setValueUserType,
+  oldPrice,
+}) => {
+  const onSelectSeat = (seat: SeatType) => {
     const hasSeat = selectedSeats.find((s) => s.seatName === seat.seatName);
     const selectedSeat = !hasSeat
       ? [...selectedSeats, seat]
-      : selectedSeats.filter((s) => s.seatName !== seat.seatName);
+      : selectedSeats.filter((s) => s.seatName !== hasSeat.seatName);
+
+    if (hasSeat) {
+      hasSeat.price = oldPrice;
+    }
+
+    setDisplayPrice(hasSeat ? 0 : seat.price);
     setSelectedSeats(selectedSeat);
+    setValueUserType(UserType.Adult);
   };
 
   const getColorScheme = (seat: any) => {
@@ -26,6 +43,7 @@ export const SeatList: React.FC<SeatListProps> = ({ seats, selectedSeats, setSel
     if (selectedSeats.includes(seat)) {
       return 'cyan';
     }
+
     return undefined;
   };
 
@@ -38,7 +56,7 @@ export const SeatList: React.FC<SeatListProps> = ({ seats, selectedSeats, setSel
               {b.nameRow}
             </Button>
             <Stack as={List} mx={3} spacing={2} direction="row">
-              {b.seatsName.map((s, index) => {
+              {b.nameSeats.map((s, index) => {
                 return (
                   <Button
                     key={s.idSeat}

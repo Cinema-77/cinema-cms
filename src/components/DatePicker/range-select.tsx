@@ -122,7 +122,7 @@ export const RangeSelect: React.FC<RangeSelectProps> = () => {
                   selectRange(
                     startOfWeek(addWeeks(new Date(), 1)),
                     endOfWeek(addWeeks(new Date(), 1)),
-                    true
+                    true,
                   )
                 }
                 size="sm"
@@ -201,7 +201,7 @@ export const RangeSelect: React.FC<RangeSelectProps> = () => {
                                 } else {
                                   const range = eachDayOfInterval({ start: sorted[0], end: day });
                                   const diff = sorted.filter((d) =>
-                                    range.map((a) => a.getTime()).includes(d.getTime())
+                                    range.map((a) => a.getTime()).includes(d.getTime()),
                                   );
 
                                   selectRange(diff[0], diff[diff.length - 1], true);

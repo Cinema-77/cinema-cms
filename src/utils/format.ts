@@ -69,3 +69,7 @@ export const getEachDayOfInterval = ({ start, end }: dataEachDay) => {
     end,
   });
 };
+
+export const formatNumber = (num: number) => {
+  return new Intl.NumberFormat('vn', { maximumFractionDigits: 3 }).format(num);
+};

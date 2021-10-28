@@ -57,7 +57,7 @@ module.exports = {
         'import/default': 'off',
         'import/no-named-as-default-member': 'off',
         'import/no-named-as-default': 'off',
-
+        'react/no-children-prop': 'off',
         'react-hooks/rules-of-hooks': 'off',
         'react/react-in-jsx-scope': 'off',
 

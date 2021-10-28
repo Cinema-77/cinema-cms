@@ -36,9 +36,9 @@ export type RegisterCredentialsDTO = {
 };
 
 export const registerWithEmailAndPassword = (
-  data: RegisterCredentialsDTO
+  data: RegisterCredentialsDTO,
 ): Promise<AuthResponse> => {
-  return axios.post('/auth/register', data);
+  return axios.post('/staff/register', data);
 };
 
 export const getWards = (district_code: string): Promise<District> => {

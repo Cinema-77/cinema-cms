@@ -17,19 +17,19 @@ export const CustomerInfo: React.FC<CustomerInfoProps> = (props) => {
         <FormLabel flex={1} flexShrink={0}>
           Tên khách hàng
         </FormLabel>
-        <Input flex={1} defaultValue={name} isReadOnly />
+        <Input flex={1} value={name} isReadOnly />
       </FormControl>
       <FormControl id="first-name" mt={3} display="flex">
         <FormLabel flex={1} flexShrink={0}>
           Điểm tích luỹ
         </FormLabel>
-        <Input flex={1} defaultValue={point} isReadOnly />
+        <Input flex={1} value={point} isReadOnly />
       </FormControl>
       <FormControl id="first-name" mt={3} display="flex">
         <FormLabel flex={1} flexShrink={0}>
           Điểm cộng thêm
         </FormLabel>
-        <Input flex={1} defaultValue={newPoint} isReadOnly />
+        <Input flex={1} value={newPoint} isReadOnly />
       </FormControl>
       <Box display="flex" justifyContent="flex-end" mt={3}>
         <Button colorScheme="cyan" color="white" onClick={setModal}>
