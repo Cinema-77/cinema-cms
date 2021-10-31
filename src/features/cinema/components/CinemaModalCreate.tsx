@@ -11,12 +11,12 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import React, { useRef, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { MdAdd } from 'react-icons/md';
+import * as z from 'zod';
 
 import { useCreateCinema } from '../api/createCinema';
 
-import { InputField, SelectField } from '@/components';
+import { Form, InputField, SelectField } from '@/components';
 import { District, getDistrict, getWards, useCities, Ward } from '@/features/auth';
 
 type Address = {
@@ -34,9 +34,18 @@ export type CinemaValues = {
   };
 };
 
+const schema = z.object({
+  name: z.string().nonempty({ message: 'Tên rạp là bắt buộc' }),
+  address: z.object({
+    city: z.string().nonempty({ message: 'Thành phố là bắt buộc' }),
+    district: z.string().nonempty({ message: 'Quận/Huyện là bắt buộc' }),
+    ward: z.string().nonempty({ message: 'Phường/Xã là bắt buộc' }),
+    street: z.string().nonempty({ message: 'Đường là bắt buộc' }),
+  }),
+});
+
 export const CinemaModalCreate: React.FC<any> = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { register, formState, handleSubmit } = useForm();
   const [address, setAdress] = useState<Address>({ districts: [], wards: [] });
   const initialRef = useRef() as any;
   const cityQuery = useCities();
@@ -58,7 +67,7 @@ export const CinemaModalCreate: React.FC<any> = () => {
     }
   };
 
-  const onCreateCinema: SubmitHandler<CinemaValues> = async (data: CinemaValues) => {
+  const onCreateCinema = async (data: CinemaValues) => {
     const { name, address } = data;
     const newCity = address.city.split('-');
     const newWard = address.ward.split('-');
@@ -75,8 +84,10 @@ export const CinemaModalCreate: React.FC<any> = () => {
     await createCinema.mutateAsync(values);
     onClose();
   };
+
   const bg = useColorModeValue('gray.900', 'white');
   const color = useColorModeValue('white', 'gray.900');
+
   return (
     <>
       <Button
@@ -97,79 +108,90 @@ export const CinemaModalCreate: React.FC<any> = () => {
 
       <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
-        <ModalContent as="form" onSubmit={handleSubmit(onCreateCinema)}>
-          <ModalHeader fontWeight="bold">Add Cinema</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <InputField
-              type="text"
-              label="Tên Rạp Phim"
-              error={formState.errors['name']}
-              registration={register('name')}
-            />
-            <SelectField
-              label="Thành phố"
-              placeholder="Thành phố"
-              registration={register('address.city')}
-              error={formState.errors['address']?.city}
-              options={
-                cityQuery.data &&
-                cityQuery?.data.map((city) => ({
-                  label: city.name,
-                  value: `${city.code}-${city.name}`,
-                }))
-              }
-              onChanging={onChangeCity}
-              mt="4"
-            />
-            <SelectField
-              label="Quận / Huyện"
-              placeholder="Quận / Huyện"
-              registration={register('address.district')}
-              error={formState.errors['address']?.district}
-              options={address?.districts.map((d) => ({
-                label: d.name,
-                value: `${d.code}-${d.name}`,
-              }))}
-              onChanging={onChangeDistrict}
-              mt="4"
-            />
-            <SelectField
-              label="Phường"
-              placeholder="Phường"
-              registration={register('address.ward')}
-              error={formState.errors['address']?.ward}
-              options={address?.wards.map((d) => ({
-                label: d.name,
-                value: `${d.code}-${d.name}`,
-              }))}
-              mt="4"
-            />
-            <InputField
-              type="text"
-              label="Đường"
-              error={formState.errors['address']?.street}
-              registration={register('address.street')}
-              mt="4"
-            />
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose} mr={3} fontWeight="medium">
-              Cancel
-            </Button>
-            <Button
-              backgroundColor="cyan.400"
-              color="white"
-              fontWeight="medium"
-              type="submit"
-              _hover={{
-                backgroundColor: 'cyan.700',
-              }}
-              isLoading={createCinema.isLoading}
-            >
-              Create
-            </Button>
-          </ModalFooter>
+        <ModalContent>
+          <Form<CinemaValues, typeof schema>
+            onSubmit={(data) => {
+              onCreateCinema(data);
+            }}
+            schema={schema}
+          >
+            {({ register, formState }) => (
+              <>
+                <ModalHeader fontWeight="bold">Add Cinema</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody pb={6}>
+                  <InputField
+                    type="text"
+                    label="Tên Rạp Phim"
+                    error={formState.errors['name']}
+                    registration={register('name')}
+                  />
+                  <SelectField
+                    label="Thành phố"
+                    placeholder="Thành phố"
+                    registration={register('address.city')}
+                    error={formState.errors['address']?.city}
+                    options={
+                      cityQuery.data &&
+                      cityQuery?.data.map((city) => ({
+                        label: city.name,
+                        value: `${city.code}-${city.name}`,
+                      }))
+                    }
+                    onChanging={onChangeCity}
+                    mt="4"
+                  />
+                  <SelectField
+                    label="Quận / Huyện"
+                    placeholder="Quận / Huyện"
+                    registration={register('address.district')}
+                    error={formState.errors['address']?.district}
+                    options={address?.districts.map((d) => ({
+                      label: d.name,
+                      value: `${d.code}-${d.name}`,
+                    }))}
+                    onChanging={onChangeDistrict}
+                    mt="4"
+                  />
+                  <SelectField
+                    label="Phường"
+                    placeholder="Phường"
+                    registration={register('address.ward')}
+                    error={formState.errors['address']?.ward}
+                    options={address?.wards.map((d) => ({
+                      label: d.name,
+                      value: `${d.code}-${d.name}`,
+                    }))}
+                    mt="4"
+                  />
+                  <InputField
+                    type="text"
+                    label="Đường"
+                    error={formState.errors['address']?.street}
+                    registration={register('address.street')}
+                    mt="4"
+                  />
+                </ModalBody>
+                <ModalFooter>
+                  <Button onClick={onClose} mr={3} fontWeight="medium">
+                    Cancel
+                  </Button>
+                  <Button
+                    backgroundColor="cyan.400"
+                    color="white"
+                    fontWeight="medium"
+                    type="submit"
+                    _hover={{
+                      backgroundColor: 'cyan.700',
+                    }}
+                    isLoading={createCinema.isLoading}
+                  >
+                    Create
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </Form>
         </ModalContent>
       </Modal>
     </>

@@ -30,7 +30,7 @@ import { isEmptyObject } from '@/utils/object';
 interface SeatsRouteProps {
   seats: TicketType[];
   selectedSeats: SeatType[];
-  setSelectedSeats: (value: React.SetStateAction<SeatType[]>) => void;
+  setSelectedSeats: (seats: SeatType[]) => void;
   setModal: (modalType: string) => void;
   member: AuthUser;
 }

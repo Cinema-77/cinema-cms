@@ -15,11 +15,7 @@ import { getRangeDate } from '@/features/seller';
 import { ShowTimesItem, useShowTimesByDate } from '@/features/showtimes';
 import { getDay } from '@/utils/format';
 
-interface SellerPageProps {
-  children?: React.ReactNode;
-}
-
-export const SellerPage: React.FC<SellerPageProps> = () => {
+export const SellerPage = () => {
   const { rangeDate, startDay } = getRangeDate();
 
   const [activeDate, setActiveDate] = React.useState<string>(format(startDay, 'MM/dd/yyyy'));

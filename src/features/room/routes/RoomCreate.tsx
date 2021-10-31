@@ -12,9 +12,6 @@ import { Form, InputField, SelectField } from '@/components';
 import { InputNumberField } from '@/components/Form/InputNumberField';
 import { SiteHeader } from '@/components/Layout';
 import { useAuth } from '@/lib/auth';
-interface RoomProps {
-  children?: React.ReactNode;
-}
 
 type RoomValues = {
   name: string;
@@ -30,7 +27,7 @@ const schema = z.object({
   screenId: z.string(),
 });
 
-export const CreateRoom: React.FC<RoomProps> = () => {
+export const CreateRoom = () => {
   const screensQuery = useScreens();
   const RoomCreateMutation = useCreateRoom();
   const { user } = useAuth();

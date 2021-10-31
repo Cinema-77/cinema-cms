@@ -6,7 +6,7 @@ import { TicketType, SeatType, UserType } from '@/features/seller';
 interface SeatListProps {
   seats: TicketType[];
   selectedSeats: SeatType[];
-  setSelectedSeats: (value: React.SetStateAction<SeatType[]>) => void;
+  setSelectedSeats: (seats: SeatType[]) => void;
   setDisplayPrice: (value: React.SetStateAction<number>) => void;
   setValueUserType: (value: React.SetStateAction<string>) => void;
   oldPrice: number;
@@ -64,6 +64,7 @@ export const SeatList: React.FC<SeatListProps> = ({
                     colorScheme={getColorScheme(s)}
                     color={selectedSeats.includes(s) ? 'white' : undefined}
                     onClick={() => onSelectSeat(s)}
+                    isDisabled={s.status === 1}
                   >
                     {index + 1}
                   </Button>

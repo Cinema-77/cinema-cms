@@ -6,11 +6,8 @@ import { CinemaItem } from '../components';
 import { CinemaModalCreate } from '../components/CinemaModalCreate';
 
 import { SiteHeader } from '@/components/Layout';
-interface CinemasProps {
-  children: React.ReactNode;
-}
 
-export const Cinemas: React.FC<CinemasProps> = () => {
+export const Cinemas = () => {
   const { isLoading, data } = useCinemas();
 
   return (

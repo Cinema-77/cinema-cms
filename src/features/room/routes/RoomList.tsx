@@ -19,17 +19,13 @@ import { MenuListRoom } from '../components/MenuList';
 import { Table, Td, Th, Tr } from '@/components';
 import { SiteHeader } from '@/components/Layout';
 
-interface RoomListProps {
-  children?: React.ReactNode;
-}
-
 export const colorBadge: any = {
   '2D': 'gray',
   '3D': 'purple',
   IMAX: 'red',
 };
 
-export const RoomList: React.FC<RoomListProps> = () => {
+export const RoomList = () => {
   const bg = useColorModeValue('gray.900', 'white');
   const color = useColorModeValue('white', 'gray.900');
   const roomsQuery = useRooms();

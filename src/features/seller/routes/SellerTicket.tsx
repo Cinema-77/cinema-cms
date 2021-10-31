@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom';
 import { SiteHeader } from '@/components';
 import { SITE_MODAL_TYPES } from '@/constants';
 import {
-  SeatType,
   useTicketsByShowTimes,
   ShowTimeDetail,
   MemberFormModal,
@@ -17,9 +16,6 @@ import { ModalType, useSellerStore } from '@/stores/seller';
 
 interface TParams {
   _id: string;
-}
-interface SellerTicketProps {
-  session: any;
 }
 
 export const getModal = (modalType: ModalType) => {
@@ -33,11 +29,23 @@ export const getModal = (modalType: ModalType) => {
   }
 };
 
-export const SellerTicket: React.FC<SellerTicketProps> = () => {
+export const SellerTicket = () => {
   const params: TParams = useParams();
   const ticketsByShowTimesQuery = useTicketsByShowTimes({ showtimesId: params._id });
-  const { modalType, setModal, step, nextStep, previousStep, member } = useSellerStore();
-  const [selectedSeats, setSelectedSeats] = React.useState<SeatType[]>([]);
+  const {
+    modalType,
+    step,
+    selectedSeats,
+    selectedCombos,
+    member,
+    setModal,
+    setSelectedSeats,
+    nextStep,
+    previousStep,
+    inc,
+    des,
+    reset,
+  } = useSellerStore();
 
   if (ticketsByShowTimesQuery.isLoading) {
     return (
@@ -81,7 +89,14 @@ export const SellerTicket: React.FC<SellerTicketProps> = () => {
                   member={member}
                 />
               )}
-              {step == 2 && <FoodRoute />}
+              {step == 2 && (
+                <FoodRoute
+                  listCombo={ticketsByShowTimesQuery.data.values.combos}
+                  selectedCombos={selectedCombos}
+                  increaseQuantity={inc}
+                  descreaseQuantity={des}
+                />
+              )}
             </Box>
             <Box w="30%" background="gray.100" p={3}>
               {/*Movie Detail  */}
@@ -91,6 +106,8 @@ export const SellerTicket: React.FC<SellerTicketProps> = () => {
                 nextStep={nextStep}
                 previousStep={previousStep}
                 selectedSeats={selectedSeats}
+                selectedCombos={selectedCombos}
+                clearData={reset}
               />
             </Box>
           </Stack>

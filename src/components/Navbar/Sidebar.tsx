@@ -171,13 +171,12 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 const LinkAccor = (link: LinkItemProps) => {
   return (
     <Accordion allowToggle>
-      <AccordionItem border="none" m="4">
+      <AccordionItem border="none">
         <AccordionButton
           display="flex"
           alignItems="center"
           justifyContent="flex-start"
           flexGrow={1}
-          borderRadius="lg"
           role="group"
           cursor="pointer"
           p="4"
@@ -237,8 +236,6 @@ const NavItem = ({ icon, children, href, classes, ...rest }: NavItemProps) => {
       <Flex
         align="center"
         p="4"
-        m="4"
-        borderRadius="lg"
         role="group"
         cursor="pointer"
         _hover={{

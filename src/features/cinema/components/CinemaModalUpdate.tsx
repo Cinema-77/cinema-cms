@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import React, { useRef, useState } from 'react';
 import { MdSettings } from 'react-icons/md';
+import * as z from 'zod';
 
 import { useUpdateCinema } from '../api/updateCinema';
 
@@ -33,6 +34,16 @@ export type CinemaValues = {
     street: string;
   };
 };
+
+const schema = z.object({
+  name: z.string().nonempty({ message: 'Tên rạp là bắt buộc' }),
+  address: z.object({
+    city: z.string().nonempty({ message: 'Thành phố là bắt buộc' }),
+    district: z.string().nonempty({ message: 'Quận/Huyện là bắt buộc' }),
+    ward: z.string().nonempty({ message: 'Phường/Xã là bắt buộc' }),
+    street: z.string().nonempty({ message: 'Đường là bắt buộc' }),
+  }),
+});
 
 export const CinemaModalUpdate: React.FC<CinemaValues> = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -91,12 +102,13 @@ export const CinemaModalUpdate: React.FC<CinemaValues> = (props) => {
       <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <Form<CinemaValues>
+          <Form<CinemaValues, typeof schema>
             onSubmit={async (data) => {
               await onUpdateCinema(data);
               onClose();
             }}
             options={{ defaultValues: props }}
+            schema={schema}
           >
             {({ register, formState }) => (
               <>

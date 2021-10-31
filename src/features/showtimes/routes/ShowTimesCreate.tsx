@@ -35,10 +35,6 @@ import { colorBadge, Room } from '@/features/room';
 import { useAuth } from '@/lib/auth';
 import { useRoomsByMovieStore } from '@/stores/timeSlot';
 
-interface ShowTimesCreateProps {
-  children?: React.ReactNode;
-}
-
 export type ShowTimesValues = {
   date?: string;
   dateStart: string;
@@ -48,7 +44,7 @@ export type ShowTimesValues = {
   showTimes: TimeStamp[];
 };
 
-export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = () => {
+export const ShowTimesCreate = () => {
   const moviesQuery = useMovies();
   const { listRoomByMovie, fetchRooms, checkedTimes, loading } = useRoomsByMovieStore();
 

@@ -9,21 +9,17 @@ import { InputField } from '@/components/Form';
 import { loginWithEmailAndPassword } from '@/features/auth';
 import { useAuth } from '@/lib/auth';
 
-interface AuthProps {
-  children: React.ReactNode;
-}
-
 type LoginValues = {
   username: string;
   password: string;
 };
 
 const schema = z.object({
-  username: z.string().nonempty({ message: 'Please enter your email' }).email(),
-  password: z.string().nonempty({ message: 'Please enter a password.' }),
+  username: z.string().nonempty({ message: 'Vui lòng nhập tài khoản' }).email(),
+  password: z.string().nonempty({ message: 'Vui lòng nhập mật khẩu' }),
 });
 
-export const Auth: React.FC<AuthProps> = () => {
+export const Auth = () => {
   const { user, login } = useAuth();
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const toast = useToast();

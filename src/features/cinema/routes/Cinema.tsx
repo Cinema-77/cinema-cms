@@ -11,11 +11,7 @@ import React from 'react';
 
 import { SiteHeader } from '@/components/Layout';
 
-interface CinemaProps {
-  children: React.ReactNode;
-}
-
-export const Cinema: React.FC<CinemaProps> = () => {
+export const Cinema = () => {
   return (
     <>
       <SiteHeader menuName="List Cinema" heading={`Cinema`}>

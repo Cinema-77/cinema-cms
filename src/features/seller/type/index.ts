@@ -5,7 +5,7 @@ export interface SeatType {
   seatName: string;
   price: number;
   status: 1 | 0;
-  showTimeDetail: string;
+  showTimeDetail?: string;
 }
 
 export interface TicketType {
@@ -19,7 +19,17 @@ export interface TicketResponse {
   values: {
     tickets: TicketType[];
     showTimeDetail: ShowTimesDetail;
+    combos: ComboItem[];
   };
+}
+
+export interface ComboItem {
+  _id: string;
+  name: string;
+  quantity: number;
+  image: string;
+  unit: string;
+  price: number;
 }
 
 export enum UserType {
