@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Img, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Img, Stack, Text, Wrap, WrapItem } from '@chakra-ui/react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -36,18 +36,15 @@ export const ShowTimesItem: React.FC<ShowTimesListByDate> = (props) => {
                 <Text fontSize="md" fontWeight="bold">
                   {screen2D.title} phụ đề Anh
                 </Text>
-                <Stack spacing={1} direction="row" mt={2}>
+                <Wrap spacing={2} direction="row" mt={2}>
                   {screen2D.showTimesDetails.map((showtime) => (
-                    <Button
-                      as={Link}
-                      to={`/seller/bookTicket/${showtime._id}`}
-                      variant="outline"
-                      key={showtime._id}
-                    >
-                      {showtime.timeSlot.time}
-                    </Button>
+                    <WrapItem key={showtime._id}>
+                      <Button as={Link} to={`/seller/bookTicket/${showtime._id}`} variant="outline">
+                        {showtime.timeSlot.time}
+                      </Button>
+                    </WrapItem>
                   ))}
-                </Stack>
+                </Wrap>
               </Box>
             )}
 
@@ -56,18 +53,15 @@ export const ShowTimesItem: React.FC<ShowTimesListByDate> = (props) => {
                 <Text fontSize="md" fontWeight="bold">
                   {screen3D.title} phụ đề Anh
                 </Text>
-                <Stack spacing={1} direction="row" mt={2}>
+                <Wrap spacing={1} direction="row" mt={2}>
                   {screen3D.showTimesDetails.map((showtime) => (
-                    <Button
-                      as={Link}
-                      to={`/seller/bookTicket/${showtime._id}`}
-                      variant="outline"
-                      key={showtime._id}
-                    >
-                      {showtime.timeSlot.time}
-                    </Button>
+                    <WrapItem key={showtime._id}>
+                      <Button as={Link} to={`/seller/bookTicket/${showtime._id}`} variant="outline">
+                        {showtime.timeSlot.time}
+                      </Button>
+                    </WrapItem>
                   ))}
-                </Stack>
+                </Wrap>
               </Box>
             )}
 
@@ -76,18 +70,15 @@ export const ShowTimesItem: React.FC<ShowTimesListByDate> = (props) => {
                 <Text fontSize="md" fontWeight="bold">
                   {screenIMAX.title} phụ đề Anh
                 </Text>
-                <Stack spacing={1} direction="row" mt={2}>
+                <Wrap spacing={1} direction="row" mt={2}>
                   {screenIMAX.showTimesDetails.map((showtime) => (
-                    <Button
-                      as={Link}
-                      to={`/seller/bookTicket/${showtime._id}`}
-                      variant="outline"
-                      key={showtime._id}
-                    >
-                      {showtime.timeSlot.time}
-                    </Button>
+                    <WrapItem key={showtime._id}>
+                      <Button as={Link} to={`/seller/bookTicket/${showtime._id}`} variant="outline">
+                        {showtime.timeSlot.time}
+                      </Button>
+                    </WrapItem>
                   ))}
-                </Stack>
+                </Wrap>
               </Box>
             )}
           </Stack>

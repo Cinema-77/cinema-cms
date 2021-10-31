@@ -1,7 +1,7 @@
 import { createStandaloneToast } from '@chakra-ui/toast';
 import { useMutation } from 'react-query';
 
-import { ComboItem, SeatType } from '@/features/seller';
+import { ComboItem, SeatType, BuyTicketResponse } from '@/features/seller';
 import { axios } from '@/lib/axios';
 import { MutationConfig, queryClient } from '@/lib/react-query';
 
@@ -15,7 +15,7 @@ export type BuyTicketDTO = {
   combos: ComboItem[];
 };
 
-export const buyTicket = (data: BuyTicketDTO): Promise<any> => {
+export const buyTicket = (data: BuyTicketDTO): Promise<BuyTicketResponse> => {
   return axios.post('/ticker/add', data);
 };
 
@@ -30,11 +30,11 @@ export const useBuyTicket = ({ config }: UseBuyTicketOptions = {}) => {
     onMutate: async (newTickets) => {
       await queryClient.cancelQueries('ticketsByShowtimes');
 
-      const previousTickets = queryClient.getQueryData<any>('ticketsByShowtimes');
+      const previousTickets = queryClient.getQueryData<BuyTicketResponse>('ticketsByShowtimes');
 
       queryClient.setQueryData('ticketsByShowtimes', {
         ...previousTickets,
-        values: { tickets: [...(previousTickets?.values.tickets || []), newTickets] },
+        values: { tickets: [...(previousTickets?.tickets || []), newTickets] },
       });
 
       return { previousTickets };

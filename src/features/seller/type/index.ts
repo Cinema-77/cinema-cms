@@ -38,6 +38,36 @@ export enum UserType {
   Child = 'Child',
 }
 
+interface IBill {
+  createdAt: string;
+  paymentType: number;
+  total: number;
+  user: string;
+}
+
+export interface BillsResponse {
+  foodBill: {
+    bill: IBill;
+    data: ComboItem[];
+  };
+  ticketBill: {
+    bill: IBill;
+    data: SeatType[];
+  };
+  time: string;
+  movieName: string;
+  roomName: string;
+  date: string;
+}
+export interface BuyTicketResponse {
+  success: boolean;
+  message: string;
+  combos: ComboItem[];
+  tickets: SeatType[];
+  showTimeDetail: ShowTimesDetail;
+  bills: BillsResponse;
+}
+
 interface UserAddress {
   city: string;
   district: string;
@@ -56,6 +86,7 @@ export interface AuthUser {
   createdAt: string;
   phoneNumber: string;
   profile: UserProfile;
+  point: number;
 }
 
 export interface AuthResponse {

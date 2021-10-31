@@ -8,6 +8,7 @@ import {
   Stack,
   ModalFooter,
   Button,
+  useToast,
 } from '@chakra-ui/react';
 import React from 'react';
 import * as z from 'zod';
@@ -28,15 +29,24 @@ const schema = z.object({
 
 export const MemberFormModal: React.FC<any> = () => {
   const { openModal, closeModal, fetchMember, isLoading } = useSellerStore();
-
+  const toast = useToast();
   return (
     <Modal onClose={closeModal} isOpen={openModal} isCentered>
       <ModalOverlay />
       <ModalContent>
         <Form<PhoneValue, typeof schema>
           onSubmit={async ({ phoneNumber }) => {
-            await fetchMember(phoneNumber);
-            closeModal();
+            const hasMember = await fetchMember(phoneNumber);
+            if (hasMember) {
+              toast({
+                position: 'top-right',
+                status: 'success',
+                title: 'Lấy thông tin khách hàng thành công',
+                isClosable: true,
+              });
+
+              closeModal();
+            }
           }}
           schema={schema}
         >

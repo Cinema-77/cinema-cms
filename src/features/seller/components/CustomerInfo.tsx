@@ -3,8 +3,8 @@ import * as React from 'react';
 
 interface CustomerInfoProps {
   name: string;
-  point: string;
-  newPoint: string;
+  point: number;
+  newPoint: number;
   setModal: () => void;
 }
 

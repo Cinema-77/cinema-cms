@@ -1,7 +1,7 @@
 import create from 'zustand';
 
 import { SITE_MODAL_TYPES } from '@/constants';
-import { AuthUser, getUserProfile, ComboItem, SeatType } from '@/features/seller';
+import { AuthUser, getUserProfile, ComboItem, SeatType, BillsResponse } from '@/features/seller';
 
 type Keys = keyof typeof SITE_MODAL_TYPES;
 export type ModalType = typeof SITE_MODAL_TYPES[Keys];
@@ -14,12 +14,15 @@ type SellerStore = {
   member: AuthUser;
   selectedSeats: SeatType[];
   selectedCombos: ComboItem[];
+  bills: BillsResponse;
   setSelectedSeats: (seats: SeatType[]) => void;
+  setBills: (bills: BillsResponse) => void;
   setModal: (modalType: ModalType) => void;
+  clearBill: () => void;
   closeModal: () => void;
   nextStep: () => void;
   previousStep: () => void;
-  fetchMember: (phoneNumber: string) => void;
+  fetchMember: (phoneNumber: string) => Promise<boolean>;
   inc: (item: ComboItem) => void;
   des: (item: ComboItem) => void;
   reset: () => void;
@@ -31,6 +34,7 @@ export const useSellerStore = create<SellerStore>((set) => ({
   step: 1,
   isLoading: false,
   member: {} as AuthUser,
+  bills: {} as BillsResponse,
   selectedCombos: [],
   selectedSeats: [],
   setModal: (modalType) =>
@@ -53,11 +57,15 @@ export const useSellerStore = create<SellerStore>((set) => ({
 
     if (!success) {
       set({ isLoading: false });
+      return false;
     } else {
       set({ member: user, isLoading: false, step: 1 });
     }
+    return true;
   },
   setSelectedSeats: (seats: SeatType[]) => set(() => ({ selectedSeats: seats })),
+  setBills: (bills: BillsResponse) => set(() => ({ bills })),
+  clearBill: () => set(() => ({ bills: {} as BillsResponse })),
   inc: (item: ComboItem) =>
     set((state) => {
       const comboItem = state.selectedCombos.find((combo) => combo._id === item._id);

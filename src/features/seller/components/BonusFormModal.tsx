@@ -20,7 +20,7 @@ export const BonusFormModal: React.FC<BonusFormModalProps> = () => {
   const { openModal, closeModal } = useSellerStore();
 
   return (
-    <Modal size="6xl" onClose={closeModal} isOpen={openModal} isCentered closeOnEsc>
+    <Modal size="6xl" onClose={closeModal} isOpen={openModal} closeOnEsc>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Bonus Form</ModalHeader>

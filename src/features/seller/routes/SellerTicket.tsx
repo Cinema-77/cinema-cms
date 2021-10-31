@@ -45,6 +45,7 @@ export const SellerTicket = () => {
     inc,
     des,
     reset,
+    setBills,
   } = useSellerStore();
 
   if (ticketsByShowTimesQuery.isLoading) {
@@ -84,6 +85,7 @@ export const SellerTicket = () => {
                 <SeatsRoute
                   seats={ticketsByShowTimesQuery.data.values.tickets}
                   selectedSeats={selectedSeats}
+                  selectedCombos={selectedCombos}
                   setSelectedSeats={setSelectedSeats}
                   setModal={setModal}
                   member={member}
@@ -108,6 +110,8 @@ export const SellerTicket = () => {
                 selectedSeats={selectedSeats}
                 selectedCombos={selectedCombos}
                 clearData={reset}
+                user={member}
+                setBills={setBills}
               />
             </Box>
           </Stack>

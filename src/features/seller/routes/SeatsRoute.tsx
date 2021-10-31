@@ -23,20 +23,23 @@ import {
   UserType,
   getOldPrice,
   AuthUser,
+  ComboItem,
+  getNewPoint,
 } from '@/features/seller';
 import { formatNumber } from '@/utils/format';
 import { isEmptyObject } from '@/utils/object';
 
 interface SeatsRouteProps {
   seats: TicketType[];
+  member: AuthUser;
   selectedSeats: SeatType[];
+  selectedCombos: ComboItem[];
   setSelectedSeats: (seats: SeatType[]) => void;
   setModal: (modalType: string) => void;
-  member: AuthUser;
 }
 
 export const SeatsRoute: React.FC<SeatsRouteProps> = (props) => {
-  const { seats, selectedSeats, setSelectedSeats, setModal, member } = props;
+  const { seats, selectedSeats, setSelectedSeats, setModal, member, selectedCombos } = props;
   const [displayPrice, setDisplayPrice] = React.useState(0);
   const [valueUserType, setValueUserType] = React.useState<string>(UserType.Adult);
   const oldPrice = getOldPrice(seats);
@@ -181,8 +184,8 @@ export const SeatsRoute: React.FC<SeatsRouteProps> = (props) => {
           {!isEmptyObject(member) && (
             <CustomerInfo
               name={member.profile.fullName}
-              point="30"
-              newPoint="2"
+              point={member.point}
+              newPoint={getNewPoint(selectedCombos, selectedSeats)}
               setModal={() => setModal(SITE_MODAL_TYPES.BONUS_FORM)}
             />
           )}

@@ -10,6 +10,7 @@ export const ROUTES = {
   SHOWTIMES_CREATE: '/showtimes/create',
   SELLER: '/seller',
   SELLER_TICKET_ID: '/seller/bookTicket/:_id',
+  PAYMENT_COMPLETE: '/seller/paymentComplete',
 };
 
 export const SITE_MODAL_TYPES = Object.freeze({

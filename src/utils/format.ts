@@ -73,3 +73,11 @@ export const getEachDayOfInterval = ({ start, end }: dataEachDay) => {
 export const formatNumber = (num: number) => {
   return new Intl.NumberFormat('vn', { maximumFractionDigits: 3 }).format(num);
 };
+
+export function removeAccents(str: string) {
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D');
+}

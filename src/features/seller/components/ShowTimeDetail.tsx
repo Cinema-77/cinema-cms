@@ -3,36 +3,75 @@ import React from 'react';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import { useHistory } from 'react-router';
 
-import { mapToShowtimeDetails, SeatType, ComboItem, useBuyTicket } from '@/features/seller';
+import { ROUTES } from '@/constants';
+import {
+  mapToShowtimeDetails,
+  SeatType,
+  ComboItem,
+  useBuyTicket,
+  AuthUser,
+  BillsResponse,
+  getComboTotal,
+  getInvoiceTotal,
+  getNameCombo,
+  getNameSeats,
+} from '@/features/seller';
 import { ShowTimesDetail } from '@/features/showtimes';
 import { formatNumber } from '@/utils/format';
 
 interface ShowTimeDetailProps {
   detail: ShowTimesDetail;
   step: number;
-  nextStep: () => void;
-  previousStep: () => void;
   selectedSeats: SeatType[];
   selectedCombos: ComboItem[];
+  user: AuthUser;
+  nextStep: () => void;
+  previousStep: () => void;
   clearData: () => void;
+  setBills: (bills: BillsResponse) => void;
 }
 
 export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
-  const { detail, step, nextStep, previousStep, selectedSeats, selectedCombos, clearData } = props;
+  const {
+    detail,
+    step,
+    nextStep,
+    previousStep,
+    selectedSeats,
+    selectedCombos,
+    clearData,
+    user,
+    setBills,
+  } = props;
   const showTimeDetail = mapToShowtimeDetails(detail);
   const toast = useToast();
   const router = useHistory();
   const buyTicketMutation = useBuyTicket();
 
-  const getInvoiceTotal = (seats: SeatType[]) =>
-    seats.reduce((previousValue, seat) => previousValue + seat.price, 0);
-  const getComboTotal = (combos: ComboItem[]) =>
-    combos.reduce((sum, crItem) => sum + crItem.price * crItem.quantity, 0);
-  const getNameSeats = (seats: SeatType[]) => seats.map((seat) => seat.seatName).join(', ');
-  const getNameCombo = (combos: ComboItem[]) =>
-    combos.map((combo) => `${combo.name} (${combo.quantity})`).join(', ');
-
   const total = getInvoiceTotal(selectedSeats) + getComboTotal(selectedCombos);
+
+  const onPayTicket = async () => {
+    const data = {
+      combos: selectedCombos,
+      data: selectedSeats,
+      payment: {
+        type: '0',
+      },
+      showTimeDetailId: showTimeDetail._id,
+      userId: user && user._id,
+    };
+
+    const { bills } = await buyTicketMutation.mutateAsync(data);
+    setBills({
+      ...bills,
+      time: showTimeDetail.time,
+      movieName: showTimeDetail.movieName,
+      roomName: showTimeDetail.roomName,
+      date: showTimeDetail.date,
+    });
+    router.push(ROUTES.PAYMENT_COMPLETE);
+    clearData();
+  };
 
   return (
     <>
@@ -113,18 +152,7 @@ export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
                 colorScheme="cyan"
                 color="white"
                 onClick={async () => {
-                  const data = {
-                    combos: selectedCombos,
-                    data: selectedSeats,
-                    payment: {
-                      type: '0',
-                    },
-                    showTimeDetailId: showTimeDetail._id,
-                    userId: '613e17d875cc9e00375d5ce5',
-                  };
-                  await buyTicketMutation.mutateAsync(data);
-                  router.push(`/seller/bookTicket/${showTimeDetail._id}`);
-                  clearData();
+                  await onPayTicket();
                   // setTimeout(
                   //   () =>
                   //     window.location.assign(

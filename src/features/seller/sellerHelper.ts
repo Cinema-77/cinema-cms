@@ -1,4 +1,4 @@
-import { TicketType } from '@/features/seller';
+import { ComboItem, SeatType, TicketType } from '@/features/seller';
 import { ShowTimesDetail } from '@/features/showtimes';
 import { getDay, getEachDayOfInterval } from '@/utils/format';
 
@@ -25,6 +25,7 @@ export const mapToShowtimeDetails = (showtime: ShowTimesDetail) => {
     rowNumber: room.rowNumber,
     seatsInRow: room.seatsInRow,
     screenName: room.screen.name,
+    roomName: room.name,
     weekdayPrice: room.screen.weekdayPrice,
     weekendPrice: room.screen.weekendPrice,
     movieName: showTime.movie.name,
@@ -43,3 +44,17 @@ export const getOldPrice = (seatRows: TicketType[]) => {
   }
   return 0;
 };
+
+export const getInvoiceTotal = (seats: SeatType[]) =>
+  seats.reduce((previousValue, seat) => previousValue + seat.price, 0);
+
+export const getComboTotal = (combos: ComboItem[]) =>
+  combos.reduce((sum, crItem) => sum + crItem.price * crItem.quantity, 0);
+
+export const getNameSeats = (seats: SeatType[]) => seats.map((seat) => seat.seatName).join(', ');
+
+export const getNameCombo = (combos: ComboItem[]) =>
+  combos.map((combo) => `${combo.name} (${combo.quantity})`).join(', ');
+
+export const getNewPoint = (combos: ComboItem[], seats: SeatType[]) =>
+  Math.floor((getInvoiceTotal(seats) + getComboTotal(combos)) / 10000);
