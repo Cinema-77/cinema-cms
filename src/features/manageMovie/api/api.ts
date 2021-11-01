@@ -10,7 +10,7 @@ export const createMovie = (data: MovieType): Promise<MovieRespon> => {
   return axios.post('/movie/add', data);
 };
 
-export const deleteMovie = (id: string) => {
+export const deleteMovie = (id: string): Promise<MovieRespon> => {
   return axios.delete(`movie/delete/${id}`);
 };
 
@@ -30,6 +30,6 @@ export const getMovie = (id: string) => {
   return axios.get(`/movie/${id}`);
 };
 
-export const updateMovie = (id: string, data: MovieType) => {
+export const updateMovie = (id: string, data: MovieType): Promise<MovieRespon> => {
   return axios.put(`/movie/update/${id}`, data);
 };

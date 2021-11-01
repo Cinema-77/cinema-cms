@@ -1,7 +1,8 @@
+import { useToast } from '@chakra-ui/toast';
 import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import React, { ChangeEventHandler, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 
 import { getCategoryAll, getDirectorAll, getScreenAll, updateMovie } from '../..';
 import { categoryType, MovieItemType } from '../../type';
@@ -51,6 +52,8 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
   const { control, handleSubmit } = useForm();
   const location = useLocation();
   const idMovie = location.search.split('?id=');
+  const history = useHistory();
+  const toast = useToast();
   const handleValue = async () => {
     const body = {
       name: name,
@@ -64,12 +67,70 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
       screensId: screenValue,
       categoryId: categoryValue,
     };
-    console.log(body);
     try {
       const res = await updateMovie(idMovie[1], body);
-      setMovieValue('');
-      setMovie(!movie);
-      console.log(res);
+      if (!body.moveDuration) {
+        toast({
+          title: 'Vui lòng nhập thời lượng là số',
+          position: 'top-right',
+          status: 'error',
+          duration: 3000,
+        });
+        return;
+      }
+      if (!body.age) {
+        toast({
+          title: 'Vui lòng độ tuổi là số',
+          position: 'top-right',
+          status: 'error',
+          duration: 3000,
+        });
+        return;
+      }
+
+      if (categoryValue.length === 0) {
+        toast({
+          title: 'Vui lòng chọn thể loại',
+          position: 'top-right',
+          status: 'error',
+          duration: 3000,
+        });
+        return;
+      }
+      if (screenValue.length === 0) {
+        toast({
+          title: 'Vui lòng chọn loại màn hình',
+          position: 'top-right',
+          status: 'error',
+          duration: 3000,
+        });
+        return;
+      }
+      if (!body.description) {
+        toast({
+          title: 'Vui lòng nhập nội dụng của film',
+          position: 'top-right',
+          status: 'error',
+          duration: 3000,
+        });
+        return;
+      }
+      if (res.success === false) {
+        if (res.errors.name) {
+          toast({ title: res.errors.name, position: 'top-right', status: 'error', duration: 3000 });
+        }
+        if (res.errors.cast) {
+          toast({ title: res.errors.cast, position: 'top-right', status: 'error', duration: 3000 });
+        }
+        console.log(res);
+        return;
+      } else {
+        toast({ title: res.message, position: 'top-right', status: 'success', duration: 3000 });
+        history.push('/managemovie');
+        setMovieValue('');
+        setMovie(!movie);
+        console.log(res);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -159,9 +220,6 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
                     title="Thời lượng"
                     change={(e: any) => {
                       field.onChange(e);
-                      if (isNaN(e.target.value)) {
-                        return;
-                      }
                       setMovieDuration(e.target.value);
                     }}
                     value={moveDuration}
@@ -214,9 +272,6 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
                     title="Độ tuổi"
                     change={(e: any) => {
                       field.onChange(e);
-                      if (isNaN(e.target.value)) {
-                        return;
-                      }
                       setAge(Number(e.target.value));
                     }}
                     value={age}

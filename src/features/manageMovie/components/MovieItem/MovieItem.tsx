@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router';
 
 import { getMovie } from '../..';
 import { MovieItemType } from '../../type';
@@ -11,6 +12,7 @@ import edit from '@/assets/icon/edit.svg';
 import play from '@/assets/icon/play.svg';
 import trash from '@/assets/icon/trash.svg';
 import x from '@/assets/icon/x.svg';
+import { Loading } from '@/components';
 
 interface MovieItemProps {
   movieList: MovieItemType[];
@@ -29,18 +31,24 @@ export const MovieItem: React.FC<MovieItemProps> = ({
   const [isMovie, setIsMovie] = useState(false);
   const [idMovie, setIdMovie] = useState<string>('');
   const [movieValue, setMovieValue] = useState<any>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const history = useHistory();
 
   const handleDelete = (id: string) => {
     setIsMovie(true);
     setIdMovie(id);
   };
   const handleEdit = async (id: string) => {
+    setIsLoading(true);
+    history.push(`/managemovie?id=${id}`);
     await getMovie(id)
       .then((res: any) => setMovieValue(res.values.movie))
       .catch((err) => console.log('err', err));
+    setIsLoading(false);
   };
   return (
     <>
+      {movieList.length === 0 && <Loading />}
       {movieList.map((movie: MovieItemType) => (
         <S.MovieItem key={movie._id}>
           <S.MovieLeft>
@@ -80,10 +88,18 @@ export const MovieItem: React.FC<MovieItemProps> = ({
               <S.MovieSpan>Diễn viên:</S.MovieSpan>
               <S.MovieSpan>{movie.cast}</S.MovieSpan>
             </S.MovieListSpan>
-            <S.MovieListSpan>
-              <S.MovieSpan>Độ tuổi:</S.MovieSpan>
-              <S.MovieSpan>{movie.age}</S.MovieSpan>
-            </S.MovieListSpan>
+            {movie.age < 13 ? (
+              <></>
+            ) : (
+              <S.MovieListSpan>
+                <S.MovieSpan>Độ tuổi:</S.MovieSpan>
+                <S.MovieSpan>
+                  {movie.age >= 13 && movie.age < 16 && `C13`}
+                  {movie.age >= 16 && movie.age < 18 && `C16`}
+                  {movie.age > 18 && `C18`}
+                </S.MovieSpan>
+              </S.MovieListSpan>
+            )}
             <S.MovieListSpan>
               {movie.screens.length > 0 && (
                 <>
@@ -181,6 +197,7 @@ export const MovieItem: React.FC<MovieItemProps> = ({
           movie={movie}
         />
       )}
+      {isLoading && <Loading />}
     </>
   );
 };
