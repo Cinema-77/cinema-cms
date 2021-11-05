@@ -17,7 +17,6 @@ import {
   ModalOverlay,
   ButtonGroup,
 } from '@chakra-ui/react';
-import * as React from 'react';
 import { Redirect, useHistory } from 'react-router-dom';
 
 import { ROUTES } from '@/constants';

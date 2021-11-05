@@ -80,7 +80,7 @@ export const SellerPage = () => {
           ) : (
             <Stack spacing={3} w="100%">
               {showTimesByDateQuery.data?.showTimes.map((showtime) => (
-                <ShowTimesItem {...showtime} key={showtime.movie.name} />
+                <ShowTimesItem {...showtime} date={activeDate} key={showtime.movie.name} />
               ))}
             </Stack>
           )}

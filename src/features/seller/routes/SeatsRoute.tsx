@@ -17,7 +17,7 @@ import React from 'react';
 import { SITE_MODAL_TYPES } from '@/constants';
 import {
   SeatList,
-  CustomerInfo,
+  MemberInfo,
   SeatType,
   TicketType,
   UserType,
@@ -25,6 +25,7 @@ import {
   AuthUser,
   ComboItem,
   getNewPoint,
+  IGift,
 } from '@/features/seller';
 import { formatNumber } from '@/utils/format';
 import { isEmptyObject } from '@/utils/object';
@@ -32,14 +33,29 @@ import { isEmptyObject } from '@/utils/object';
 interface SeatsRouteProps {
   seats: TicketType[];
   member: AuthUser;
+  memberPoint: number;
   selectedSeats: SeatType[];
   selectedCombos: ComboItem[];
+  selectedGifts: IGift[];
+  screenId: string;
   setSelectedSeats: (seats: SeatType[]) => void;
   setModal: (modalType: string) => void;
+  fetchGifts: (screenId: string) => Promise<boolean>;
 }
 
 export const SeatsRoute: React.FC<SeatsRouteProps> = (props) => {
-  const { seats, selectedSeats, setSelectedSeats, setModal, member, selectedCombos } = props;
+  const {
+    seats,
+    selectedSeats,
+    member,
+    memberPoint,
+    selectedCombos,
+    selectedGifts,
+    setSelectedSeats,
+    setModal,
+    fetchGifts,
+    screenId,
+  } = props;
   const [displayPrice, setDisplayPrice] = React.useState(0);
   const [valueUserType, setValueUserType] = React.useState<string>(UserType.Adult);
   const oldPrice = getOldPrice(seats);
@@ -176,17 +192,20 @@ export const SeatsRoute: React.FC<SeatsRouteProps> = (props) => {
           <Checkbox
             onChange={() => setModal(SITE_MODAL_TYPES.MEMBER_FORM)}
             isChecked={!isEmptyObject(member)}
+            isDisabled={!selectedSeats.length && !selectedGifts.length}
           >
             Khách hàng thành viên
           </Checkbox>
 
           {/* {MemberPopUp} */}
           {!isEmptyObject(member) && (
-            <CustomerInfo
+            <MemberInfo
               name={member.profile.fullName}
-              point={member.point}
+              point={memberPoint}
               newPoint={getNewPoint(selectedCombos, selectedSeats)}
               setModal={() => setModal(SITE_MODAL_TYPES.BONUS_FORM)}
+              fetchGifts={fetchGifts}
+              screenId={screenId}
             />
           )}
         </Box>

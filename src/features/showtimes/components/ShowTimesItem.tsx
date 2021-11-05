@@ -1,11 +1,13 @@
 import { Box, Button, Flex, Heading, Img, Stack, Text, Wrap, WrapItem } from '@chakra-ui/react';
+import { Location } from 'history';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-import { ShowTimesListByDate, ShowTimesDetail } from '..';
+import { ShowTimesListByDate, ShowTimesDetail, screenDetail } from '@/features/showtimes';
+import { formatDate } from '@/utils/format';
 
 export const ShowTimesItem: React.FC<ShowTimesListByDate> = (props) => {
-  const { movie, screen2D, screen3D, screenIMAX } = props;
+  const { movie, screen2D, screen3D, screenIMAX, date } = props;
   const shouldHide = (showtimes: ShowTimesDetail[]) => !showtimes.length;
 
   return (
@@ -36,15 +38,7 @@ export const ShowTimesItem: React.FC<ShowTimesListByDate> = (props) => {
                 <Text fontSize="md" fontWeight="bold">
                   {screen2D.title} phụ đề Anh
                 </Text>
-                <Wrap spacing={2} direction="row" mt={2}>
-                  {screen2D.showTimesDetails.map((showtime) => (
-                    <WrapItem key={showtime._id}>
-                      <Button as={Link} to={`/seller/bookTicket/${showtime._id}`} variant="outline">
-                        {showtime.timeSlot.time}
-                      </Button>
-                    </WrapItem>
-                  ))}
-                </Wrap>
+                <ListTime screens={screen2D} date={date} />
               </Box>
             )}
 
@@ -53,15 +47,7 @@ export const ShowTimesItem: React.FC<ShowTimesListByDate> = (props) => {
                 <Text fontSize="md" fontWeight="bold">
                   {screen3D.title} phụ đề Anh
                 </Text>
-                <Wrap spacing={1} direction="row" mt={2}>
-                  {screen3D.showTimesDetails.map((showtime) => (
-                    <WrapItem key={showtime._id}>
-                      <Button as={Link} to={`/seller/bookTicket/${showtime._id}`} variant="outline">
-                        {showtime.timeSlot.time}
-                      </Button>
-                    </WrapItem>
-                  ))}
-                </Wrap>
+                <ListTime screens={screen3D} date={date} />
               </Box>
             )}
 
@@ -70,20 +56,46 @@ export const ShowTimesItem: React.FC<ShowTimesListByDate> = (props) => {
                 <Text fontSize="md" fontWeight="bold">
                   {screenIMAX.title} phụ đề Anh
                 </Text>
-                <Wrap spacing={1} direction="row" mt={2}>
-                  {screenIMAX.showTimesDetails.map((showtime) => (
-                    <WrapItem key={showtime._id}>
-                      <Button as={Link} to={`/seller/bookTicket/${showtime._id}`} variant="outline">
-                        {showtime.timeSlot.time}
-                      </Button>
-                    </WrapItem>
-                  ))}
-                </Wrap>
+                <ListTime screens={screenIMAX} date={date} />
               </Box>
             )}
           </Stack>
         </Flex>
       </Box>
     </Box>
+  );
+};
+
+interface IListTime {
+  screens: screenDetail;
+  date: string;
+}
+const ListTime = ({ screens, date }: IListTime) => {
+  const today = new Date();
+  const todayFormat = formatDate(today);
+  const hours = today.getHours() < 10 ? `0${today.getHours()}` : today.getHours();
+  const minutes = today.getMinutes();
+  const timeNow = `${hours}:${minutes}`;
+  const isDisableTime = (time: string) => date === todayFormat && timeNow > time;
+
+  return (
+    <Wrap spacing={1} direction="row" mt={2}>
+      {screens.showTimesDetails.map((showtime) => (
+        <WrapItem key={showtime._id}>
+          <Button
+            as={Link}
+            to={(location: Location) =>
+              isDisableTime(showtime.timeSlot.time)
+                ? location.pathname
+                : `/seller/bookTicket/${showtime._id}`
+            }
+            variant="outline"
+            isDisabled={isDisableTime(showtime.timeSlot.time)}
+          >
+            {showtime.timeSlot.time}
+          </Button>
+        </WrapItem>
+      ))}
+    </Wrap>
   );
 };

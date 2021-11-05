@@ -72,6 +72,7 @@ export interface ShowTimesListByDate {
   screen2D: screenDetail;
   screen3D: screenDetail;
   screenIMAX: screenDetail;
+  date: string;
 }
 export interface ShowTimesListByDateResponse {
   message: string;

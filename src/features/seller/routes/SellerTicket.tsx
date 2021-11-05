@@ -35,17 +35,20 @@ export const SellerTicket = () => {
   const {
     modalType,
     step,
-    selectedSeats,
     selectedCombos,
+    selectedGifts,
+    selectedSeats,
     member,
+    point,
     setModal,
-    setSelectedSeats,
     nextStep,
     previousStep,
     inc,
     des,
     reset,
     setBills,
+    fetchGifts,
+    setSelectedSeats,
   } = useSellerStore();
 
   if (ticketsByShowTimesQuery.isLoading) {
@@ -86,9 +89,13 @@ export const SellerTicket = () => {
                   seats={ticketsByShowTimesQuery.data.values.tickets}
                   selectedSeats={selectedSeats}
                   selectedCombos={selectedCombos}
+                  selectedGifts={selectedGifts}
                   setSelectedSeats={setSelectedSeats}
                   setModal={setModal}
                   member={member}
+                  memberPoint={point}
+                  fetchGifts={fetchGifts}
+                  screenId={ticketsByShowTimesQuery.data.values.showTimeDetail.room.screen._id}
                 />
               )}
               {step == 2 && (
@@ -109,6 +116,7 @@ export const SellerTicket = () => {
                 previousStep={previousStep}
                 selectedSeats={selectedSeats}
                 selectedCombos={selectedCombos}
+                selectedGifts={selectedGifts}
                 clearData={reset}
                 user={member}
                 setBills={setBills}

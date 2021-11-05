@@ -1,4 +1,4 @@
-export * from './CustomerInfo';
+export * from './MemberInfo';
 export * from './SeatList';
 export * from './MemberFormModal';
 export * from './BonusFormModal';

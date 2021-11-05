@@ -1,4 +1,4 @@
-import { ComboItem, SeatType, TicketType } from '@/features/seller';
+import { ComboItem, SeatType, TicketType, IGift } from '@/features/seller';
 import { ShowTimesDetail } from '@/features/showtimes';
 import { getDay, getEachDayOfInterval } from '@/utils/format';
 
@@ -56,5 +56,28 @@ export const getNameSeats = (seats: SeatType[]) => seats.map((seat) => seat.seat
 export const getNameCombo = (combos: ComboItem[]) =>
   combos.map((combo) => `${combo.name} (${combo.quantity})`).join(', ');
 
+export const getNameGift = (gifts: IGift[]) => gifts.map((gifts) => `${gifts.name}`).join(', ');
+
 export const getNewPoint = (combos: ComboItem[], seats: SeatType[]) =>
   Math.floor((getInvoiceTotal(seats) + getComboTotal(combos)) / 10000);
+
+export const getDiscount = (gitfs: IGift[], seats: SeatType[]) => {
+  const tickets = gitfs.find((g) => g.type === 0);
+  let discount = 0;
+
+  if (!seats.length) {
+    return 0;
+  }
+
+  if (tickets && seats.length < tickets.quantity) {
+    return discount;
+  }
+
+  if (tickets) {
+    for (let i = 0; i < tickets.quantity; i += 1) {
+      discount += seats[i].price;
+    }
+  }
+
+  return discount;
+};

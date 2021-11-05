@@ -1,8 +1,19 @@
-import { Box, Img, Heading, Badge, Stack, Button, Text, useToast } from '@chakra-ui/react';
+import {
+  Box,
+  Img,
+  Heading,
+  Badge,
+  Stack,
+  Button,
+  Text,
+  useToast,
+  useDisclosure,
+} from '@chakra-ui/react';
 import React from 'react';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import { useHistory } from 'react-router';
 
+import { Alert } from '@/components';
 import { ROUTES } from '@/constants';
 import {
   mapToShowtimeDetails,
@@ -15,6 +26,9 @@ import {
   getInvoiceTotal,
   getNameCombo,
   getNameSeats,
+  getNameGift,
+  IGift,
+  getDiscount,
 } from '@/features/seller';
 import { ShowTimesDetail } from '@/features/showtimes';
 import { formatNumber } from '@/utils/format';
@@ -24,6 +38,7 @@ interface ShowTimeDetailProps {
   step: number;
   selectedSeats: SeatType[];
   selectedCombos: ComboItem[];
+  selectedGifts: IGift[];
   user: AuthUser;
   nextStep: () => void;
   previousStep: () => void;
@@ -39,16 +54,21 @@ export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
     previousStep,
     selectedSeats,
     selectedCombos,
+    selectedGifts,
     clearData,
     user,
     setBills,
   } = props;
   const showTimeDetail = mapToShowtimeDetails(detail);
   const toast = useToast();
-  const router = useHistory();
+  const history = useHistory();
   const buyTicketMutation = useBuyTicket();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const total = getInvoiceTotal(selectedSeats) + getComboTotal(selectedCombos);
+  const total =
+    getInvoiceTotal(selectedSeats) +
+    getComboTotal(selectedCombos) -
+    getDiscount(selectedGifts, selectedSeats);
 
   const onPayTicket = async () => {
     const data = {
@@ -59,6 +79,8 @@ export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
       },
       showTimeDetailId: showTimeDetail._id,
       userId: user && user._id,
+      gifts: selectedGifts,
+      coupons: [],
     };
 
     const { bills } = await buyTicketMutation.mutateAsync(data);
@@ -69,9 +91,13 @@ export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
       roomName: showTimeDetail.roomName,
       date: showTimeDetail.date,
     });
-    router.push(ROUTES.PAYMENT_COMPLETE);
+    history.push(ROUTES.PAYMENT_COMPLETE);
     clearData();
   };
+
+  const contentAlert = `Bạn có muốn mua vé ${getNameSeats(selectedSeats)}  ${
+    !!selectedCombos.length && `và ${getNameCombo(selectedCombos)}`
+  }  ?`.replace('false', '');
 
   return (
     <>
@@ -108,12 +134,24 @@ export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
             {getNameCombo(selectedCombos)}
           </Box>
           <Box paddingBottom="8px" borderBottom="1px solid">
+            <b>Quà tặng : </b>
+            {getNameGift(selectedGifts)}
+          </Box>
+          <Box paddingBottom="8px" borderBottom="1px solid">
             <b>Ghế : </b>
             {getNameSeats(selectedSeats)}
           </Box>
+          <Box paddingBottom="8px" borderBottom="1px solid">
+            <b>Tổng : </b>
+            {formatNumber(getInvoiceTotal(selectedSeats) + getComboTotal(selectedCombos))} VNĐ
+          </Box>
+          <Box paddingBottom="8px" borderBottom="1px solid">
+            <b>Giảm giá : </b>
+            {formatNumber(getDiscount(selectedGifts, selectedSeats))} VNĐ
+          </Box>
           <Box>
-            Tổng:
-            <Text as="span" fontSize="xl" fontWeight="500" ml={2}>
+            Số tiền cần trả:
+            <Text as="span" fontSize="lg" fontWeight="500" ml={2}>
               {formatNumber(total)} VNĐ
             </Text>
           </Box>
@@ -151,22 +189,32 @@ export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
               <Button
                 colorScheme="cyan"
                 color="white"
-                onClick={async () => {
-                  await onPayTicket();
-                  // setTimeout(
-                  //   () =>
-                  //     window.location.assign(
-                  //       `http://localhost:3000/seller/bookTicket/${showTimeDetail._id}`,
-                  //     ),
-                  //   2000,
-                  // );
+                onClick={() => {
+                  onOpen();
                 }}
-                isLoading={buyTicketMutation.isLoading}
               >
                 Thanh toán
               </Button>
             )}
           </Stack>
+
+          <Alert
+            isOpen={isOpen}
+            title="Thanh toán"
+            content={contentAlert}
+            showCloseButton={true}
+            closeButtonText="Trở lại"
+            triggerButton={{
+              children: 'Thanh toán',
+              variant: 'solid',
+              colorScheme: 'cyan',
+              onClick: () => onPayTicket(),
+              ml: 3,
+              color: 'white',
+              isLoading: buyTicketMutation.isLoading,
+            }}
+            onClose={onClose}
+          />
         </Stack>
       </Box>
     </>

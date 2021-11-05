@@ -27,7 +27,7 @@ const schema = z.object({
     .regex(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g, 'số điện thoại không đúng định dạng'),
 });
 
-export const MemberFormModal: React.FC<any> = () => {
+export const MemberFormModal = () => {
   const { openModal, closeModal, fetchMember, isLoading } = useSellerStore();
   const toast = useToast();
   return (

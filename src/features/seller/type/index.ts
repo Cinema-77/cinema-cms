@@ -64,6 +64,7 @@ export interface BuyTicketResponse {
   message: string;
   combos: ComboItem[];
   tickets: SeatType[];
+  gifts: IGift[];
   showTimeDetail: ShowTimesDetail;
   bills: BillsResponse;
 }
@@ -93,4 +94,23 @@ export interface AuthResponse {
   success: boolean;
   message: string;
   user: AuthUser;
+}
+
+export interface IGift {
+  _id: string;
+  name: string;
+  image: string;
+  point: number;
+  type: 1 | 0;
+  screenId: string;
+  quantity: number;
+  coupon: boolean;
+}
+
+export interface GiftResponse {
+  status: boolean;
+  message: string;
+  values: {
+    gifts: IGift[];
+  };
 }

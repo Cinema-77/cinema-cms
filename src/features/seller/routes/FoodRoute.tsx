@@ -90,7 +90,7 @@ const ComboAction = (props: IComboAction) => {
   return (
     <Flex>
       <IconButton
-        aria-label="Search database"
+        aria-label="minus combo"
         icon={<HiMinusCircle />}
         colorScheme="white"
         variant="ghost"
@@ -109,7 +109,7 @@ const ComboAction = (props: IComboAction) => {
         {getQuantity(item)}
       </Box>
       <IconButton
-        aria-label="Search database"
+        aria-label="increase combo"
         icon={<HiPlusCircle />}
         colorScheme="white"
         variant="ghost"

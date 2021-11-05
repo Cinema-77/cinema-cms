@@ -67,10 +67,18 @@ export const TicketCard: React.FC<TicketCardProps> = (props) => {
       </Stack>
       <Stack spacing={1} marginTop={2} paddingY={2} borderTop="1px dashed" borderColor="gray.900">
         <Flex justifyContent="flex-end" alignItems="center">
-          <Heading as="h5" fontSize="15px" textTransform="uppercase" mr={5}>
-            Tổng cộng
-          </Heading>
-          <Text fontWeight="500">{formatNumber(price)} VND</Text>
+          {price === 0 ? (
+            <Heading as="h5" fontSize="15px" textTransform="uppercase" mr={5}>
+              Vé tặng
+            </Heading>
+          ) : (
+            <>
+              <Heading as="h5" fontSize="15px" textTransform="uppercase" mr={5}>
+                Tổng cộng
+              </Heading>
+              <Text fontWeight="500">{formatNumber(price)} VND</Text>
+            </>
+          )}
         </Flex>
       </Stack>
     </Box>
