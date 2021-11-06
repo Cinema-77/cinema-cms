@@ -6,13 +6,19 @@ import { CinemaItem } from '../components';
 import { CinemaModalCreate } from '../components/CinemaModalCreate';
 
 import { SiteHeader } from '@/components/Layout';
+import { ROUTES } from '@/constants';
 
 export const Cinemas = () => {
   const { isLoading, data } = useCinemas();
 
   return (
     <>
-      <SiteHeader menuName="List Cinema" heading="List Cinema" showButton={<CinemaModalCreate />} />
+      <SiteHeader
+        menuName="List Cinema"
+        menuHref={ROUTES.CINEMA_LIST}
+        heading="List Cinema"
+        showButton={<CinemaModalCreate />}
+      />
       <Box px="3">
         {isLoading ? (
           <Stack>

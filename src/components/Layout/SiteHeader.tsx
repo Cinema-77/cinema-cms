@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 interface SiteHeaderProps {
   menuName: string;
+  menuHref: string;
   heading?: string;
   children?: React.ReactNode;
   showButton?: React.ReactNode;
@@ -11,6 +12,7 @@ interface SiteHeaderProps {
 
 export const SiteHeader: React.FC<SiteHeaderProps> = ({
   menuName,
+  menuHref,
   heading,
   children,
   showButton,
@@ -19,7 +21,7 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
     <Box mx={4}>
       <Breadcrumb>
         <BreadcrumbItem>
-          <BreadcrumbLink as={Link} to="/cinema/list">
+          <BreadcrumbLink as={Link} to={menuHref}>
             {menuName}
           </BreadcrumbLink>
         </BreadcrumbItem>

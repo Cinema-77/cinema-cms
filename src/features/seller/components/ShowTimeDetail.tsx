@@ -27,6 +27,7 @@ import {
   getNameCombo,
   getNameSeats,
   getNameGift,
+  getDiscountPercent,
   IGift,
   getDiscount,
 } from '@/features/seller';
@@ -39,6 +40,7 @@ interface ShowTimeDetailProps {
   selectedSeats: SeatType[];
   selectedCombos: ComboItem[];
   selectedGifts: IGift[];
+  selectedCoupons: string[];
   user: AuthUser;
   nextStep: () => void;
   previousStep: () => void;
@@ -50,13 +52,14 @@ export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
   const {
     detail,
     step,
-    nextStep,
-    previousStep,
+    user,
     selectedSeats,
     selectedCombos,
     selectedGifts,
+    selectedCoupons,
     clearData,
-    user,
+    nextStep,
+    previousStep,
     setBills,
   } = props;
   const showTimeDetail = mapToShowtimeDetails(detail);
@@ -70,6 +73,9 @@ export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
     getComboTotal(selectedCombos) -
     getDiscount(selectedGifts, selectedSeats);
 
+  const discountTotal =
+    total * (1 - getDiscountPercent(selectedGifts)) + getDiscount(selectedGifts, selectedSeats);
+
   const onPayTicket = async () => {
     const data = {
       combos: selectedCombos,
@@ -80,7 +86,7 @@ export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
       showTimeDetailId: showTimeDetail._id,
       userId: user && user._id,
       gifts: selectedGifts,
-      coupons: [],
+      coupons: selectedCoupons,
     };
 
     const { bills } = await buyTicketMutation.mutateAsync(data);
@@ -147,12 +153,12 @@ export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
           </Box>
           <Box paddingBottom="8px" borderBottom="1px solid">
             <b>Giảm giá : </b>
-            {formatNumber(getDiscount(selectedGifts, selectedSeats))} VNĐ
+            {formatNumber(discountTotal)} VNĐ
           </Box>
           <Box>
             Số tiền cần trả:
             <Text as="span" fontSize="lg" fontWeight="500" ml={2}>
-              {formatNumber(total)} VNĐ
+              {formatNumber(total * getDiscountPercent(selectedGifts))} VNĐ
             </Text>
           </Box>
           <Stack spacing={2} direction="row">

@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import * as React from 'react';
 
 import { SiteHeader } from '@/components';
+import { ROUTES } from '@/constants';
 import { getRangeDate } from '@/features/seller';
 import { ShowTimesItem, useShowTimesByDate } from '@/features/showtimes';
 import { getDay } from '@/utils/format';
@@ -24,7 +25,11 @@ export const SellerPage = () => {
 
   return (
     <Box>
-      <SiteHeader menuName="Lịch chiếu" heading={`Lịch chiếu phim | suất chiếu `}>
+      <SiteHeader
+        menuName="Lịch chiếu"
+        menuHref={ROUTES.SELLER}
+        heading={`Lịch chiếu phim | suất chiếu `}
+      >
         <BreadcrumbItem isCurrentPage>
           <BreadcrumbLink>Suất chiếu phim</BreadcrumbLink>
         </BreadcrumbItem>

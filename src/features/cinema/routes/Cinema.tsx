@@ -10,11 +10,12 @@ import {
 import React from 'react';
 
 import { SiteHeader } from '@/components/Layout';
+import { ROUTES } from '@/constants';
 
 export const Cinema = () => {
   return (
     <>
-      <SiteHeader menuName="List Cinema" heading={`Cinema`}>
+      <SiteHeader menuName="List Cinema" menuHref={ROUTES.CINEMA_LIST} heading={`Cinema`}>
         <BreadcrumbItem isCurrentPage>
           <BreadcrumbLink>Cinema 2</BreadcrumbLink>
         </BreadcrumbItem>

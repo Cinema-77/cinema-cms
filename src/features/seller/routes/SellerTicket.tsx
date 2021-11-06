@@ -3,12 +3,13 @@ import * as React from 'react';
 import { useParams } from 'react-router-dom';
 
 import { SiteHeader } from '@/components';
-import { SITE_MODAL_TYPES } from '@/constants';
+import { ROUTES, SITE_MODAL_TYPES } from '@/constants';
 import {
   useTicketsByShowTimes,
   ShowTimeDetail,
   MemberFormModal,
   BonusFormModal,
+  CouponFormModal,
   SeatsRoute,
   FoodRoute,
 } from '@/features/seller';
@@ -24,6 +25,8 @@ export const getModal = (modalType: ModalType) => {
       return <MemberFormModal />;
     case SITE_MODAL_TYPES.BONUS_FORM:
       return <BonusFormModal />;
+    case SITE_MODAL_TYPES.COUPON_FORM:
+      return <CouponFormModal />;
     default:
       return undefined;
   }
@@ -38,6 +41,7 @@ export const SellerTicket = () => {
     selectedCombos,
     selectedGifts,
     selectedSeats,
+    selectedCoupons,
     member,
     point,
     setModal,
@@ -49,6 +53,7 @@ export const SellerTicket = () => {
     setBills,
     fetchGifts,
     setSelectedSeats,
+    getScreen,
   } = useSellerStore();
 
   if (ticketsByShowTimesQuery.isLoading) {
@@ -65,7 +70,7 @@ export const SellerTicket = () => {
 
   return (
     <Box>
-      <SiteHeader menuName="Lịch chiếu" heading={`Chi tiết lịch chiếu `}>
+      <SiteHeader menuName="Lịch chiếu" menuHref={ROUTES.SELLER} heading={`Chi tiết lịch chiếu `}>
         <BreadcrumbItem>
           <BreadcrumbLink>Suất chiếu phim</BreadcrumbLink>
         </BreadcrumbItem>
@@ -90,12 +95,13 @@ export const SellerTicket = () => {
                   selectedSeats={selectedSeats}
                   selectedCombos={selectedCombos}
                   selectedGifts={selectedGifts}
-                  setSelectedSeats={setSelectedSeats}
-                  setModal={setModal}
                   member={member}
                   memberPoint={point}
-                  fetchGifts={fetchGifts}
                   screenId={ticketsByShowTimesQuery.data.values.showTimeDetail.room.screen._id}
+                  setSelectedSeats={setSelectedSeats}
+                  setModal={setModal}
+                  fetchGifts={fetchGifts}
+                  getScreen={getScreen}
                 />
               )}
               {step == 2 && (
@@ -117,6 +123,7 @@ export const SellerTicket = () => {
                 selectedSeats={selectedSeats}
                 selectedCombos={selectedCombos}
                 selectedGifts={selectedGifts}
+                selectedCoupons={selectedCoupons}
                 clearData={reset}
                 user={member}
                 setBills={setBills}

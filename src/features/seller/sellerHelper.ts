@@ -56,7 +56,8 @@ export const getNameSeats = (seats: SeatType[]) => seats.map((seat) => seat.seat
 export const getNameCombo = (combos: ComboItem[]) =>
   combos.map((combo) => `${combo.name} (${combo.quantity})`).join(', ');
 
-export const getNameGift = (gifts: IGift[]) => gifts.map((gifts) => `${gifts.name}`).join(', ');
+export const getNameGift = (gifts: IGift[]) =>
+  gifts.map((gifts) => `${gifts.name} (${gifts.quantity})`).join(', ');
 
 export const getNewPoint = (combos: ComboItem[], seats: SeatType[]) =>
   Math.floor((getInvoiceTotal(seats) + getComboTotal(combos)) / 10000);
@@ -80,4 +81,12 @@ export const getDiscount = (gitfs: IGift[], seats: SeatType[]) => {
   }
 
   return discount;
+};
+
+export const getDiscountPercent = (gitfs: IGift[]) => {
+  const discountPercent = gitfs.find((g) => g.type === 2);
+  if (discountPercent) {
+    return 1 - discountPercent.discount;
+  }
+  return 1;
 };

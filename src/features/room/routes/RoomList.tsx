@@ -18,6 +18,7 @@ import { MenuListRoom } from '../components/MenuList';
 
 import { Table, Td, Th, Tr } from '@/components';
 import { SiteHeader } from '@/components/Layout';
+import { ROUTES } from '@/constants';
 
 export const colorBadge: any = {
   '2D': 'gray',
@@ -34,6 +35,7 @@ export const RoomList = () => {
     <>
       <SiteHeader
         menuName="Room List"
+        menuHref={ROUTES.ROOM_LIST}
         heading={`Room`}
         showButton={
           <Button

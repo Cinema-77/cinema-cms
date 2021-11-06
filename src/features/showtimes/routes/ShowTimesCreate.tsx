@@ -11,14 +11,10 @@ import {
   VStack,
   Spinner,
   Badge,
+  useToast,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { UseFormRegister } from 'react-hook-form';
-
-import { useCreateShowTime } from '../api/createShowtimes';
-import { useMovies } from '../api/getFormatMovie';
-import { ShowTimesList, TimeSlotCreate, CheckBoxTimeGroup } from '../components';
-import { TimeStamp } from '../type';
 
 import {
   CheckBoxField,
@@ -31,9 +27,19 @@ import {
   Th,
   Tr,
 } from '@/components';
+import { ROUTES } from '@/constants';
 import { colorBadge, Room } from '@/features/room';
+import {
+  useCreateShowTime,
+  useMovies,
+  ShowTimesList,
+  TimeSlotCreate,
+  CheckBoxTimeGroup,
+  TimeStamp,
+} from '@/features/showtimes';
 import { useAuth } from '@/lib/auth';
 import { useRoomsByMovieStore } from '@/stores/timeSlot';
+import { isEmptyObject } from '@/utils/object';
 
 export type ShowTimesValues = {
   date?: string;
@@ -49,6 +55,7 @@ export const ShowTimesCreate = () => {
   const { listRoomByMovie, fetchRooms, checkedTimes, loading } = useRoomsByMovieStore();
 
   const { user } = useAuth();
+  const toast = useToast();
 
   const onChangeMovie = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
@@ -59,7 +66,11 @@ export const ShowTimesCreate = () => {
 
   return (
     <Box overflowX="scroll">
-      <SiteHeader menuName="Lịch chiếu" heading={`Tạo lịch chiếu `}>
+      <SiteHeader
+        menuName="Lịch chiếu"
+        menuHref={ROUTES.SHOWTIMES_CREATE}
+        heading={`Tạo lịch chiếu `}
+      >
         <BreadcrumbItem isCurrentPage>
           <BreadcrumbLink>Lịch chiếu mới</BreadcrumbLink>
         </BreadcrumbItem>
@@ -100,6 +111,15 @@ export const ShowTimesCreate = () => {
               >
                 <Form<ShowTimesValues>
                   onSubmit={async (data) => {
+                    if (!isEmptyObject(data.showTimes)) {
+                      toast({
+                        title: 'Vui lòng chọn lịch chiếu',
+                        position: 'top-right',
+                        isClosable: true,
+                        status: 'info',
+                      });
+                      return;
+                    }
                     const times = data.showTimes.filter((t) => Boolean(t.roomId) !== false);
                     const newShowTimes = {
                       ...data,

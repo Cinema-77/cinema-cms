@@ -11,6 +11,7 @@ import { useScreens } from '../api/getScreens';
 import { Form, InputField, SelectField } from '@/components';
 import { InputNumberField } from '@/components/Form/InputNumberField';
 import { SiteHeader } from '@/components/Layout';
+import { ROUTES } from '@/constants';
 import { useAuth } from '@/lib/auth';
 
 type RoomValues = {
@@ -34,7 +35,7 @@ export const CreateRoom = () => {
 
   return (
     <>
-      <SiteHeader menuName="Rooms" heading={`Create a new Room`}>
+      <SiteHeader menuName="Rooms" menuHref={ROUTES.ROOM_CREATE} heading={`Create a new Room`}>
         <BreadcrumbItem isCurrentPage>
           <BreadcrumbLink>New Room</BreadcrumbLink>
         </BreadcrumbItem>

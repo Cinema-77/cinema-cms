@@ -60,7 +60,11 @@ export const BonusFormModal = () => {
         isClosable: true,
       });
     } else {
-      setOpenAlert(!openAlert);
+      if (selectedGifts && selectedGifts.length) {
+        setOpenAlert(!openAlert);
+      } else {
+        closeModal();
+      }
     }
   };
 
@@ -162,7 +166,6 @@ export const BonusFormModal = () => {
                   onClick: () => closeModal(),
                   ml: 3,
                   color: 'white',
-                  isLoading: false,
                 }}
                 onClose={() => setOpenAlert(!openAlert)}
               />

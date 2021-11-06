@@ -16,4 +16,5 @@ export const ROUTES = {
 export const SITE_MODAL_TYPES = Object.freeze({
   MEMBER_FORM: 'memberForm',
   BONUS_FORM: 'bonusForm',
+  COUPON_FORM: 'couponForm',
 });

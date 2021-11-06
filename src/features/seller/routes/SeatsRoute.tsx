@@ -40,6 +40,7 @@ interface SeatsRouteProps {
   screenId: string;
   setSelectedSeats: (seats: SeatType[]) => void;
   setModal: (modalType: string) => void;
+  getScreen: (screenId: string) => void;
   fetchGifts: (screenId: string) => Promise<boolean>;
 }
 
@@ -51,10 +52,11 @@ export const SeatsRoute: React.FC<SeatsRouteProps> = (props) => {
     memberPoint,
     selectedCombos,
     selectedGifts,
+    screenId,
     setSelectedSeats,
     setModal,
     fetchGifts,
-    screenId,
+    getScreen,
   } = props;
   const [displayPrice, setDisplayPrice] = React.useState(0);
   const [valueUserType, setValueUserType] = React.useState<string>(UserType.Adult);
@@ -202,10 +204,11 @@ export const SeatsRoute: React.FC<SeatsRouteProps> = (props) => {
             <MemberInfo
               name={member.profile.fullName}
               point={memberPoint}
-              newPoint={getNewPoint(selectedCombos, selectedSeats)}
-              setModal={() => setModal(SITE_MODAL_TYPES.BONUS_FORM)}
-              fetchGifts={fetchGifts}
               screenId={screenId}
+              newPoint={getNewPoint(selectedCombos, selectedSeats)}
+              setModal={setModal}
+              fetchGifts={fetchGifts}
+              getScreen={getScreen}
             />
           )}
         </Box>
