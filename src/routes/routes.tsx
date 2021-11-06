@@ -13,6 +13,7 @@ const { ShowTimesCreate } = lazyImport(() => import('@/features/showtimes'), 'Sh
 const { SellerPage } = lazyImport(() => import('@/features/seller'), 'SellerPage');
 const { SellerTicket } = lazyImport(() => import('@/features/seller'), 'SellerTicket');
 const { PaymentComplete } = lazyImport(() => import('@/features/seller'), 'PaymentComplete');
+const { RevenuePage } = lazyImport(() => import('@/features/revenue'), 'RevenuePage');
 
 const routes: any[] = [
   {
@@ -76,6 +77,11 @@ const routes: any[] = [
         path: ROUTES.PAYMENT_COMPLETE,
         component: PaymentComplete,
         title: 'Thanh toán thành công',
+      },
+      {
+        path: ROUTES.REVENUE,
+        component: RevenuePage,
+        title: 'Doanh thu rạp phim',
       },
     ],
   },

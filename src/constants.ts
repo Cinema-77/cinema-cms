@@ -5,6 +5,7 @@ export const ROUTES = {
   CINEMA_CREATE: '/cinema/create',
   CINEMA_DETAIL: '/cinema/detail/:_id',
   MOVIE: '/managemovie',
+  REVENUE: '/revenue',
   ROOM_LIST: '/room/listRoom',
   ROOM_CREATE: '/room/createRoom',
   SHOWTIMES_CREATE: '/showtimes/create',
