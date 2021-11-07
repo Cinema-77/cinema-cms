@@ -113,7 +113,7 @@ export const useSellerStore = create<SellerStore>((set) => ({
       coupon,
       isLoading: false,
       selectedGifts: [...state.selectedGifts, { ...coupon.gift, quantity: 1, coupon: true }],
-      selectedCoupons: [...state.selectedCoupons, coupon._id],
+      selectedCoupons: [...state.selectedCoupons, coupon.code],
     })),
   setSelectedSeats: (seats: SeatType[]) => set(() => ({ selectedSeats: seats })),
   setBills: (bills: BillsResponse) => set(() => ({ bills })),

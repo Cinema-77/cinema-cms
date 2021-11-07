@@ -2,17 +2,20 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 // import { Button, ButtonGroup } from '@chakra-ui/react';
-import { IRevenue } from '@/features/revenue';
+import { IRevenueQuarter } from '@/features/revenue';
 
-const generateOptions = (data: IRevenue[]) => {
-  const categories = data.map((item) => item.date);
+const generateOptions = (data: IRevenueQuarter[]) => {
+  const categories = data.map((item) => `Quý ${item.quarter}`);
 
   return {
     chart: {
       height: 500,
     },
     title: {
-      text: 'Doanh thu rạp phim',
+      text: 'Doanh thu rạp phim theo quý',
+    },
+    legend: {
+      enabled: false,
     },
     xAxis: {
       categories: categories,
@@ -22,20 +25,17 @@ const generateOptions = (data: IRevenue[]) => {
     yAxis: {
       min: 0,
       title: {
-        text: null,
+        text: 'Doanh số',
       },
       labels: {
         align: 'right',
       },
     },
     tooltip: {
-      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+      headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
       pointFormat:
-        '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-        '<td style="padding:0"><b>{point.y} VNĐ</b></td></tr>',
-      footerFormat: '</table>',
+        '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>',
       shared: true,
-      useHTML: true,
     },
     plotOptions: {
       column: {
@@ -46,13 +46,15 @@ const generateOptions = (data: IRevenue[]) => {
     series: [
       {
         name: 'Tổng doanh thu',
+        type: 'column',
+        colorByPoint: true,
         data: data.map((item) => item.totalPrice),
       },
     ],
   };
 };
 
-export const LineChart = ({ data }: { data: IRevenue[] }) => {
+export const ColumnChart = ({ data }: { data: IRevenueQuarter[] }) => {
   return (
     <>
       <HighchartsReact highcharts={Highcharts} options={generateOptions(data)} />

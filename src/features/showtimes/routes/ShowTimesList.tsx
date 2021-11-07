@@ -1,12 +1,9 @@
 import { Badge, Box, Button, Flex, Stack, Heading, Spinner, SimpleGrid } from '@chakra-ui/react';
 import React from 'react';
-// import { MdAdd } from 'react-icons/md';
-// import { Link } from 'react-router-dom';
-
-import { useShowTimes } from '../api/getShowtimes';
 
 import { Table, Td, Th, Tr } from '@/components';
 import { colorBadge } from '@/features/room';
+import { useShowTimes } from '@/features/showtimes';
 import {
   getCurrentMonday,
   getCurrentSunday,

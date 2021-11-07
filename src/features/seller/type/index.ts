@@ -124,6 +124,7 @@ export interface ICoupon {
   dateExpiry: string;
   user: string;
   gift: IGift;
+  status: number;
 }
 export interface CouponResponse {
   success: boolean;

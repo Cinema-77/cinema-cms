@@ -12,6 +12,11 @@ import {
   Spinner,
   Badge,
   useToast,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { UseFormRegister } from 'react-hook-form';
@@ -88,116 +93,131 @@ export const ShowTimesCreate = () => {
           alignItems="center"
           flexShrink={0}
         >
-          {moviesQuery.isLoading ? (
-            <Flex justifyContent="center">
-              <Spinner
-                thickness="4px"
-                speed="0.65s"
-                emptyColor="gray.200"
-                color="blue.500"
-                size="xl"
-              />
-            </Flex>
-          ) : (
-            <>
-              <TimeSlotCreate />
-              <Box
-                width="100%"
-                margin="auto"
-                border="1px"
-                borderColor="gray.200"
-                borderStyle="solid"
-                padding="5"
-              >
-                <Form<ShowTimesValues>
-                  onSubmit={async (data) => {
-                    if (!isEmptyObject(data.showTimes)) {
-                      toast({
-                        title: 'Vui lòng chọn lịch chiếu',
-                        position: 'top-right',
-                        isClosable: true,
-                        status: 'info',
-                      });
-                      return;
-                    }
-                    const times = data.showTimes.filter((t) => Boolean(t.roomId) !== false);
-                    const newShowTimes = {
-                      ...data,
-                      showTimes: times,
-                      cinemaId: user?.cinema._id as string,
-                    };
-                    await createShowTimeMutation.mutateAsync({ data: newShowTimes });
-                  }}
-                >
-                  {({ register, formState, setValue }) => (
-                    <Stack spacing={4} direction="column">
-                      <Flex alignItems="center" justifyContent="space-between">
-                        <Stack direction="column" flex={1}>
-                          <SingleSelect registration={register('date')} label="Ngày tạo" />
-                          {moviesQuery.data && (
-                            <SelectField
-                              label="Phim"
-                              placeholder="Chọn 1 bộ phim"
-                              registration={register('movieId')}
-                              error={formState.errors['movieId']}
-                              options={moviesQuery.data?.values?.movies.map(({ name, _id }) => ({
-                                label: name,
-                                value: _id,
-                              }))}
-                              onChanging={onChangeMovie}
-                            />
-                          )}
-                        </Stack>
-                        <Center flexShrink={0} mx={3} height="50px">
-                          <Divider orientation="vertical" />
-                        </Center>
-                        <Stack direction="column" flex={1}>
-                          <SingleSelect
-                            registration={register('dateStart')}
-                            label="Từ"
-                            setValues={setValue}
-                            nameToSet="dateStart"
-                            sizeOfTimeStamp={listRoomByMovie.length}
-                          />
-                          <SingleSelect
-                            registration={register('dateEnd')}
-                            label="Đến"
-                            setValues={setValue}
-                            nameToSet="dateEnd"
-                            sizeOfTimeStamp={listRoomByMovie.length}
-                          />
-                        </Stack>
-                      </Flex>
-
-                      <TimeSlotList
-                        register={register}
-                        rooms={listRoomByMovie}
-                        checkedTimes={checkedTimes}
-                        isLoading={loading}
-                      />
-
-                      <Button
-                        backgroundColor="cyan.400"
-                        color="white"
-                        fontWeight="medium"
-                        type="submit"
-                        _hover={{
-                          backgroundColor: 'cyan.700',
+          <Tabs variant="enclosed" width="full">
+            <TabList>
+              <Tab>Tạo lịch chiếu </Tab>
+              <Tab>Doanh sách lịch chiếu</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                {moviesQuery.isLoading ? (
+                  <Flex justifyContent="center">
+                    <Spinner
+                      thickness="4px"
+                      speed="0.65s"
+                      emptyColor="gray.200"
+                      color="blue.500"
+                      size="xl"
+                    />
+                  </Flex>
+                ) : (
+                  <>
+                    <TimeSlotCreate />
+                    <Box
+                      width="100%"
+                      margin="auto"
+                      border="1px"
+                      borderColor="gray.200"
+                      borderStyle="solid"
+                      padding="5"
+                    >
+                      <Form<ShowTimesValues>
+                        onSubmit={async (data) => {
+                          if (!isEmptyObject(data.showTimes)) {
+                            toast({
+                              title: 'Vui lòng chọn lịch chiếu',
+                              position: 'top-right',
+                              isClosable: true,
+                              status: 'info',
+                            });
+                            return;
+                          }
+                          const times = data.showTimes.filter((t) => Boolean(t.roomId) !== false);
+                          const newShowTimes = {
+                            ...data,
+                            showTimes: times,
+                            cinemaId: user?.cinema._id as string,
+                          };
+                          await createShowTimeMutation.mutateAsync({ data: newShowTimes });
                         }}
-                        maxWidth="200px"
-                        alignSelf="flex-end"
-                        isLoading={createShowTimeMutation.isLoading}
                       >
-                        Tạo lịch chiếu
-                      </Button>
-                    </Stack>
-                  )}
-                </Form>
-              </Box>
-            </>
-          )}
+                        {({ register, formState, setValue }) => (
+                          <Stack spacing={4} direction="column">
+                            <Flex alignItems="center" justifyContent="space-between">
+                              <Stack direction="column" flex={1}>
+                                <SingleSelect registration={register('date')} label="Ngày tạo" />
+                                {moviesQuery.data && (
+                                  <SelectField
+                                    label="Phim"
+                                    placeholder="Chọn 1 bộ phim"
+                                    registration={register('movieId')}
+                                    error={formState.errors['movieId']}
+                                    options={moviesQuery.data?.values?.movies.map(
+                                      ({ name, _id }) => ({
+                                        label: name,
+                                        value: _id,
+                                      }),
+                                    )}
+                                    onChanging={onChangeMovie}
+                                  />
+                                )}
+                              </Stack>
+                              <Center flexShrink={0} mx={3} height="50px">
+                                <Divider orientation="vertical" />
+                              </Center>
+                              <Stack direction="column" flex={1}>
+                                <SingleSelect
+                                  registration={register('dateStart')}
+                                  label="Từ"
+                                  setValues={setValue}
+                                  nameToSet="dateStart"
+                                  sizeOfTimeStamp={listRoomByMovie.length}
+                                />
+                                <SingleSelect
+                                  registration={register('dateEnd')}
+                                  label="Đến"
+                                  setValues={setValue}
+                                  nameToSet="dateEnd"
+                                  sizeOfTimeStamp={listRoomByMovie.length}
+                                />
+                              </Stack>
+                            </Flex>
+
+                            <TimeSlotList
+                              register={register}
+                              rooms={listRoomByMovie}
+                              checkedTimes={checkedTimes}
+                              isLoading={loading}
+                            />
+
+                            <Button
+                              backgroundColor="cyan.400"
+                              color="white"
+                              fontWeight="medium"
+                              type="submit"
+                              _hover={{
+                                backgroundColor: 'cyan.700',
+                              }}
+                              maxWidth="200px"
+                              alignSelf="flex-end"
+                              isLoading={createShowTimeMutation.isLoading}
+                            >
+                              Tạo lịch chiếu
+                            </Button>
+                          </Stack>
+                        )}
+                      </Form>
+                    </Box>
+                  </>
+                )}
+              </TabPanel>
+              <TabPanel>
+                <ShowTimesList />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </Stack>
-        <Stack
+        {/* <Stack
           backgroundColor="white"
           maxWidth="1200px"
           minWidth="800px"
@@ -207,9 +227,7 @@ export const ShowTimesCreate = () => {
           spacing={4}
           alignItems="center"
           flex={1}
-        >
-          <ShowTimesList />
-        </Stack>
+        ></Stack> */}
       </Flex>
     </Box>
   );

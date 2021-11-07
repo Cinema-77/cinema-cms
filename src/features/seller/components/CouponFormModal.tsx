@@ -47,6 +47,11 @@ export const CouponFormModal = () => {
     const isUnvaliableTicket = coupon.gift.screenId && coupon.gift.screenId !== screenId;
     const hasGiftDiscount = selectedGifts.find((g) => g.type === 2 && coupon.gift.type === g.type); // 2 la phieu giam gia
     const ticketsGift = selectedGifts.find((g) => g.type === 0);
+    const isUnvaliableCoupon = coupon.status === 1;
+
+    if (isUnvaliableCoupon) {
+      messageError.push('Coupon đã được sử dụng');
+    }
 
     if (isUnvaliableTicket) {
       messageError.push('Coupon không hợp lệ');
