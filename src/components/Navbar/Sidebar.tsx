@@ -73,20 +73,15 @@ const LinkItems = () => {
       icon: FiTrendingUp,
       to: '/revenue',
     },
-    checkAccess({ allowedRoles: [ROLES.ADMIN, ROLES.MANAGER] }) && {
+    {
       name: 'Rạp',
       icon: FiCompass,
       accor: true,
       linkChild: [
         {
-          name: 'List Cinema',
+          name: 'Danh sách rạp',
           icon: BsDot,
           to: '/cinema/list',
-        },
-        {
-          name: 'My Cinema',
-          icon: BsDot,
-          to: '/cinema/mycinema',
         },
       ],
     },
@@ -117,7 +112,11 @@ const LinkItems = () => {
       icon: FiUser,
       to: '/users',
     },
-    { name: 'Bán vé', icon: FiStar, to: '/seller' },
+    checkAccess({ allowedRoles: [ROLES.MANAGER, ROLES.USER] }) && {
+      name: 'Bán vé',
+      icon: FiStar,
+      to: '/seller',
+    },
     { name: 'Cài đặt', icon: FiSettings, to: '/as' },
   ].filter(Boolean) as LinkItemProps[];
 

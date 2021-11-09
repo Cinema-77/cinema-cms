@@ -21,6 +21,27 @@ export const POLICIES = {
 
     return false;
   },
+  'cinema:create': (user: AuthUser) => {
+    if (user.permission.type === '0') {
+      return true;
+    }
+
+    return false;
+  },
+  'cinema:delete': (user: AuthUser) => {
+    if (user.permission.type === '0') {
+      return true;
+    }
+
+    return false;
+  },
+  'cinema:update': (user: AuthUser) => {
+    if (user.permission.type === '0') {
+      return true;
+    }
+
+    return false;
+  },
 };
 
 export const useAuthorization = () => {

@@ -20,12 +20,10 @@ import { FiTrash } from 'react-icons/fi';
 import { MdInfo } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
-import { CinemaType } from '..';
-import { useDeleteCinema } from '../api/deleteCinema';
-
-import { CinemaModalUpdate } from './CinemaModalUpdate';
-
+import { AuthUser } from '@/features/auth';
+import { CinemaType, useDeleteCinema, CinemaModalUpdate } from '@/features/cinema';
 import { useAuth } from '@/lib/auth';
+import { Authorization, POLICIES } from '@/lib/authorization';
 
 export const CinemaItem: React.FC<CinemaType> = (props) => {
   const bg = useColorModeValue('white', 'gray.900');
@@ -39,9 +37,6 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
     await deleteCinemaMutation.mutateAsync({ cinemaId: props._id });
   };
 
-  const isMine = () => {
-    return user?.cinema._id === props._id;
-  };
   return (
     <Box
       border="1px"
@@ -65,7 +60,7 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
               <Heading size="lg" mb="1">
                 {props.name}
               </Heading>
-              {isMine() && (
+              <Authorization policyCheck={POLICIES['cinema:delete'](user as AuthUser)}>
                 <IconButton
                   size="lg"
                   variant="ghost"
@@ -73,7 +68,7 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
                   icon={<FiTrash />}
                   onClick={() => setIsOpen(!isOpen)}
                 />
-              )}
+              </Authorization>
               <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
                 <AlertDialogOverlay />
                 <AlertDialogContent>
@@ -117,10 +112,12 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
         </Box>
       </Flex>
       <Stack direction="row" spacing={4} mt="4" justifyContent="flex-end">
-        {isMine() && <CinemaModalUpdate {...props} />}
+        <Authorization policyCheck={POLICIES['cinema:update'](user as AuthUser)}>
+          <CinemaModalUpdate {...props} />
+        </Authorization>
         <Button
           as={Link}
-          to={`/cinema/detail/${props._id}`}
+          to={`/cinema/list/detail/${props._id}`}
           leftIcon={<MdInfo />}
           colorScheme="cyan"
           variant="outline"

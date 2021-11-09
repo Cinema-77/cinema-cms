@@ -24,7 +24,7 @@ type Address = {
   wards: Ward[];
 };
 
-export type CinemaValues = {
+type CinemaValues = {
   _id: string;
   name: string;
   address: {

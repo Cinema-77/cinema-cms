@@ -13,6 +13,7 @@ import { InputNumberField } from '@/components/Form/InputNumberField';
 import { SiteHeader } from '@/components/Layout';
 import { ROUTES } from '@/constants';
 import { useAuth } from '@/lib/auth';
+import { Authorization, ROLES } from '@/lib/authorization';
 
 type RoomValues = {
   name: string;
@@ -34,7 +35,10 @@ export const CreateRoom = () => {
   const { user } = useAuth();
 
   return (
-    <>
+    <Authorization
+      forbiddenFallback={<div>Only manager can view this.</div>}
+      allowedRoles={[ROLES.MANAGER]}
+    >
       <SiteHeader menuName="Rooms" menuHref={ROUTES.ROOM_CREATE} heading={`Create a new Room`}>
         <BreadcrumbItem isCurrentPage>
           <BreadcrumbLink>New Room</BreadcrumbLink>
@@ -131,6 +135,6 @@ export const CreateRoom = () => {
           </Box>
         </Stack>
       </Flex>
-    </>
+    </Authorization>
   );
 };

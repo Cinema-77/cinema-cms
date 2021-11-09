@@ -1,15 +1,15 @@
 import { Box, Skeleton, Stack } from '@chakra-ui/react';
-import React from 'react';
 
-import { useCinemas } from '../api/getCinema';
-import { CinemaItem } from '../components';
-import { CinemaModalCreate } from '../components/CinemaModalCreate';
-
-import { SiteHeader } from '@/components/Layout';
+import { SiteHeader } from '@/components';
 import { ROUTES } from '@/constants';
+import { AuthUser } from '@/features/auth';
+import { CinemaItem, CinemaModalCreate, useCinemas } from '@/features/cinema';
+import { useAuth } from '@/lib/auth';
+import { Authorization, POLICIES } from '@/lib/authorization';
 
 export const Cinemas = () => {
   const { isLoading, data } = useCinemas();
+  const { user } = useAuth();
 
   return (
     <>
@@ -17,7 +17,11 @@ export const Cinemas = () => {
         menuName="List Cinema"
         menuHref={ROUTES.CINEMA_LIST}
         heading="List Cinema"
-        showButton={<CinemaModalCreate />}
+        showButton={
+          <Authorization policyCheck={POLICIES['cinema:create'](user as AuthUser)}>
+            <CinemaModalCreate />
+          </Authorization>
+        }
       />
       <Box px="3">
         {isLoading ? (

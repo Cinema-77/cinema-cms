@@ -19,6 +19,7 @@ import { MenuListRoom } from '../components/MenuList';
 import { Table, Td, Th, Tr } from '@/components';
 import { SiteHeader } from '@/components/Layout';
 import { ROUTES } from '@/constants';
+import { Authorization, ROLES } from '@/lib/authorization';
 
 export const colorBadge: any = {
   '2D': 'gray',
@@ -32,7 +33,10 @@ export const RoomList = () => {
   const roomsQuery = useRooms();
 
   return (
-    <>
+    <Authorization
+      forbiddenFallback={<div>Only manager can view this.</div>}
+      allowedRoles={[ROLES.MANAGER]}
+    >
       <SiteHeader
         menuName="Room List"
         menuHref={ROUTES.ROOM_LIST}
@@ -118,6 +122,6 @@ export const RoomList = () => {
           </Box>
         </Stack>
       </Flex>
-    </>
+    </Authorization>
   );
 };
