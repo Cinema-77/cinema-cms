@@ -15,7 +15,7 @@ interface UserPermission {
 }
 
 export interface AuthUser {
-  _id?: string;
+  _id: string;
   email: string;
   phoneNumber: string;
   profile: UserProfile;

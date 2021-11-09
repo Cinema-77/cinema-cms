@@ -49,7 +49,7 @@ import {
 import { NavLink } from 'react-router-dom';
 
 import { useAuth } from '@/lib/auth';
-
+import { useAuthorization, ROLES } from '@/lib/authorization';
 interface LinkItemProps {
   name: string;
   icon: IconType;
@@ -57,53 +57,85 @@ interface LinkItemProps {
   accor?: boolean;
   linkChild?: LinkItemProps[];
 }
-const LinkItems: Array<LinkItemProps> = [
-  { name: 'Trang chủ', icon: FiHome, to: '/dashboard' },
-  { name: 'Phim', icon: FiFilm, to: '/managemovie' },
-  { name: 'Doanh thu', icon: FiTrendingUp, to: '/revenue' },
-  {
-    name: 'Rạp',
-    icon: FiCompass,
-    accor: true,
-    linkChild: [
-      {
-        name: 'List Cinema',
-        icon: BsDot,
-        to: '/cinema/list',
-      },
-      {
-        name: 'My Cinema',
-        icon: BsDot,
-        to: '/cinema/mycinema',
-      },
-    ],
-  },
-  {
-    name: 'Phòng',
-    icon: FiBox,
-    accor: true,
-    linkChild: [
-      {
-        name: 'List',
-        icon: BsDot,
-        to: '/room/listRoom',
-      },
-      {
-        name: 'Create',
-        icon: BsDot,
-        to: '/room/createRoom',
-      },
-    ],
-  },
-  {
-    name: 'Lịch chiếu',
-    icon: AiOutlineSchedule,
-    to: '/showtimes/create',
-  },
-  { name: 'Nhân viên', icon: FiUser, to: '/users' },
-  { name: 'Bán vé', icon: FiStar, to: '/seller' },
-  { name: 'Cài đặt', icon: FiSettings, to: '/as' },
-];
+
+const LinkItems = () => {
+  const { checkAccess } = useAuthorization();
+
+  const navigation = [
+    { name: 'Trang chủ', icon: FiHome, to: '/dashboard' },
+    checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
+      name: 'Phim',
+      icon: FiFilm,
+      to: '/managemovie',
+    },
+    checkAccess({ allowedRoles: [ROLES.ADMIN, ROLES.MANAGER] }) && {
+      name: 'Doanh thu',
+      icon: FiTrendingUp,
+      to: '/revenue',
+    },
+    checkAccess({ allowedRoles: [ROLES.ADMIN, ROLES.MANAGER] }) && {
+      name: 'Rạp',
+      icon: FiCompass,
+      accor: true,
+      linkChild: [
+        {
+          name: 'List Cinema',
+          icon: BsDot,
+          to: '/cinema/list',
+        },
+        {
+          name: 'My Cinema',
+          icon: BsDot,
+          to: '/cinema/mycinema',
+        },
+      ],
+    },
+    checkAccess({ allowedRoles: [ROLES.MANAGER] }) && {
+      name: 'Phòng',
+      icon: FiBox,
+      accor: true,
+      linkChild: [
+        {
+          name: 'List',
+          icon: BsDot,
+          to: '/room/listRoom',
+        },
+        {
+          name: 'Create',
+          icon: BsDot,
+          to: '/room/createRoom',
+        },
+      ],
+    },
+    checkAccess({ allowedRoles: [ROLES.MANAGER] }) && {
+      name: 'Lịch chiếu',
+      icon: AiOutlineSchedule,
+      to: '/showtimes/create',
+    },
+    checkAccess({ allowedRoles: [ROLES.MANAGER] }) && {
+      name: 'Nhân viên',
+      icon: FiUser,
+      to: '/users',
+    },
+    { name: 'Bán vé', icon: FiStar, to: '/seller' },
+    { name: 'Cài đặt', icon: FiSettings, to: '/as' },
+  ].filter(Boolean) as LinkItemProps[];
+
+  return (
+    <>
+      {navigation.map((link) => {
+        if (link.accor) {
+          return <LinkAccor key={link.name} {...link} />;
+        }
+        return (
+          <NavItem key={link.name} icon={link.icon} href={link.to as string}>
+            {link.name}
+          </NavItem>
+        );
+      })}
+    </>
+  );
+};
 
 export default function SidebarWithHeader({ children }: { children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -154,16 +186,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link) => {
-        if (link.accor) {
-          return <LinkAccor key={link.name} {...link} />;
-        }
-        return (
-          <NavItem key={link.name} icon={link.icon} href={link.to as string}>
-            {link.name}
-          </NavItem>
-        );
-      })}
+
+      <LinkItems />
     </Box>
   );
 };
