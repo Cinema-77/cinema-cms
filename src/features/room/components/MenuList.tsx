@@ -39,26 +39,32 @@ export const MenuListRoom: React.FC<MenuListRoomProps> = ({ roomId }) => {
       />
       <MenuList>
         <MenuItem icon={<FiEdit2 />} command="⌘T">
-          Edit
+          Chỉnh sửa
         </MenuItem>
         <MenuItem icon={<FiTrash2 />} command="⌘N" onClick={onOpen}>
-          Delete
+          Xoá phòng
           <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
             <AlertDialogOverlay />
             <AlertDialogContent>
               <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                Delete Room
+                Xoá phòng
               </AlertDialogHeader>
               <AlertDialogBody>
-                Are you sure? This will also delete all feedback left on the site. You can't undo
-                this action afterwards.
+                Bạn có chắc không ? Điều này sẽ xoá phòng hiện tại và bạn không thể khôi phục lại
+                được ?
               </AlertDialogBody>
               <AlertDialogFooter>
                 <Button ref={cancelRef} onClick={onClose}>
-                  Cancel
+                  Huỷ bỏ
                 </Button>
-                <Button fontWeight="bold" colorScheme="red" onClick={onDelete} ml={3}>
-                  Delete
+                <Button
+                  fontWeight="bold"
+                  colorScheme="red"
+                  onClick={onDelete}
+                  ml={3}
+                  isLoading={deleteRoomMutation.isLoading}
+                >
+                  Xoá
                 </Button>
               </AlertDialogFooter>
             </AlertDialogContent>

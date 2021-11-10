@@ -7,7 +7,6 @@ export const ROUTES = {
   MOVIE: '/managemovie',
   REVENUE: '/revenue',
   ROOM_LIST: '/room/listRoom',
-  ROOM_CREATE: '/room/createRoom',
   SHOWTIMES_CREATE: '/showtimes/create',
   SELLER: '/seller',
   SELLER_TICKET_ID: '/seller/bookTicket/:_id',
@@ -19,3 +18,8 @@ export const SITE_MODAL_TYPES = Object.freeze({
   BONUS_FORM: 'bonusForm',
   COUPON_FORM: 'couponForm',
 });
+
+export const PRICE = {
+  STUDENT: 45000,
+  CHILD: 50000,
+};

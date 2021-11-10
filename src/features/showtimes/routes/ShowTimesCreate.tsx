@@ -128,7 +128,7 @@ export const ShowTimesCreate = () => {
                       >
                         <Form<ShowTimesValues>
                           onSubmit={async (data) => {
-                            if (!isEmptyObject(data.showTimes)) {
+                            if (isEmptyObject(data.showTimes)) {
                               toast({
                                 title: 'Vui lòng chọn lịch chiếu',
                                 position: 'top-right',

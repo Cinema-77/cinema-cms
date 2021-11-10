@@ -1,6 +1,7 @@
 import { Box, BreadcrumbItem, BreadcrumbLink, Flex, Stack, Spinner } from '@chakra-ui/react';
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
+import shallow from 'zustand/shallow';
 
 import { SiteHeader } from '@/components';
 import { ROUTES, SITE_MODAL_TYPES } from '@/constants';
@@ -55,7 +56,29 @@ export const SellerTicket = () => {
     fetchGifts,
     setSelectedSeats,
     getScreen,
-  } = useSellerStore();
+  } = useSellerStore(
+    (state) => ({
+      modalType: state.modalType,
+      step: state.step,
+      selectedCombos: state.selectedCombos,
+      selectedGifts: state.selectedGifts,
+      selectedSeats: state.selectedSeats,
+      selectedCoupons: state.selectedCoupons,
+      member: state.member,
+      point: state.point,
+      setModal: state.setModal,
+      nextStep: state.nextStep,
+      previousStep: state.previousStep,
+      inc: state.inc,
+      des: state.des,
+      reset: state.reset,
+      setBills: state.setBills,
+      fetchGifts: state.fetchGifts,
+      setSelectedSeats: state.setSelectedSeats,
+      getScreen: state.getScreen,
+    }),
+    shallow,
+  );
 
   if (ticketsByShowTimesQuery.isLoading) {
     return (

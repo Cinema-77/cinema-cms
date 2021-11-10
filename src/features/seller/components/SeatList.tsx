@@ -27,7 +27,9 @@ export const SeatList: React.FC<SeatListProps> = ({
       : selectedSeats.filter((s) => s.seatName !== hasSeat.seatName);
 
     if (hasSeat) {
+      // reset seat
       hasSeat.price = oldPrice;
+      hasSeat.type = 1;
     }
 
     setDisplayPrice(hasSeat ? 0 : seat.price);

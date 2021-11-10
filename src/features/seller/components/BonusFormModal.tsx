@@ -23,6 +23,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi';
+import shallow from 'zustand/shallow';
 
 import { Alert } from '@/components';
 import { IGift } from '@/features/seller';
@@ -40,7 +41,20 @@ export const BonusFormModal = () => {
     incGift,
     desGift,
     closeModal,
-  } = useSellerStore();
+  } = useSellerStore(
+    (state) => ({
+      openModal: state.openModal,
+      gifts: state.gifts,
+      isLoading: state.isLoading,
+      point: state.point,
+      selectedGifts: state.selectedGifts,
+      selectedSeats: state.selectedSeats,
+      incGift: state.incGift,
+      desGift: state.desGift,
+      closeModal: state.closeModal,
+    }),
+    shallow,
+  );
   const toast = useToast();
 
   const shouldDisableInc = (gift: IGift) => point < gift.point;

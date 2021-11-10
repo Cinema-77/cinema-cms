@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import * as z from 'zod';
+import shallow from 'zustand/shallow';
 
 import { Form, InputField } from '@/components';
 import { useSellerStore } from '@/stores/seller';
@@ -28,7 +29,15 @@ const schema = z.object({
 });
 
 export const MemberFormModal = () => {
-  const { openModal, closeModal, fetchMember, isLoading } = useSellerStore();
+  const { openModal, closeModal, fetchMember, isLoading } = useSellerStore(
+    (state) => ({
+      openModal: state.openModal,
+      isLoading: state.isLoading,
+      closeModal: state.closeModal,
+      fetchMember: state.fetchMember,
+    }),
+    shallow,
+  );
   const toast = useToast();
   return (
     <Modal onClose={closeModal} isOpen={openModal} isCentered>

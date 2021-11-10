@@ -7,7 +7,6 @@ const { DashBoard } = lazyImport(() => import('@/features/dashboard'), 'DashBoar
 const { Cinemas } = lazyImport(() => import('@/features/cinema'), 'Cinemas');
 const { Cinema } = lazyImport(() => import('@/features/cinema'), 'Cinema');
 const { manageMovie } = lazyImport(() => import('@/features/manageMovie'), 'manageMovie');
-const { CreateRoom } = lazyImport(() => import('@/features/room'), 'CreateRoom');
 const { RoomList } = lazyImport(() => import('@/features/room'), 'RoomList');
 const { ShowTimesCreate } = lazyImport(() => import('@/features/showtimes'), 'ShowTimesCreate');
 const { SellerPage } = lazyImport(() => import('@/features/seller'), 'SellerPage');
@@ -46,11 +45,6 @@ const routes: any[] = [
         path: ROUTES.MOVIE,
         component: manageMovie,
         title: 'Manage Movie',
-      },
-      {
-        path: ROUTES.ROOM_CREATE,
-        component: CreateRoom,
-        title: 'Create Room',
       },
       {
         path: ROUTES.ROOM_LIST,

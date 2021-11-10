@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-import { SITE_MODAL_TYPES } from '@/constants';
+import { PRICE, SITE_MODAL_TYPES } from '@/constants';
 import {
   SeatList,
   MemberInfo,
@@ -73,14 +73,16 @@ export const SeatsRoute: React.FC<SeatsRouteProps> = (props) => {
         return setSelectedSeats([...selectedSeats]);
       }
       case 'Child': {
-        selectSeat.price = oldPrice * 0.7;
+        selectSeat.price = PRICE.CHILD;
+        selectSeat.type = 0;
         setDisplayPrice(selectSeat.price);
         return setSelectedSeats([...selectedSeats]);
       }
 
       case 'Student':
         if (event.target.checked) {
-          selectSeat.price = oldPrice * 0.8;
+          selectSeat.price = PRICE.STUDENT;
+          selectSeat.type = 2;
           setDisplayPrice(selectSeat.price);
         }
         return setSelectedSeats([...selectedSeats]);

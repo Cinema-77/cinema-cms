@@ -18,6 +18,7 @@ import {
   ButtonGroup,
 } from '@chakra-ui/react';
 import { Redirect, useHistory } from 'react-router-dom';
+import shallow from 'zustand/shallow';
 
 import { ROUTES } from '@/constants';
 import { TicketCard } from '@/features/seller';
@@ -25,7 +26,10 @@ import { useSellerStore } from '@/stores/seller';
 import { isEmptyObject } from '@/utils/object';
 
 export const PaymentComplete = () => {
-  const { bills, clearBill } = useSellerStore();
+  const { bills, clearBill } = useSellerStore(
+    (state) => ({ bills: state.bills, clearBill: state.clearBill }),
+    shallow,
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useHistory();
 

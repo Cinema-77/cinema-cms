@@ -6,6 +6,7 @@ export interface SeatType {
   price: number;
   status: 1 | 0;
   showTimeDetail?: string;
+  type: number;
 }
 
 export interface TicketType {

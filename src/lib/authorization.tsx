@@ -62,7 +62,18 @@ export const useAuthorization = () => {
     [user.permission.type],
   );
 
-  return { checkAccess, role: user.permission.type };
+  const getRoles = (user: AuthUser) => {
+    switch (user.permission.type) {
+      case '0':
+        return 'Admin';
+      case '1':
+        return 'Manager';
+      default:
+        return 'User';
+    }
+  };
+
+  return { checkAccess, role: getRoles(user) };
 };
 
 type AuthorizationProps = {

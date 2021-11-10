@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import * as React from 'react';
 import * as z from 'zod';
+import shallow from 'zustand/shallow';
 
 import { Form, InputField } from '@/components';
 import { getCouponGift, ICoupon } from '@/features/seller';
@@ -38,7 +39,20 @@ export const CouponFormModal = () => {
     closeModal,
     fetchCoupon,
     setLoading,
-  } = useSellerStore();
+  } = useSellerStore(
+    (state) => ({
+      openModal: state.openModal,
+      member: state.member,
+      isLoading: state.isLoading,
+      screenId: state.screenId,
+      selectedGifts: state.selectedGifts,
+      selectedSeats: state.selectedSeats,
+      closeModal: state.closeModal,
+      fetchCoupon: state.fetchCoupon,
+      setLoading: state.setLoading,
+    }),
+    shallow,
+  );
   const toast = useToast();
 
   const validateError = (coupon: ICoupon) => {

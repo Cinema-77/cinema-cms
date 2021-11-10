@@ -1,24 +1,8 @@
-import {
-  Badge,
-  Box,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  Button,
-  Flex,
-  Spinner,
-  Stack,
-  useColorModeValue,
-} from '@chakra-ui/react';
-import React from 'react';
-import { MdAdd } from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import { Badge, Box, BreadcrumbItem, BreadcrumbLink, Flex, Spinner, Stack } from '@chakra-ui/react';
 
-import { useRooms } from '..';
-import { MenuListRoom } from '../components/MenuList';
-
-import { Table, Td, Th, Tr } from '@/components';
-import { SiteHeader } from '@/components/Layout';
+import { Table, Td, Th, Tr, SiteHeader } from '@/components';
 import { ROUTES } from '@/constants';
+import { MenuListRoom, RoomCreateModal, useRooms } from '@/features/room';
 import { Authorization, ROLES } from '@/lib/authorization';
 
 export const colorBadge: any = {
@@ -28,8 +12,6 @@ export const colorBadge: any = {
 };
 
 export const RoomList = () => {
-  const bg = useColorModeValue('gray.900', 'white');
-  const color = useColorModeValue('white', 'gray.900');
   const roomsQuery = useRooms();
 
   return (
@@ -42,21 +24,12 @@ export const RoomList = () => {
         menuHref={ROUTES.ROOM_LIST}
         heading={`Room`}
         showButton={
-          <Button
-            as={Link}
-            to="/room/createRoom"
-            leftIcon={<MdAdd />}
-            backgroundColor={bg}
-            color={color}
-            fontWeight="medium"
-            _hover={{ bg: 'gray.700' }}
-            _active={{
-              bg: 'gray.800',
-              transform: 'scale(0.95)',
-            }}
+          <Authorization
+            forbiddenFallback={<div>Only manager can view this.</div>}
+            allowedRoles={[ROLES.MANAGER]}
           >
-            Tạo phòng
-          </Button>
+            <RoomCreateModal />
+          </Authorization>
         }
       >
         <BreadcrumbItem isCurrentPage>
