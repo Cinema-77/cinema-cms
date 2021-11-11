@@ -1,16 +1,15 @@
 export const ROUTES = {
-  AUTH: '/',
-  DASHBOARD: '/dashboard',
-  CINEMA_LIST: '/cinema/list',
-  CINEMA_DETAIL: '/cinema/list/detail/:_id',
-  CINEMA_CREATE: '/cinema/create',
-  MOVIE: '/managemovie',
-  REVENUE: '/revenue',
-  ROOM_LIST: '/room/listRoom',
-  SHOWTIMES_CREATE: '/showtimes/create',
-  SELLER: '/seller',
-  SELLER_TICKET_ID: '/seller/bookTicket/:_id',
-  PAYMENT_COMPLETE: '/seller/paymentComplete',
+  AUTH: '/auth/*',
+  DASHBOARD: '/app/dashboard',
+  CINEMA_LIST: '/app/cinema/list',
+  CINEMA_DETAIL: '/app/cinema/list/:_id',
+  MOVIE: '/app/managemovie',
+  REVENUE: '/app/revenue',
+  ROOM_LIST: '/app/room/listRoom',
+  SHOWTIMES_CREATE: '/app/showtimes/create',
+  SELLER: '/app/seller',
+  SELLER_TICKET_ID: '/app/seller/bookTicket/:_id',
+  PAYMENT_COMPLETE: '/app/seller/paymentComplete',
 };
 
 export const SITE_MODAL_TYPES = Object.freeze({

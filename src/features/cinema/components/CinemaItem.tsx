@@ -18,7 +18,7 @@ import {
 import React, { useRef, useState } from 'react';
 import { FiTrash } from 'react-icons/fi';
 import { MdInfo } from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import { Link, useRouteMatch } from 'react-router-dom';
 
 import { AuthUser } from '@/features/auth';
 import { CinemaType, useDeleteCinema, CinemaModalUpdate } from '@/features/cinema';
@@ -32,6 +32,7 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
   const onClose = () => setIsOpen(false);
   const deleteCinemaMutation = useDeleteCinema();
   const { user } = useAuth();
+  const { url } = useRouteMatch();
 
   const onDelete = async () => {
     await deleteCinemaMutation.mutateAsync({ cinemaId: props._id });
@@ -117,7 +118,7 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
         </Authorization>
         <Button
           as={Link}
-          to={`/cinema/list/detail/${props._id}`}
+          to={`${url}/${props._id}`}
           leftIcon={<MdInfo />}
           colorScheme="cyan"
           variant="outline"

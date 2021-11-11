@@ -217,7 +217,7 @@ export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
               onClick: () => onPayTicket(),
               ml: 3,
               color: 'white',
-              isLoading: buyTicketMutation.isLoading,
+              isLoading: buyTicketMutation.isLoading ? buyTicketMutation.isLoading : undefined,
             }}
             onClose={onClose}
           />

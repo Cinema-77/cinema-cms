@@ -87,7 +87,7 @@ const ListTime = ({ screens, date }: IListTime) => {
             to={(location: Location) =>
               isDisableTime(showtime.timeSlot.time)
                 ? location.pathname
-                : `/seller/bookTicket/${showtime._id}`
+                : `/app/seller/bookTicket/${showtime._id}`
             }
             variant="outline"
             isDisabled={isDisableTime(showtime.timeSlot.time)}

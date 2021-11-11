@@ -1,7 +1,7 @@
 import { MovieResult } from '@/features/manageMovie';
 import { Authorization, ROLES } from '@/lib/authorization';
 
-export const manageMovie = () => {
+export const ManageMovie = () => {
   return (
     <main>
       <Authorization

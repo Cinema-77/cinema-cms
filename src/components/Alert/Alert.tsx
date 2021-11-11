@@ -53,7 +53,7 @@ export const Alert: React.FC<AlertProps> = (props) => {
       <Button
         key="triggetButton"
         onClick={triggerButton.onClick}
-        loading={triggerButton.isLoading}
+        loading={triggerButton ? triggerButton.isLoading : undefined}
         variant={triggerButton.variant}
         disabled={triggerButton.disabled}
         {...triggerButton}

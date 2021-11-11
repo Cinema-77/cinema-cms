@@ -16,13 +16,20 @@ import {
   ModalHeader,
   ModalOverlay,
   ButtonGroup,
+  Heading,
+  Table,
+  Td,
+  Th,
+  Tr,
+  Text,
 } from '@chakra-ui/react';
 import { Redirect, useHistory } from 'react-router-dom';
 import shallow from 'zustand/shallow';
 
 import { ROUTES } from '@/constants';
-import { TicketCard } from '@/features/seller';
+import { ComboItem, TicketCard } from '@/features/seller';
 import { useSellerStore } from '@/stores/seller';
+import { formatDate, formatNumber } from '@/utils/format';
 import { isEmptyObject } from '@/utils/object';
 
 export const PaymentComplete = () => {
@@ -32,7 +39,7 @@ export const PaymentComplete = () => {
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useHistory();
-
+  console.log(bills);
   if (isEmptyObject(bills)) {
     return <Redirect to={ROUTES.SELLER} />;
   }
@@ -85,7 +92,7 @@ export const PaymentComplete = () => {
       <Modal onClose={onClose} isOpen={isOpen} size="2xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Danh sách vé</ModalHeader>
+          <ModalHeader>Hoá đơn</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             {bills.ticketBill &&
@@ -100,6 +107,16 @@ export const PaymentComplete = () => {
                   time={bills.time}
                 />
               ))}
+
+            {bills.foodBill && (
+              <Stack spacing={2}>
+                <Heading as="h4" fontSize="20px" textTransform="uppercase">
+                  Hoá đơn bắp nước
+                </Heading>
+                <Text>Ngày tạo: {formatDate(new Date(bills.foodBill.bill.createdAt))}</Text>
+                <FoodDetailTable foods={bills.foodBill.data} total={bills.foodBill.bill.total} />
+              </Stack>
+            )}
           </ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>Close</Button>
@@ -107,5 +124,46 @@ export const PaymentComplete = () => {
         </ModalContent>
       </Modal>
     </Box>
+  );
+};
+
+interface IFoodDetailTable {
+  foods: ComboItem[];
+  total: number;
+}
+
+const FoodDetailTable = ({ foods, total }: IFoodDetailTable) => {
+  return (
+    <Table w="full">
+      <thead>
+        <Tr>
+          <Th>Tên</Th>
+          <Th>Số lượng</Th>
+          <Th>Giá (VNĐ)</Th>
+        </Tr>
+      </thead>
+      <tbody>
+        {foods.map((food) => {
+          return (
+            <Box as="tr" key={food._id}>
+              <Td>{food.name}</Td>
+
+              <Td>{food.quantity}</Td>
+              <Td>{formatNumber(food.price)}</Td>
+            </Box>
+          );
+        })}
+      </tbody>
+      <tfoot>
+        <Tr>
+          <Td colSpan={2}>
+            <Heading as="h6" fontWeight="bold" fontSize="14px">
+              Tổng:
+            </Heading>
+          </Td>
+          <Td>{formatNumber(total)}</Td>
+        </Tr>
+      </tfoot>
+    </Table>
   );
 };

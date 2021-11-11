@@ -1,8 +1,8 @@
 import { Button, Flex, Heading, Stack, useToast } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useState } from 'react';
+import * as React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import * as z from 'zod';
 
 import { InputField } from '@/components/Form';
@@ -20,18 +20,15 @@ const schema = z.object({
 });
 
 export const Auth = () => {
-  const { user, login } = useAuth();
-  const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
+  const { login } = useAuth();
+  const [isLoggingIn, setIsLoggingIn] = React.useState<boolean>(false);
   const toast = useToast();
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm({ resolver: zodResolver(schema) });
-
-  if (user) {
-    return <Redirect to="/dashboard" />;
-  }
+  const history = useHistory();
 
   const onLogin: SubmitHandler<LoginValues> = async (data: LoginValues) => {
     setIsLoggingIn(!isLoggingIn);
@@ -42,6 +39,7 @@ export const Auth = () => {
     } else {
       login(values);
       setIsLoggingIn(false);
+      history.push('/app');
     }
   };
 

@@ -54,49 +54,49 @@ const LinkItems = () => {
   const { checkAccess } = useAuthorization();
 
   const navigation = [
-    { name: 'Trang chủ', icon: FiHome, to: '/dashboard' },
+    { name: 'Trang chủ', icon: FiHome, to: '/app/dashboard' },
     checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
       name: 'Phim',
       icon: FiFilm,
-      to: '/managemovie',
+      to: '/app/managemovie',
     },
     checkAccess({ allowedRoles: [ROLES.ADMIN, ROLES.MANAGER] }) && {
       name: 'Doanh thu',
       icon: FiTrendingUp,
-      to: '/revenue',
+      to: '/app/revenue',
     },
     {
       name: 'Rạp',
       icon: FiCompass,
-      to: '/cinema/list',
+      to: '/app/cinema/list',
     },
     checkAccess({ allowedRoles: [ROLES.MANAGER] }) && {
       name: 'Phòng',
       icon: FiBox,
-      to: '/room/listRoom',
+      to: '/app/room/listRoom',
     },
     checkAccess({ allowedRoles: [ROLES.MANAGER] }) && {
       name: 'Lịch chiếu',
       icon: AiOutlineSchedule,
-      to: '/showtimes/create',
+      to: '/app/showtimes/create',
     },
     checkAccess({ allowedRoles: [ROLES.MANAGER] }) && {
       name: 'Nhân viên',
       icon: FiUser,
-      to: '/users',
+      to: '/app/users',
     },
     checkAccess({ allowedRoles: [ROLES.MANAGER, ROLES.USER] }) && {
       name: 'Bán vé',
       icon: FiStar,
-      to: '/seller',
+      to: '/app/seller',
     },
-    { name: 'Cài đặt', icon: FiSettings, to: '/as' },
+    { name: 'Cài đặt', icon: FiSettings, to: '/app/settings' },
   ].filter(Boolean) as LinkItemProps[];
 
   return (
     <>
       {navigation.map((link) => (
-        <NavItem key={link.name} icon={link.icon} href={link.to as string}>
+        <NavItem key={link.name} icon={link.icon} href={link.to}>
           {link.name}
         </NavItem>
       ))}
