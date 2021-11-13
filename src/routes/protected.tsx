@@ -1,7 +1,7 @@
 import { Flex } from '@chakra-ui/layout';
 import { Spinner } from '@chakra-ui/spinner';
 import { Suspense, useEffect } from 'react';
-import { Switch, useHistory } from 'react-router-dom';
+import { Switch, useHistory, useLocation } from 'react-router-dom';
 
 import { NoMatch, RouteWithSubRoutes } from './routerConfig';
 
@@ -22,9 +22,13 @@ const { RevenuePage } = lazyImport(() => import('@/features/revenue'), 'RevenueP
 
 const App = ({ routes }: any) => {
   const history = useHistory();
+  const location = useLocation();
+
   useEffect(() => {
-    history.push('/app/dashboard');
-  }, [history]);
+    if (location.pathname === '/app') {
+      history.push('/app/dashboard');
+    }
+  }, [history, location.pathname]);
 
   return (
     <MainLayout>
@@ -56,8 +60,8 @@ export const protectedRoutes = [
       { path: ROUTES.ROOM_LIST, component: RoomList },
       { path: ROUTES.SHOWTIMES_CREATE, component: ShowTimesCreate },
       { path: ROUTES.SELLER_TICKET_ID, component: SellerTicket },
-      { path: ROUTES.SELLER, component: SellerPage },
       { path: ROUTES.PAYMENT_COMPLETE, component: PaymentComplete },
+      { path: ROUTES.SELLER, component: SellerPage },
       { path: ROUTES.REVENUE, component: RevenuePage },
       { path: ROUTES.DASHBOARD, component: DashBoard },
       { path: '*', component: NoMatch },

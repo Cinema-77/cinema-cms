@@ -1,60 +1,44 @@
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-// import { Button, ButtonGroup } from '@chakra-ui/react';
-import { IRevenueQuarter } from '@/features/revenue';
+type GenerateOptionsColumnType = {
+  data: any;
+  xCategories: string[];
+  text: string;
+};
 
-const generateOptions = (data: IRevenueQuarter[]) => {
-  const categories = data.map((item) => `Quý ${item.quarter}`);
-
+const generateOptions = (props: GenerateOptionsColumnType) => {
   return {
     chart: {
-      height: 500,
+      type: 'column',
     },
     title: {
-      text: 'Doanh thu rạp phim theo quý',
-    },
-    legend: {
-      enabled: false,
+      text: props.text,
     },
     xAxis: {
-      categories: categories,
-      crosshair: true,
+      categories: props.xCategories,
     },
-    colors: ['#F3585B'],
-    yAxis: {
-      min: 0,
-      title: {
-        text: 'Doanh số',
-      },
-      labels: {
-        align: 'right',
-      },
-    },
-    tooltip: {
-      headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-      pointFormat:
-        '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>',
-      shared: true,
-    },
-    plotOptions: {
-      column: {
-        pointPadding: 0.2,
-        borderWidth: 0,
-      },
+    credits: {
+      enabled: false,
     },
     series: [
       {
         name: 'Tổng doanh thu',
-        type: 'column',
-        colorByPoint: true,
-        data: data.map((item) => item.totalPrice),
+        data: props.data.map((item: any) => item.totalPrice),
+      },
+      {
+        name: 'Tổng tiền bán thức ăn ',
+        data: props.data.map((item: any) => item.totalPriceFood),
+      },
+      {
+        name: 'Tổng tiền bán vé',
+        data: props.data.map((item: any) => item.totalPriceTicket),
       },
     ],
   };
 };
 
-export const ColumnChart = ({ data }: { data: IRevenueQuarter[] }) => {
+export const ColumnChart = ({ data }: { data: GenerateOptionsColumnType }) => {
   return (
     <>
       <HighchartsReact highcharts={Highcharts} options={generateOptions(data)} />

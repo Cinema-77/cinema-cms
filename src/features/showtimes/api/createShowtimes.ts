@@ -1,8 +1,7 @@
 import { createStandaloneToast } from '@chakra-ui/toast';
 import { useMutation } from 'react-query';
 
-import { ShowTimesResponse, TimeStamp } from '../type';
-
+import { ShowTimesResponse, TimeStamp } from '@/features/showtimes';
 import { axios } from '@/lib/axios';
 import { MutationConfig, queryClient } from '@/lib/react-query';
 

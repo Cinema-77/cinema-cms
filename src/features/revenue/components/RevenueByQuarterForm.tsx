@@ -1,7 +1,7 @@
 import { Spinner, Flex, Heading, Box } from '@chakra-ui/react';
 import React from 'react';
 
-import { ColumnChart, useGetRevenueByQuarter } from '@/features/revenue';
+import { useGetRevenueByQuarter } from '@/features/revenue';
 
 interface RevenueByQuarterFormProps {
   cinemaId: string;
@@ -36,5 +36,5 @@ export const RevenueByQuarterForm: React.FC<RevenueByQuarterFormProps> = ({ cine
     );
   }
 
-  return <ColumnChart data={revenueByQuarterQuery.data.data} />;
+  return null;
 };

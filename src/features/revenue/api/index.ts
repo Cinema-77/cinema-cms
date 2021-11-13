@@ -1,2 +1,2 @@
-export * from './getRevenueFromDateToDate';
+export * from './getRevenueByDate';
 export * from './getRevenueByQuarter';

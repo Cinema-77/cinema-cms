@@ -222,17 +222,6 @@ export const ShowTimesCreate = () => {
               </TabPanels>
             </Tabs>
           </Stack>
-          {/* <Stack
-          backgroundColor="white"
-          maxWidth="1200px"
-          minWidth="800px"
-          px={8}
-          py={12}
-          shadow={[null, 'md']}
-          spacing={4}
-          alignItems="center"
-          flex={1}
-        ></Stack> */}
         </Flex>
       </Authorization>
     </Box>

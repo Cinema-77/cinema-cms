@@ -2,19 +2,17 @@ import create from 'zustand';
 
 import { Room, getRoomsByMovie } from '@/features/room';
 
+type TimeType = {
+  _id: string;
+  roomName: string;
+  screenName: string;
+};
+
 type RoomsByMovie = {
   listRoomByMovie: Room[];
   loading: boolean;
   fetchRooms: (idMovie: string) => void;
-  checkedTimes: ({
-    _id,
-    roomName,
-    screenName,
-  }: {
-    _id: string;
-    roomName: string;
-    screenName: string;
-  }) => void;
+  checkedTimes: ({ _id, roomName, screenName }: TimeType) => void;
 };
 
 export const useRoomsByMovieStore = create<RoomsByMovie>((set) => ({

@@ -8,8 +8,8 @@ export const ROUTES = {
   ROOM_LIST: '/app/room/listRoom',
   SHOWTIMES_CREATE: '/app/showtimes/create',
   SELLER: '/app/seller',
-  SELLER_TICKET_ID: '/app/seller/bookTicket/:_id',
   PAYMENT_COMPLETE: '/app/seller/paymentComplete',
+  SELLER_TICKET_ID: '/app/seller/bookTicket/:_id',
 };
 
 export const SITE_MODAL_TYPES = Object.freeze({

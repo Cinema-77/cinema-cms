@@ -173,7 +173,7 @@ export const SingleSelect: React.FC<RangeSelectProps> = (props) => {
                 ref={inputRef}
                 aria-label={label}
                 value={inputValue}
-                placeholder="Select a Date"
+                placeholder="Chọn ngày"
                 onBlur={() => onInputBlur()}
                 onChange={(e) => onInputChange(e.target.value)}
                 {...registration}
