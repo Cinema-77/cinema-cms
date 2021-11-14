@@ -6,9 +6,12 @@ import {
   useGetRevenueByDate,
   IRevenueData,
   getTitle,
-  extractObjectKeys,
   formatPrice,
   ColumnChart,
+  IRevenueWithMovie,
+  IRevenueWithRoom,
+  IRevenueWithTime,
+  extractObjectKeys,
 } from '@/features/revenue';
 
 type RevenueValues = {
@@ -22,7 +25,7 @@ interface RevenueByDateFormProps {
 
 export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }) => {
   const [report, setReport] = React.useState<IRevenueData[]>([]);
-  console.log(report);
+
   const useGetRevenueByDateMutation = useGetRevenueByDate();
 
   return (
@@ -67,35 +70,6 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
 
       {report.length > 0 && (
         <>
-          <Stack spacing={5}>
-            <Box flex={1}>
-              <ColumnChart
-                data={{
-                  data: report[0].movies,
-                  xCategories: report[0].movies.map((mv) => mv.movie.name),
-                  text: 'Doanh thu của phim',
-                }}
-              />
-            </Box>
-            <Box flex={1}>
-              <ColumnChart
-                data={{
-                  data: report[0].rooms,
-                  xCategories: report[0].rooms.map((r) => r.room.name),
-                  text: 'Doanh thu của phòng',
-                }}
-              />
-            </Box>
-            <Box flex={1}>
-              <ColumnChart
-                data={{
-                  data: report[0].timeSlots,
-                  xCategories: report[0].timeSlots.map((t) => t.timeSlot.time),
-                  text: 'Doanh thu của suất chiếu',
-                }}
-              />
-            </Box>
-          </Stack>
           <Table w="full">
             <thead>
               <Tr>
@@ -116,8 +90,149 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
               })}
             </tbody>
           </Table>
+
+          <Stack spacing={5}>
+            <Box flex={1}>
+              <ColumnChart
+                data={{
+                  data: report[0].movies,
+                  xCategories: report[0].movies.map((mv) => mv.movie.name),
+                  text: 'Doanh thu của phim',
+                }}
+              />
+              <RevenueDetail movies={report[0].movies} />
+            </Box>
+            <Box flex={1}>
+              <ColumnChart
+                data={{
+                  data: report[0].rooms,
+                  xCategories: report[0].rooms.map((r) => r.room.name),
+                  text: 'Doanh thu của phòng',
+                }}
+              />
+              <RevenueDetail rooms={report[0].rooms} />
+            </Box>
+            <Box flex={1}>
+              <ColumnChart
+                data={{
+                  data: report[0].timeSlots,
+                  xCategories: report[0].timeSlots.map((t) => t.timeSlot.time),
+                  text: 'Doanh thu của suất chiếu',
+                }}
+              />
+              <RevenueDetail times={report[0].timeSlots} />
+            </Box>
+          </Stack>
         </>
       )}
     </Stack>
+  );
+};
+
+interface IRevenueDetail {
+  movies?: IRevenueWithMovie[];
+  rooms?: IRevenueWithRoom[];
+  times?: IRevenueWithTime[];
+}
+
+const RevenueDetail = (props: IRevenueDetail) => {
+  const { movies, rooms, times } = props;
+
+  return (
+    <>
+      {movies &&
+        movies.map((revenue, index) => {
+          return (
+            <>
+              <Heading fontSize="20px">{revenue.movie.name}</Heading>
+
+              <Table w="full" key={index}>
+                <thead>
+                  <Tr>
+                    <Th>Tiêu đề </Th>
+                    <Th>Số lượng</Th>
+                  </Tr>
+                </thead>
+                <tbody>
+                  <Box as="tr">
+                    <Td>{getTitle('totalPriceFood')}</Td>
+                    <Td>{formatPrice('totalPriceFood', revenue['totalPriceFood'])}</Td>
+                  </Box>
+                  <Box as="tr">
+                    <Td>{getTitle('totalPriceTicket')}</Td>
+                    <Td>{formatPrice('totalPriceTicket', revenue['totalPriceTicket'])}</Td>
+                  </Box>
+                  <Box as="tr">
+                    <Td>{getTitle('totalPrice')}</Td>
+                    <Td>{formatPrice('totalPrice', revenue['totalPrice'])}</Td>
+                  </Box>
+                </tbody>
+              </Table>
+            </>
+          );
+        })}
+      {rooms &&
+        rooms.map((revenue, index) => {
+          return (
+            <>
+              <Heading fontSize="20px">{revenue.room.name}</Heading>
+
+              <Table w="full" key={index}>
+                <thead>
+                  <Tr>
+                    <Th>Tiêu đề </Th>
+                    <Th>Số lượng</Th>
+                  </Tr>
+                </thead>
+                <tbody>
+                  <Box as="tr">
+                    <Td>{getTitle('totalPriceFood')}</Td>
+                    <Td>{formatPrice('totalPriceFood', revenue['totalPriceFood'])}</Td>
+                  </Box>
+                  <Box as="tr">
+                    <Td>{getTitle('totalPriceTicket')}</Td>
+                    <Td>{formatPrice('totalPriceTicket', revenue['totalPriceTicket'])}</Td>
+                  </Box>
+                  <Box as="tr">
+                    <Td>{getTitle('totalPrice')}</Td>
+                    <Td>{formatPrice('totalPrice', revenue['totalPrice'])}</Td>
+                  </Box>
+                </tbody>
+              </Table>
+            </>
+          );
+        })}
+      {times &&
+        times.map((revenue, index) => {
+          return (
+            <>
+              <Heading fontSize="20px">{revenue.timeSlot.time}</Heading>
+
+              <Table w="full" key={index}>
+                <thead>
+                  <Tr>
+                    <Th>Tiêu đề </Th>
+                    <Th>Số lượng</Th>
+                  </Tr>
+                </thead>
+                <tbody>
+                  <Box as="tr">
+                    <Td>{getTitle('totalPriceFood')}</Td>
+                    <Td>{formatPrice('totalPriceFood', revenue['totalPriceFood'])}</Td>
+                  </Box>
+                  <Box as="tr">
+                    <Td>{getTitle('totalPriceTicket')}</Td>
+                    <Td>{formatPrice('totalPriceTicket', revenue['totalPriceTicket'])}</Td>
+                  </Box>
+                  <Box as="tr">
+                    <Td>{getTitle('totalPrice')}</Td>
+                    <Td>{formatPrice('totalPrice', revenue['totalPrice'])}</Td>
+                  </Box>
+                </tbody>
+              </Table>
+            </>
+          );
+        })}
+    </>
   );
 };

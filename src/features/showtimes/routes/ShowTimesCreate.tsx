@@ -58,14 +58,15 @@ export type ShowTimesValues = {
 
 export const ShowTimesCreate = () => {
   const moviesQuery = useMovies();
-  const { listRoomByMovie, fetchRooms, checkedTimes, loading } = useRoomsByMovieStore();
+  const { listRoomByMovie, fetchRooms, checkedTimes, reset, loading } = useRoomsByMovieStore();
 
   const { user } = useAuth();
   const toast = useToast();
 
   const onChangeMovie = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    fetchRooms(value);
+
+    return value ? fetchRooms(value) : reset();
   };
 
   const createShowTimeMutation = useCreateShowTime();
@@ -229,7 +230,6 @@ export const ShowTimesCreate = () => {
 };
 
 interface TimeSlotListProps {
-  children?: React.ReactNode;
   register: UseFormRegister<ShowTimesValues>;
   rooms: Room[];
   checkedTimes: ({

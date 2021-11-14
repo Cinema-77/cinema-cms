@@ -18,15 +18,15 @@ export interface IRevenue {
   totalPriceTicketPoint: number;
 }
 
-interface IRevenueWithMovie extends IRevenue {
+export interface IRevenueWithMovie extends IRevenue {
   movie: MovieType;
 }
 
-interface IRevenueWithRoom extends IRevenue {
+export interface IRevenueWithRoom extends IRevenue {
   room: Room;
 }
 
-interface IRevenueWithTime extends IRevenue {
+export interface IRevenueWithTime extends IRevenue {
   timeSlot: TimeSlot;
 }
 

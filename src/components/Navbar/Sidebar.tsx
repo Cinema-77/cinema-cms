@@ -40,6 +40,7 @@ import {
   FiBox,
   FiChevronDown,
 } from 'react-icons/fi';
+import { GiPopcorn } from 'react-icons/gi';
 import { NavLink } from 'react-router-dom';
 
 import { useAuth } from '@/lib/auth';
@@ -89,6 +90,11 @@ const LinkItems = () => {
       name: 'Bán vé',
       icon: FiStar,
       to: '/app/seller',
+    },
+    checkAccess({ allowedRoles: [ROLES.MANAGER, ROLES.USER] }) && {
+      name: 'Bắp nước',
+      icon: GiPopcorn,
+      to: '/app/foods',
     },
     { name: 'Cài đặt', icon: FiSettings, to: '/app/settings' },
   ].filter(Boolean) as LinkItemProps[];

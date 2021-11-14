@@ -13,6 +13,7 @@ type RoomsByMovie = {
   loading: boolean;
   fetchRooms: (idMovie: string) => void;
   checkedTimes: ({ _id, roomName, screenName }: TimeType) => void;
+  reset: () => void;
 };
 
 export const useRoomsByMovieStore = create<RoomsByMovie>((set) => ({
@@ -70,4 +71,5 @@ export const useRoomsByMovieStore = create<RoomsByMovie>((set) => ({
           return { ...state, listRoomByMovie: [...state.listRoomByMovie] };
       }
     }),
+  reset: () => set({ listRoomByMovie: [] }),
 }));

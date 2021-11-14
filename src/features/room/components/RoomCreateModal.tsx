@@ -27,7 +27,7 @@ type RoomValues = {
 };
 
 const schema = z.object({
-  name: z.string().nonempty({ message: 'name field is required' }),
+  name: z.string().nonempty({ message: 'Tên phòng là bắt buộc' }),
   rowNumber: z.string().nonempty().max(2),
   seatsInRow: z.string().nonempty().max(2),
   screenId: z.string(),
@@ -65,6 +65,7 @@ export const RoomCreateModal = () => {
         <ModalContent>
           <Form<RoomValues, typeof schema>
             onSubmit={async (data) => {
+              console.log(data);
               const cinemaId = user?.cinema._id as string;
               const rowNumber = parseInt(data.rowNumber, 10);
               const seatsInRow = parseInt(data.seatsInRow, 10);

@@ -23,12 +23,14 @@ export const getTitle = (key: string) => {
 export const formatPrice = (key: string, num: number) => {
   return key.match(/total/) ? formatNumber(num) : num;
 };
+
 export const extractObjectKeys = (object: any) => {
   const objectKeys: string[] = [];
-
   Object.keys(object).forEach((objectKey) => {
     const value = object[objectKey];
-    if (!Array.isArray(value) && objectKey != 'date') {
+    const isTruethy = !Array.isArray(value) && objectKey != 'date';
+
+    if (isTruethy) {
       objectKeys.push(objectKey);
     }
   });

@@ -10,6 +10,7 @@ export const ROUTES = {
   SELLER: '/app/seller',
   PAYMENT_COMPLETE: '/app/seller/paymentComplete',
   SELLER_TICKET_ID: '/app/seller/bookTicket/:_id',
+  FOODS: '/app/foods',
 };
 
 export const SITE_MODAL_TYPES = Object.freeze({
