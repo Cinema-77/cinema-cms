@@ -382,10 +382,18 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
           </S.MovieForm>
           <S.MovieForm>
             <S.MovieFormController2>
-              <SingleSelect registration={register('dateStart')} label="Ngày bắt đầu" />
+              <SingleSelect
+                registration={register('dateStart')}
+                defaultValue={movieValue.dateStart}
+                label="Ngày bắt đầu"
+              />
             </S.MovieFormController2>
             <S.MovieFormController2>
-              <SingleSelect registration={register('dateEnd')} label="Ngày kết thúc" />
+              <SingleSelect
+                registration={register('dateEnd')}
+                defaultValue={movieValue.dateEnd}
+                label="Ngày kết thúc"
+              />
             </S.MovieFormController2>
           </S.MovieForm>
           <S.MovieForm>

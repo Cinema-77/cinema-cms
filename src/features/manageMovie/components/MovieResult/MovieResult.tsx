@@ -79,7 +79,6 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
     };
     getMovieAll(qs.stringify(params))
       .then((res) => {
-        console.log(res);
         setMovieList(res.values.movies);
         setTotalPage(res.values.pageNumber);
       })
@@ -100,7 +99,6 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
       dateStart: data.dateStart,
       dateEnd: data.dateEnd,
     };
-    console.log(body);
     try {
       if (categoryValue.length === 0 || screenValue.length === 0 || !body.description) {
         toast({
