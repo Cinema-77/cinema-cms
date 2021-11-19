@@ -126,6 +126,10 @@ export const MovieForm = styled.div`
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 10px 10px;
+
+  &:nth-of-type(3) {
+    margin: 10px 0;
+  }
 `;
 export const MovieFormController = styled.div`
   display: flex;
@@ -185,4 +189,10 @@ export const MovieTitleName = styled.h2`
   font-weight: 500;
   text-align: center;
   padding: 8px 0;
+`;
+export const Div = styled.div``;
+export const MovieListTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;

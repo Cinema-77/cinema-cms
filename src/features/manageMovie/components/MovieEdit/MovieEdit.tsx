@@ -5,10 +5,11 @@ import { Controller, useForm } from 'react-hook-form';
 import { useHistory, useLocation } from 'react-router';
 
 import { getCategoryAll, getDirectorAll, getScreenAll, updateMovie } from '../..';
-import { categoryType, MovieItemType } from '../../type';
+import { categoryType, MovieItemType, MovieType } from '../../type';
 import * as S from '../MovieResult/MovieResult.style';
 
 import x2 from '@/assets/icon/x2.svg';
+import { SingleSelect } from '@/components';
 import { InputField, Form, SelectField } from '@/components/Form2';
 import { CheckboxField } from '@/components/Form2/CheckboxField/CheckboxField';
 import { storage } from '@/lib/firebase';
@@ -49,12 +50,28 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
   const [categoryList, setCategoryList] = useState<categoryType[]>([]);
   const [directorList, setdirectorList] = useState<any>();
   const [screenList, setScreenList] = useState([]);
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, register } = useForm({
+    defaultValues: {
+      name: '',
+      moveDuration: '',
+      categoryId: '',
+      directorId: '',
+      cast: '',
+      description: '',
+      loaiman: '',
+      image: '',
+      trailer: '',
+      age: '',
+      dateStart: movieValue.dateStart,
+      dateEnd: movieValue.dateEnd,
+    },
+  });
   const location = useLocation();
   const idMovie = location.search.split('?id=');
   const history = useHistory();
   const toast = useToast();
-  const handleValue = async () => {
+  const handleValue = async (data: MovieType) => {
+    console.log(data);
     const body = {
       name: name,
       moveDuration: moveDuration,
@@ -66,67 +83,96 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
       age: age,
       screensId: screenValue,
       categoryId: categoryValue,
+      dateStart: data.dateStart,
+      dateEnd: data.dateEnd,
     };
     try {
+      if (categoryValue.length === 0 || screenValue.length === 0 || !body.description) {
+        toast({
+          title: 'Vui lòng nhập đầy đủ các trường',
+          position: 'top-right',
+          status: 'error',
+          duration: 3000,
+        });
+        return;
+      }
       const res = await updateMovie(idMovie[1], body);
-      if (!body.moveDuration) {
-        toast({
-          title: 'Vui lòng nhập thời lượng là số',
-          position: 'top-right',
-          status: 'error',
-          duration: 3000,
-        });
-        return;
-      }
-      if (!body.age) {
-        toast({
-          title: 'Vui lòng độ tuổi là số',
-          position: 'top-right',
-          status: 'error',
-          duration: 3000,
-        });
-        return;
-      }
-
-      if (categoryValue.length === 0) {
-        toast({
-          title: 'Vui lòng chọn thể loại',
-          position: 'top-right',
-          status: 'error',
-          duration: 3000,
-        });
-        return;
-      }
-      if (screenValue.length === 0) {
-        toast({
-          title: 'Vui lòng chọn loại màn hình',
-          position: 'top-right',
-          status: 'error',
-          duration: 3000,
-        });
-        return;
-      }
-      if (!body.description) {
-        toast({
-          title: 'Vui lòng nhập nội dụng của film',
-          position: 'top-right',
-          status: 'error',
-          duration: 3000,
-        });
-        return;
-      }
       if (res.success === false) {
         if (res.errors.name) {
-          toast({ title: res.errors.name, position: 'top-right', status: 'error', duration: 3000 });
+          toast({
+            title: res.errors.name,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
+        }
+        if (res.errors.moveDuration) {
+          toast({
+            title: res.errors.moveDuration,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
+        }
+        if (res.errors.age) {
+          toast({
+            title: res.errors.age,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
+        }
+        if (res.errors.directorId) {
+          toast({
+            title: res.errors.directorId,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
+        }
+        if (res.errors.image) {
+          toast({
+            title: res.errors.image,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
         }
         if (res.errors.cast) {
-          toast({ title: res.errors.cast, position: 'top-right', status: 'error', duration: 3000 });
+          toast({
+            title: res.errors.cast,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
         }
-        console.log(res);
-        return;
+        if (res.errors.trailer) {
+          toast({
+            title: res.errors.trailer,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
+        }
+        if (res.errors.dateStart) {
+          toast({
+            title: res.errors.dateStart,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
+        }
+        if (res.errors.dateEnd) {
+          toast({
+            title: res.errors.dateEnd,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
+        }
       } else {
         toast({ title: res.message, position: 'top-right', status: 'success', duration: 3000 });
-        history.push('/managemovie');
+        history.push('/app/managemovie');
         setMovieValue('');
         setMovie(!movie);
         console.log(res);
@@ -333,6 +379,14 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
                 )}
               />
             </S.MovieFormController>
+          </S.MovieForm>
+          <S.MovieForm>
+            <S.MovieFormController2>
+              <SingleSelect registration={register('dateStart')} label="Ngày bắt đầu" />
+            </S.MovieFormController2>
+            <S.MovieFormController2>
+              <SingleSelect registration={register('dateEnd')} label="Ngày kết thúc" />
+            </S.MovieFormController2>
           </S.MovieForm>
           <S.MovieForm>
             <S.MovieFormController2>

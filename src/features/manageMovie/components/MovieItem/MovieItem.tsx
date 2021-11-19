@@ -40,7 +40,7 @@ export const MovieItem: React.FC<MovieItemProps> = ({
   };
   const handleEdit = async (id: string) => {
     setIsLoading(true);
-    history.push(`/managemovie?id=${id}`);
+    history.push(`/app/managemovie?id=${id}`);
     await getMovie(id)
       .then((res: any) => setMovieValue(res.values.movie))
       .catch((err) => console.log('err', err));

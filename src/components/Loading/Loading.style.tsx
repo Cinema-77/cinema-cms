@@ -7,7 +7,7 @@ export const loading = keyframes`
   }
 `;
 export const LoadingOverLay = styled.section`
-  position: absolute;
+  position: fixed;
   background-color: rgba(0, 0, 0, 0.5);
   left: 0;
   top: 0;
@@ -29,9 +29,8 @@ export const Loading = styled.section`
     content: '';
     width: 50px;
     height: 50px;
-    border: 10px solid #dddddd;
-    border-top-color: #000;
-    border-bottom-color: #000;
+    border: 4px solid #fff;
+    border-left-color: #000;
     border-radius: 50%;
     animation: ${loading} 1s ease infinite;
   }

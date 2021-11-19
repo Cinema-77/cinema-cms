@@ -18,8 +18,8 @@ export const getDirectorAll = () => {
   return axios.get('/director/all');
 };
 
-export const getMovieAll = (): Promise<MoviesResponse> => {
-  return axios.get('/movie/all');
+export const getMovieAll = (params?: string): Promise<MoviesResponse> => {
+  return axios.get(`/movie/all?${params}`);
 };
 
 export const getScreenAll = () => {

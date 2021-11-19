@@ -9,6 +9,8 @@ export interface MovieType {
   screensId: string[];
   categoryId: string[];
   age: number;
+  dateStart: string;
+  dateEnd: string;
 }
 
 export interface directorType {
@@ -50,6 +52,8 @@ export interface MovieItemType {
   age: number;
   categories: categoryType[];
   screens: screenType[];
+  dateStart: string;
+  dateEnd: string;
 }
 
 export interface MovieRespon {
@@ -65,5 +69,12 @@ export interface MoviesResponse {
   message: string;
   values: {
     movies: MovieItemType[];
+    hasMore: boolean;
+    pageNumber: number;
   };
+}
+
+export interface filterProps {
+  page: number;
+  limit: number;
 }

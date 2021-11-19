@@ -9,6 +9,7 @@ export const CheckboxField = styled.div`
 `;
 export const List = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 0 20px;
 `;
 export const Checkbox = styled.div`
