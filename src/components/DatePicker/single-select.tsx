@@ -61,7 +61,7 @@ export const SingleSelect: React.FC<RangeSelectProps> = (props) => {
     viewPreviousMonth,
     viewToday,
   } = useLilius();
-  const { registration, label, error, setValues, nameToSet, sizeOfTimeStamp } = props;
+  const { registration, label, error, setValues, nameToSet, sizeOfTimeStamp, defaultValue } = props;
 
   const styles = useMultiStyleConfig('Datepicker', {});
 
@@ -148,12 +148,17 @@ export const SingleSelect: React.FC<RangeSelectProps> = (props) => {
 
   // When the selection is changed, we want to update the input field
   // and the currently viewed month to match.
+
   useEffect(() => {
-    setInputValue(selected.length > 0 ? format(selected[0], 'MM/dd/yyyy') : '');
+    setInputValue(defaultValue ? (defaultValue as string) : '');
+    if (selected.length > 0) {
+      setInputValue(format(selected[0], 'MM/dd/yyyy'));
+    }
     setViewing(selected.length > 0 ? selected[0] : new Date());
     if (selected.length > 0) {
       setDate(selected[0]);
     }
+
     // eslint-disable-next-line
   }, [selected, setViewing]);
 
