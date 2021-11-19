@@ -129,7 +129,8 @@ export const ShowTimesCreate = () => {
                       >
                         <Form<ShowTimesValues>
                           onSubmit={async (data) => {
-                            if (isEmptyObject(data.showTimes)) {
+                            console.log(data);
+                            if (data['showTimes'] === undefined || isEmptyObject(data.showTimes)) {
                               toast({
                                 title: 'Vui lòng chọn lịch chiếu',
                                 position: 'top-right',
@@ -146,12 +147,22 @@ export const ShowTimesCreate = () => {
                             };
                             await createShowTimeMutation.mutateAsync({ data: newShowTimes });
                           }}
+                          options={{
+                            defaultValues: {
+                              date: '11/19/2021',
+                              dateStart: '11/20/2021',
+                            },
+                          }}
                         >
                           {({ register, formState, setValue }) => (
                             <Stack spacing={4} direction="column">
                               <Flex alignItems="center" justifyContent="space-between">
                                 <Stack direction="column" flex={1}>
-                                  <SingleSelect registration={register('date')} label="Ngày tạo" />
+                                  <SingleSelect
+                                    registration={register('date')}
+                                    label="Ngày tạo"
+                                    defaultValue="11/19/2021"
+                                  />
                                   {moviesQuery.data && (
                                     <SelectField
                                       label="Phim"
