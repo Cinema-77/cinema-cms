@@ -19,6 +19,11 @@ export const SITE_MODAL_TYPES = Object.freeze({
   COUPON_FORM: 'couponForm',
 });
 
+export const FOOD_FORM = Object.freeze({
+  ADD: 'FOOD_FORM_ADD',
+  EDIT: 'FOOD_FORM_EDIT',
+});
+
 export const PRICE = {
   STUDENT: 45000,
   CHILD: 50000,

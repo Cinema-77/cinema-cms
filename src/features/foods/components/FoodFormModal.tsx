@@ -9,22 +9,21 @@ import {
   ModalOverlay,
   Stack,
   Image,
-  useColorModeValue,
-  useDisclosure,
   CloseButton,
   Flex,
 } from '@chakra-ui/react';
 import { ref, uploadBytesResumable, uploadBytes, getDownloadURL } from '@firebase/storage';
 import React from 'react';
 import { Controller } from 'react-hook-form';
-import { MdAdd } from 'react-icons/md';
 import * as z from 'zod';
 
 import { Form, InputField, FileUpload } from '@/components';
-import { useCreateFood } from '@/features/foods';
+import { FOOD_FORM } from '@/constants';
+import { ComBosResponse, useCreateFood, useEditFood } from '@/features/foods';
 import { storage } from '@/lib/firebase';
+import { useFoodStore } from '@/stores/food';
 
-type FoodValues = {
+export type FoodValues = {
   name: string;
   price: string;
   unit: string;
@@ -37,13 +36,18 @@ const schema = z.object({
   unit: z.string().nonempty({ message: 'Tên unit là bắt buộc' }),
 });
 
-export const FoodCreateModal = () => {
-  const bg = useColorModeValue('gray.900', 'white');
-  const color = useColorModeValue('white', 'gray.900');
-
+export const FoodFormModal = () => {
+  const {
+    isOpen,
+    onClose,
+    data: dataFood,
+    type,
+    foodId,
+    imageSource,
+    setImageSource,
+  } = useFoodStore();
+  const isAdding = type === FOOD_FORM.ADD;
   const initialRef = React.useRef(null);
-  const [url, setUrl] = React.useState('');
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleImage = async (e: any) => {
     if (e.target.files) {
@@ -51,38 +55,38 @@ export const FoodCreateModal = () => {
       const storageRef = ref(storage, `images/${fileName.name}`);
       const uploadTask = uploadBytesResumable(storageRef, fileName);
       await uploadBytes(storageRef, fileName);
-      getDownloadURL(uploadTask.snapshot.ref).then((url: any) => setUrl(url));
+      getDownloadURL(uploadTask.snapshot.ref).then((url: any) => setImageSource(url));
     }
   };
 
   const createFoodMutation = useCreateFood();
+  const editFoodMutation = useEditFood();
+  const buttonText = isAdding ? 'Thêm sản phẩm' : 'Chỉnh sửa';
+
+  const saveFood = (type: string, data: FoodValues): Promise<ComBosResponse> => {
+    if (type === FOOD_FORM.ADD) {
+      return createFoodMutation.mutateAsync({ ...data, image: imageSource });
+    }
+    return editFoodMutation.mutateAsync({
+      data: { ...data, image: imageSource },
+      foodId,
+    });
+  };
 
   return (
     <>
-      <Button
-        leftIcon={<MdAdd />}
-        backgroundColor={bg}
-        color={color}
-        fontWeight="medium"
-        _hover={{ bg: 'gray.700' }}
-        _active={{
-          bg: 'gray.800',
-          transform: 'scale(0.95)',
-        }}
-        onClick={onOpen}
-      >
-        Thêm sản phẩm
-      </Button>
-
       <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
           <Form<FoodValues, typeof schema>
             onSubmit={async (data) => {
-              await createFoodMutation.mutateAsync({ ...data, image: url });
+              await await saveFood(type, data);
               onClose();
             }}
             schema={schema}
+            options={{
+              defaultValues: dataFood,
+            }}
           >
             {({ register, formState, control }) => (
               <>
@@ -118,14 +122,14 @@ export const FoodCreateModal = () => {
                       />
                     )}
                   />
-                  {url && (
+                  {imageSource && (
                     <Flex>
-                      <Image src={url} alt="Image food" boxSize="100px" />
+                      <Image src={imageSource} alt="Image food" boxSize="100px" />
                       <CloseButton
                         size="sm"
                         ml="-25px"
                         colorScheme="teal"
-                        onClick={() => setUrl('')}
+                        onClick={() => setImageSource('')}
                       />
                     </Flex>
                   )}
@@ -142,9 +146,9 @@ export const FoodCreateModal = () => {
                     _hover={{
                       backgroundColor: 'cyan.700',
                     }}
-                    isLoading={createFoodMutation.isLoading}
+                    isLoading={isAdding ? createFoodMutation.isLoading : editFoodMutation.isLoading}
                   >
-                    Thêm sản phẩm
+                    {buttonText}
                   </Button>
                 </ModalFooter>
               </>

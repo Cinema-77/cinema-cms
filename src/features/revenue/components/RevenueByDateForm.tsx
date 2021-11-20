@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Stack } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Stack, ButtonGroup } from '@chakra-ui/react';
 import React from 'react';
 
 import { Form, SingleSelect, Table, Td, Th, Tr } from '@/components';
@@ -19,17 +19,44 @@ type RevenueValues = {
   dateStart: string;
 };
 
+enum EReportType {
+  All = 'All',
+  Movie = 'Movie',
+  Room = 'Room',
+  TimeSlot = 'TimeSlot',
+}
 interface RevenueByDateFormProps {
   cinemaId: string;
 }
 
 export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }) => {
   const [report, setReport] = React.useState<IRevenueData[]>([]);
+  const [reportType, setReportType] = React.useState<string>(EReportType.All);
 
   const useGetRevenueByDateMutation = useGetRevenueByDate();
+  const hasRevenue = report.length > 0;
+  const isActive = (type: string) => reportType === type;
+
+  const renderReportType = () => {
+    const reportTypeButton = [];
+
+    for (const type in EReportType) {
+      reportTypeButton.push(
+        <Button
+          key={type}
+          colorScheme={isActive(type) ? 'cyan' : undefined}
+          color={isActive(type) ? 'white' : undefined}
+          onClick={() => setReportType(type)}
+        >
+          {type}
+        </Button>,
+      );
+    }
+    return reportTypeButton;
+  };
 
   return (
-    <Stack spacing={2} width="full">
+    <Stack spacing={5} width="full">
       <Stack direction="column" justifyContent="center" mx={4}>
         <Heading fontSize="20px">Thống kê doanh thu </Heading>
       </Stack>
@@ -68,60 +95,81 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
         </Form>
       </Box>
 
-      {report.length > 0 && (
+      {hasRevenue && (
         <>
-          <Table w="full">
-            <thead>
-              <Tr>
-                <Th>Tiêu đề</Th>
-                <Th>Số lượng</Th>
-              </Tr>
-            </thead>
-            <tbody>
-              {extractObjectKeys(report[0]).map((r) => {
-                const value = report[0] as any;
+          {reportType === 'All' && (
+            <>
+              <Table w="full">
+                <thead>
+                  <Tr>
+                    <Th>Tiêu đề</Th>
+                    <Th>Số lượng</Th>
+                  </Tr>
+                </thead>
+                <tbody>
+                  {extractObjectKeys(report[0]).map((r) => {
+                    const value = report[0] as any;
 
-                return (
-                  <Box as="tr" key={r}>
-                    <Td>{getTitle(r)}</Td>
-                    <Td>{formatPrice(r, value[r])}</Td>
-                  </Box>
-                );
-              })}
-            </tbody>
-          </Table>
-
-          <Stack spacing={5}>
-            <Box flex={1}>
-              <ColumnChart
+                    return (
+                      <Box as="tr" key={r}>
+                        <Td>{getTitle(r)}</Td>
+                        <Td>{formatPrice(r, value[r])}</Td>
+                      </Box>
+                    );
+                  })}
+                </tbody>
+              </Table>
+              {/* <ColumnChart
                 data={{
-                  data: report[0].movies,
-                  xCategories: report[0].movies.map((mv) => mv.movie.name),
+                  data: report[0],
+                  xCategories: report[0].
                   text: 'Doanh thu của phim',
                 }}
-              />
-              <RevenueDetail movies={report[0].movies} />
-            </Box>
-            <Box flex={1}>
-              <ColumnChart
-                data={{
-                  data: report[0].rooms,
-                  xCategories: report[0].rooms.map((r) => r.room.name),
-                  text: 'Doanh thu của phòng',
-                }}
-              />
-              <RevenueDetail rooms={report[0].rooms} />
-            </Box>
-            <Box flex={1}>
-              <ColumnChart
-                data={{
-                  data: report[0].timeSlots,
-                  xCategories: report[0].timeSlots.map((t) => t.timeSlot.time),
-                  text: 'Doanh thu của suất chiếu',
-                }}
-              />
-              <RevenueDetail times={report[0].timeSlots} />
-            </Box>
+              /> */}
+            </>
+          )}
+          <Box>
+            <ButtonGroup variant="solid" spacing="6">
+              {renderReportType()}
+            </ButtonGroup>
+          </Box>
+          <Stack spacing={5}>
+            {reportType === 'Movie' && (
+              <Box flex={1}>
+                <ColumnChart
+                  data={{
+                    data: report[0].movies,
+                    xCategories: report[0].movies.map((mv) => mv.movie.name),
+                    text: 'Doanh thu của phim',
+                  }}
+                />
+                <RevenueDetail movies={report[0].movies} />
+              </Box>
+            )}
+            {reportType === 'Room' && (
+              <Box flex={1}>
+                <ColumnChart
+                  data={{
+                    data: report[0].movies,
+                    xCategories: report[0].movies.map((mv) => mv.movie.name),
+                    text: 'Doanh thu của phim',
+                  }}
+                />
+                <RevenueDetail movies={report[0].movies} />
+              </Box>
+            )}
+            {reportType === 'TimeSlot' && (
+              <Box flex={1}>
+                <ColumnChart
+                  data={{
+                    data: report[0].timeSlots,
+                    xCategories: report[0].timeSlots.map((t) => t.timeSlot.time),
+                    text: 'Doanh thu của suất chiếu',
+                  }}
+                />
+                <RevenueDetail times={report[0].timeSlots} />
+              </Box>
+            )}
           </Stack>
         </>
       )}
