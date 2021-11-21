@@ -1,7 +1,12 @@
 import { createStandaloneToast } from '@chakra-ui/react';
 import { useMutation } from 'react-query';
 
-import { RevenueResponse } from '@/features/revenue';
+import {
+  RevenueResponse,
+  RevenueResponseMoive,
+  RevenueResponseRoom,
+  RevenueResponseTime,
+} from '@/features/revenue';
 import { axios } from '@/lib/axios';
 import { MutationConfig, queryClient } from '@/lib/react-query';
 
@@ -11,7 +16,43 @@ interface RevenuDTO {
 }
 
 export const getRevenueByDate = (data: RevenuDTO): Promise<RevenueResponse> => {
-  return axios.post(`/cinema/get/thong-ke-theo-ngay`, data);
+  return axios.post(`/cinema/get/thong-ke-theo-ngay-v2/full`, data);
+};
+
+export const getRevenueByDateMovie = (data: RevenuDTO): Promise<RevenueResponseMoive> => {
+  return axios.post(`/cinema/get/thong-ke-theo-ngay-v2/movie`, data);
+};
+
+export const getRevenueByDateRoom = (data: RevenuDTO): Promise<RevenueResponseRoom> => {
+  return axios.post(`/cinema/get/thong-ke-theo-ngay-v2/room`, data);
+};
+
+export const getRevenueByDateTime = (data: RevenuDTO): Promise<RevenueResponseTime> => {
+  return axios.post(`/cinema/get/thong-ke-theo-ngay-v2/time`, data);
+};
+
+export const getRevenue = (data: RevenuDTO, type: string) => {
+  let requestRevenue;
+
+  switch (type) {
+    case 'Full':
+      requestRevenue = getRevenueByDate;
+      break;
+    case 'Movie':
+      requestRevenue = getRevenueByDateMovie;
+      break;
+
+    case 'Room':
+      requestRevenue = getRevenueByDateRoom;
+      break;
+
+    case 'Time':
+      requestRevenue = getRevenueByDateTime;
+      break;
+    default:
+      requestRevenue = getRevenueByDate;
+  }
+  return requestRevenue(data).then((result) => result.data);
 };
 
 type UseRevenueOptions = {

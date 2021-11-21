@@ -28,3 +28,22 @@ export const PRICE = {
   STUDENT: 45000,
   CHILD: 50000,
 };
+
+export const REVENUE_TYPE = [
+  {
+    name: 'Tất cả',
+    id: 'Full',
+  },
+  {
+    name: 'Phim',
+    id: 'Movie',
+  },
+  {
+    name: 'Phòng',
+    id: 'Room',
+  },
+  {
+    name: 'Suất chiếu',
+    id: 'Time',
+  },
+];

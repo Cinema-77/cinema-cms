@@ -1,50 +1,70 @@
 import { MovieType } from '@/features/manageMovie';
 import { Room, TimeSlot } from '@/features/room';
 
-export interface IRevenue {
-  countAdultTicket: number;
-  countChildTicket: number;
-  countStudentTicket: number;
-  countTicket: number;
-  countTicketCoupon: number;
-  countTicketPoint: number;
-  date: string;
-  totalPrice: number;
-  totalPriceFood: number;
-  totalPriceFoodCoupon: number;
-  totalPriceFoodPoint: number;
-  totalPriceTicket: number;
-  totalPriceTicketCoupon: number;
-  totalPriceTicketPoint: number;
-}
-
-export interface IRevenueWithMovie extends IRevenue {
-  movie: MovieType;
-}
-
-export interface IRevenueWithRoom extends IRevenue {
-  room: Room;
-}
-
-export interface IRevenueWithTime extends IRevenue {
-  timeSlot: TimeSlot;
-}
-
-export interface IRevenueData extends IRevenue {
-  movies: IRevenueWithMovie[];
-  rooms: IRevenueWithRoom[];
-  timeSlots: IRevenueWithTime[];
-}
-
-export interface RevenueResponse {
+interface BaseEntity {
   success: boolean;
   message: string;
+}
+
+export interface IRevenue {
+  _id: string;
+  name: string;
+  price: number;
+  count: number;
+}
+
+export interface IStatistical {
+  ticket: {
+    adult: IRevenue;
+    child: IRevenue;
+    student: IRevenue;
+    total: number;
+    totalPromotion: number;
+  };
+  food: {
+    combo: IRevenue[];
+    total: number;
+    totalPromotion: number;
+  };
+  totalPrice: number;
+}
+
+export interface IRevenueWithMovie {
+  movie: MovieType;
+  statistical: IStatistical;
+}
+
+export interface IRevenueWithRoom {
+  room: Room;
+  statistical: IStatistical;
+}
+
+export interface IRevenueWithTime {
+  timeSlot: TimeSlot;
+  statistical: IStatistical;
+}
+
+export interface IRevenueData extends IStatistical {
+  date: string;
+}
+
+export interface RevenueResponse extends BaseEntity {
   data: IRevenueData[];
 }
 
-export interface RevenueQuarterResponse {
-  success: boolean;
-  message: string;
+export interface RevenueResponseMoive extends BaseEntity {
+  data: IRevenueWithMovie[];
+}
+
+export interface RevenueResponseRoom extends BaseEntity {
+  data: IRevenueWithRoom[];
+}
+
+export interface RevenueResponseTime extends BaseEntity {
+  data: IRevenueWithTime[];
+}
+
+export interface RevenueQuarterResponse extends BaseEntity {
   data: IRevenueQuarter[];
 }
 

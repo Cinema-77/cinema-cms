@@ -1,18 +1,10 @@
-import { Box, Button, Flex, Heading, Stack, ButtonGroup } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Radio, RadioGroup, Stack, Select } from '@chakra-ui/react';
 import React from 'react';
 
 import { Form, SingleSelect, Table, Td, Th, Tr } from '@/components';
-import {
-  useGetRevenueByDate,
-  IRevenueData,
-  getTitle,
-  formatPrice,
-  ColumnChart,
-  IRevenueWithMovie,
-  IRevenueWithRoom,
-  IRevenueWithTime,
-  extractObjectKeys,
-} from '@/features/revenue';
+import { REVENUE_TYPE } from '@/constants';
+import { getRevenue, ColumnChart, RevenueDetail } from '@/features/revenue';
+import { formatNumber } from '@/utils/format';
 
 type RevenueValues = {
   cinemaId: string;
@@ -20,39 +12,45 @@ type RevenueValues = {
 };
 
 enum EReportType {
-  All = 'All',
+  Full = 'Full',
   Movie = 'Movie',
   Room = 'Room',
-  TimeSlot = 'TimeSlot',
+  Time = 'Time',
 }
 interface RevenueByDateFormProps {
   cinemaId: string;
 }
 
 export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }) => {
-  const [report, setReport] = React.useState<IRevenueData[]>([]);
-  const [reportType, setReportType] = React.useState<string>(EReportType.All);
+  const [report, setReport] = React.useState<any>([]);
+  const [reportDetail, setReportDetail] = React.useState({});
+  const [reportType, setReportType] = React.useState<string>(EReportType.Full);
+  const [loading, setLoading] = React.useState<boolean>(false);
 
-  const useGetRevenueByDateMutation = useGetRevenueByDate();
   const hasRevenue = report.length > 0;
-  const isActive = (type: string) => reportType === type;
 
-  const renderReportType = () => {
-    const reportTypeButton = [];
+  const onChangeReportType = (value: string) => {
+    setReport([]);
+    setReportType(value);
+  };
 
-    for (const type in EReportType) {
-      reportTypeButton.push(
-        <Button
-          key={type}
-          colorScheme={isActive(type) ? 'cyan' : undefined}
-          color={isActive(type) ? 'white' : undefined}
-          onClick={() => setReportType(type)}
-        >
-          {type}
-        </Button>,
-      );
+  const onGetDetail = (id: string, type: string) => {
+    switch (type) {
+      case EReportType.Movie: {
+        const rpDetail = report.find((r: any) => r.movie._id === id);
+        return rpDetail ? setReportDetail(rpDetail) : undefined;
+      }
+      case EReportType.Room: {
+        const rpDetail = report.find((r: any) => r.room._id === id);
+        return rpDetail ? setReportDetail(rpDetail) : undefined;
+      }
+      case EReportType.Time: {
+        const rpDetail = report.find((r: any) => r.timeSlot._id === id);
+        return rpDetail ? setReportDetail(rpDetail) : undefined;
+      }
+      default:
+        undefined;
     }
-    return reportTypeButton;
   };
 
   return (
@@ -60,21 +58,39 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
       <Stack direction="column" justifyContent="center" mx={4}>
         <Heading fontSize="20px">Thống kê doanh thu </Heading>
       </Stack>
-      <Box width="50%" margin="auto">
+      <Box>
         <Form<RevenueValues>
           onSubmit={async (data) => {
+            setLoading(true);
             const values = { ...data, cinemaId };
-            const { data: res } = await useGetRevenueByDateMutation.mutateAsync(values);
-            setReport(res);
+            const response = await getRevenue(values, reportType);
+            console.log(response);
+            setReport(response);
+            setLoading(false);
           }}
         >
           {({ register, setValue }) => (
             <Flex alignItems="center" justifyContent="space-between">
-              <SingleSelect
-                registration={register('dateStart')}
-                setValues={setValue}
-                nameToSet="dateStart"
-              />
+              <Stack spacing={3}>
+                <SingleSelect
+                  registration={register('dateStart')}
+                  setValues={setValue}
+                  nameToSet="dateStart"
+                />
+                <RadioGroup
+                  defaultValue={EReportType.Full}
+                  onChange={onChangeReportType}
+                  value={reportType}
+                >
+                  <Stack direction="row" spacing={5}>
+                    {REVENUE_TYPE.map((r) => (
+                      <Radio colorScheme="cyan" value={r.id} key={r.id}>
+                        {r.name}
+                      </Radio>
+                    ))}
+                  </Stack>
+                </RadioGroup>
+              </Stack>
               <Button
                 backgroundColor="cyan.400"
                 color="white"
@@ -86,7 +102,7 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
                 maxWidth="200px"
                 alignSelf="flex-end"
                 ml={4}
-                isLoading={useGetRevenueByDateMutation.isLoading}
+                isLoading={loading}
               >
                 Thống kê
               </Button>
@@ -97,190 +113,161 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
 
       {hasRevenue && (
         <>
-          {reportType === 'All' && (
+          {reportType === EReportType.Full && (
             <>
+              <ColumnChart
+                data={{
+                  data: report[0],
+                  xCategories: ['Doanh thu tiền vé', 'Doanh thu thức ăn', 'Doanh thu cả hai'],
+                  text: 'Doanh thu ',
+                }}
+              />
               <Table w="full">
                 <thead>
                   <Tr>
                     <Th>Tiêu đề</Th>
                     <Th>Số lượng</Th>
+                    <Th>Doanh thu</Th>
                   </Tr>
                 </thead>
                 <tbody>
-                  {extractObjectKeys(report[0]).map((r) => {
-                    const value = report[0] as any;
-
-                    return (
-                      <Box as="tr" key={r}>
-                        <Td>{getTitle(r)}</Td>
-                        <Td>{formatPrice(r, value[r])}</Td>
-                      </Box>
-                    );
-                  })}
+                  <Box as="tr">
+                    <Td>{report[0].ticket.adult.name}</Td>
+                    <Td>{report[0].ticket.adult.count}</Td>
+                    <Td>
+                      {formatNumber(report[0].ticket.adult.price * report[0].ticket.adult.count)}
+                    </Td>
+                  </Box>
+                  <Box as="tr">
+                    <Td>{report[0].ticket.child.name}</Td>
+                    <Td>{report[0].ticket.child.count}</Td>
+                    <Td>
+                      {formatNumber(report[0].ticket.child.price * report[0].ticket.child.count)}
+                    </Td>
+                  </Box>
+                  <Box as="tr">
+                    <Td>{report[0].ticket.student.name}</Td>
+                    <Td>{report[0].ticket.student.count}</Td>
+                    <Td>
+                      {formatNumber(
+                        report[0].ticket.student.price * report[0].ticket.student.count,
+                      )}
+                    </Td>
+                  </Box>
+                  {report[0].food.combo.map((combo: any) => (
+                    <Box as="tr" key={combo._id}>
+                      <Td>Thức ăn {combo.name}</Td>
+                      <Td> {combo.count}</Td>
+                      <Td>{formatNumber(combo.price * combo.count)}</Td>
+                    </Box>
+                  ))}
+                  <Box as="tr">
+                    <Td>Tổng tiền vé</Td>
+                    <Td></Td>
+                    <Td>{formatNumber(report[0].ticket.total)}</Td>
+                  </Box>
+                  <Box as="tr">
+                    <Td>Tổng tiền vé khuyến mãi</Td>
+                    <Td></Td>
+                    <Td>{formatNumber(report[0].ticket.totalPromotion)}</Td>
+                  </Box>
+                  <Box as="tr">
+                    <Td>Tổng tiền thức ăn</Td>
+                    <Td></Td>
+                    <Td>{formatNumber(report[0].food.total)}</Td>
+                  </Box>
+                  <Box as="tr">
+                    <Td>Tổng tiền thức ăn khuyến mãi</Td>
+                    <Td></Td>
+                    <Td>{formatNumber(report[0].ticket.totalPromotion)}</Td>
+                  </Box>
+                  <Box as="tr">
+                    <Td>Tổng cộng</Td>
+                    <Td></Td>
+                    <Td>{formatNumber(report[0].totalPrice)}</Td>
+                  </Box>
                 </tbody>
               </Table>
-              {/* <ColumnChart
-                data={{
-                  data: report[0],
-                  xCategories: report[0].
-                  text: 'Doanh thu của phim',
-                }}
-              /> */}
             </>
           )}
-          <Box>
-            <ButtonGroup variant="solid" spacing="6">
-              {renderReportType()}
-            </ButtonGroup>
-          </Box>
-          <Stack spacing={5}>
-            {reportType === 'Movie' && (
-              <Box flex={1}>
-                <ColumnChart
-                  data={{
-                    data: report[0].movies,
-                    xCategories: report[0].movies.map((mv) => mv.movie.name),
-                    text: 'Doanh thu của phim',
-                  }}
-                />
-                <RevenueDetail movies={report[0].movies} />
+
+          {reportType === EReportType.Movie && (
+            <>
+              <ColumnChart
+                data={{
+                  data: report,
+                  xCategories: report.map((value: any) => value.movie.name),
+                  text: 'Doanh thu ',
+                  type: EReportType.Movie,
+                }}
+              />
+              <Box maxWidth="200px" my="5">
+                <Select
+                  placeholder="Chọn phim"
+                  onChange={(e) => onGetDetail(e.target.value, EReportType.Movie)}
+                >
+                  {report.map((rp: any) => (
+                    <option key={rp.movie._id} value={rp.movie._id}>
+                      {rp.movie.name}
+                    </option>
+                  ))}
+                </Select>
               </Box>
-            )}
-            {reportType === 'Room' && (
-              <Box flex={1}>
-                <ColumnChart
-                  data={{
-                    data: report[0].movies,
-                    xCategories: report[0].movies.map((mv) => mv.movie.name),
-                    text: 'Doanh thu của phim',
-                  }}
-                />
-                <RevenueDetail movies={report[0].movies} />
+              <RevenueDetail data={reportDetail} type={EReportType.Movie} />
+            </>
+          )}
+          {reportType === EReportType.Room && (
+            <>
+              <ColumnChart
+                data={{
+                  data: report,
+                  xCategories: report.map((value: any) => value.room.name),
+                  text: 'Doanh thu ',
+                  type: EReportType.Room,
+                }}
+              />
+              <Box maxWidth="200px" my="5">
+                <Select
+                  placeholder="Chọn phòng"
+                  onChange={(e) => onGetDetail(e.target.value, EReportType.Room)}
+                >
+                  {report.map((rp: any) => (
+                    <option key={rp.room._id} value={rp.room._id}>
+                      {rp.room.name}
+                    </option>
+                  ))}
+                </Select>
               </Box>
-            )}
-            {reportType === 'TimeSlot' && (
-              <Box flex={1}>
-                <ColumnChart
-                  data={{
-                    data: report[0].timeSlots,
-                    xCategories: report[0].timeSlots.map((t) => t.timeSlot.time),
-                    text: 'Doanh thu của suất chiếu',
-                  }}
-                />
-                <RevenueDetail times={report[0].timeSlots} />
+              <RevenueDetail data={reportDetail} type={EReportType.Room} />
+            </>
+          )}
+          {reportType === EReportType.Time && (
+            <>
+              <ColumnChart
+                data={{
+                  data: report,
+                  xCategories: report.map((value: any) => value.timeSlot.time),
+                  text: 'Doanh thu',
+                  type: EReportType.Time,
+                }}
+              />
+              <Box maxWidth="200px" my="5">
+                <Select
+                  placeholder="Chọn suất chiếu"
+                  onChange={(e) => onGetDetail(e.target.value, EReportType.Time)}
+                >
+                  {report.map((rp: any) => (
+                    <option key={rp.timeSlot._id} value={rp.timeSlot._id}>
+                      {rp.timeSlot.time}
+                    </option>
+                  ))}
+                </Select>
               </Box>
-            )}
-          </Stack>
+              <RevenueDetail data={reportDetail} type={EReportType.Time} />
+            </>
+          )}
         </>
       )}
     </Stack>
-  );
-};
-
-interface IRevenueDetail {
-  movies?: IRevenueWithMovie[];
-  rooms?: IRevenueWithRoom[];
-  times?: IRevenueWithTime[];
-}
-
-const RevenueDetail = (props: IRevenueDetail) => {
-  const { movies, rooms, times } = props;
-
-  return (
-    <>
-      {movies &&
-        movies.map((revenue, index) => {
-          return (
-            <>
-              <Heading fontSize="20px">{revenue.movie.name}</Heading>
-
-              <Table w="full" key={index}>
-                <thead>
-                  <Tr>
-                    <Th>Tiêu đề </Th>
-                    <Th>Số lượng</Th>
-                  </Tr>
-                </thead>
-                <tbody>
-                  <Box as="tr">
-                    <Td>{getTitle('totalPriceFood')}</Td>
-                    <Td>{formatPrice('totalPriceFood', revenue['totalPriceFood'])}</Td>
-                  </Box>
-                  <Box as="tr">
-                    <Td>{getTitle('totalPriceTicket')}</Td>
-                    <Td>{formatPrice('totalPriceTicket', revenue['totalPriceTicket'])}</Td>
-                  </Box>
-                  <Box as="tr">
-                    <Td>{getTitle('totalPrice')}</Td>
-                    <Td>{formatPrice('totalPrice', revenue['totalPrice'])}</Td>
-                  </Box>
-                </tbody>
-              </Table>
-            </>
-          );
-        })}
-      {rooms &&
-        rooms.map((revenue, index) => {
-          return (
-            <>
-              <Heading fontSize="20px">{revenue.room.name}</Heading>
-
-              <Table w="full" key={index}>
-                <thead>
-                  <Tr>
-                    <Th>Tiêu đề </Th>
-                    <Th>Số lượng</Th>
-                  </Tr>
-                </thead>
-                <tbody>
-                  <Box as="tr">
-                    <Td>{getTitle('totalPriceFood')}</Td>
-                    <Td>{formatPrice('totalPriceFood', revenue['totalPriceFood'])}</Td>
-                  </Box>
-                  <Box as="tr">
-                    <Td>{getTitle('totalPriceTicket')}</Td>
-                    <Td>{formatPrice('totalPriceTicket', revenue['totalPriceTicket'])}</Td>
-                  </Box>
-                  <Box as="tr">
-                    <Td>{getTitle('totalPrice')}</Td>
-                    <Td>{formatPrice('totalPrice', revenue['totalPrice'])}</Td>
-                  </Box>
-                </tbody>
-              </Table>
-            </>
-          );
-        })}
-      {times &&
-        times.map((revenue, index) => {
-          return (
-            <>
-              <Heading fontSize="20px">{revenue.timeSlot.time}</Heading>
-
-              <Table w="full" key={index}>
-                <thead>
-                  <Tr>
-                    <Th>Tiêu đề </Th>
-                    <Th>Số lượng</Th>
-                  </Tr>
-                </thead>
-                <tbody>
-                  <Box as="tr">
-                    <Td>{getTitle('totalPriceFood')}</Td>
-                    <Td>{formatPrice('totalPriceFood', revenue['totalPriceFood'])}</Td>
-                  </Box>
-                  <Box as="tr">
-                    <Td>{getTitle('totalPriceTicket')}</Td>
-                    <Td>{formatPrice('totalPriceTicket', revenue['totalPriceTicket'])}</Td>
-                  </Box>
-                  <Box as="tr">
-                    <Td>{getTitle('totalPrice')}</Td>
-                    <Td>{formatPrice('totalPrice', revenue['totalPrice'])}</Td>
-                  </Box>
-                </tbody>
-              </Table>
-            </>
-          );
-        })}
-    </>
   );
 };
