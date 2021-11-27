@@ -49,7 +49,10 @@ export interface IRevenueData extends IStatistical {
 }
 
 export interface RevenueResponse extends BaseEntity {
-  data: IRevenueData[];
+  values: {
+    data: IRevenueData[];
+    total: number;
+  };
 }
 
 export interface RevenueResponseMoive extends BaseEntity {
@@ -67,10 +70,21 @@ export interface RevenueResponseTime extends BaseEntity {
 export interface RevenueQuarterResponse extends BaseEntity {
   data: IRevenueQuarter[];
 }
-
 export interface IRevenueQuarter {
   quarter: number;
   months: number[];
-  countTicket: number;
+  totalFood: number;
+  totalTicket: number;
   totalPrice: number;
+}
+
+export interface IRevenueByMovie {
+  movie: MovieType;
+  totalFood: number;
+  totalTicket: number;
+  totalPrice: number;
+}
+
+export interface RevenueResponseByMovie extends BaseEntity {
+  data: IRevenueByMovie[];
 }

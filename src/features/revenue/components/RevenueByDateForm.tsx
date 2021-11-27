@@ -1,14 +1,14 @@
-import { Box, Button, Flex, Heading, Radio, RadioGroup, Stack, Select } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Radio, RadioGroup, Stack } from '@chakra-ui/react';
 import React from 'react';
 
-import { Form, SingleSelect, Table, Td, Th, Tr } from '@/components';
+import { Form, SingleSelect } from '@/components';
 import { REVENUE_TYPE } from '@/constants';
-import { getRevenue, ColumnChart, RevenueDetail } from '@/features/revenue';
-import { formatNumber } from '@/utils/format';
+import { getRevenueByDate, TableRevenue } from '@/features/revenue';
+// import { formatNumber } from '@/utils/format';
 
 type RevenueValues = {
   cinemaId: string;
-  dateStart: string;
+  date: string;
 };
 
 enum EReportType {
@@ -23,35 +23,35 @@ interface RevenueByDateFormProps {
 
 export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }) => {
   const [report, setReport] = React.useState<any>([]);
-  const [reportDetail, setReportDetail] = React.useState({});
+  // const [reportDetail, setReportDetail] = React.useState({});
   const [reportType, setReportType] = React.useState<string>(EReportType.Full);
   const [loading, setLoading] = React.useState<boolean>(false);
 
-  const hasRevenue = report.length > 0;
+  // const hasRevenue = report.length > 0;
 
   const onChangeReportType = (value: string) => {
     setReport([]);
     setReportType(value);
   };
 
-  const onGetDetail = (id: string, type: string) => {
-    switch (type) {
-      case EReportType.Movie: {
-        const rpDetail = report.find((r: any) => r.movie._id === id);
-        return rpDetail ? setReportDetail(rpDetail) : undefined;
-      }
-      case EReportType.Room: {
-        const rpDetail = report.find((r: any) => r.room._id === id);
-        return rpDetail ? setReportDetail(rpDetail) : undefined;
-      }
-      case EReportType.Time: {
-        const rpDetail = report.find((r: any) => r.timeSlot._id === id);
-        return rpDetail ? setReportDetail(rpDetail) : undefined;
-      }
-      default:
-        undefined;
-    }
-  };
+  // const onGetDetail = (id: string, type: string) => {
+  //   switch (type) {
+  //     case EReportType.Movie: {
+  //       const rpDetail = report.find((r: any) => r.movie._id === id);
+  //       return rpDetail ? setReportDetail(rpDetail) : undefined;
+  //     }
+  //     case EReportType.Room: {
+  //       const rpDetail = report.find((r: any) => r.room._id === id);
+  //       return rpDetail ? setReportDetail(rpDetail) : undefined;
+  //     }
+  //     case EReportType.Time: {
+  //       const rpDetail = report.find((r: any) => r.timeSlot._id === id);
+  //       return rpDetail ? setReportDetail(rpDetail) : undefined;
+  //     }
+  //     default:
+  //       undefined;
+  //   }
+  // };
 
   return (
     <Stack spacing={5} width="full">
@@ -63,9 +63,8 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
           onSubmit={async (data) => {
             setLoading(true);
             const values = { ...data, cinemaId };
-            const response = await getRevenue(values, reportType);
-            console.log(response);
-            setReport(response);
+            const { values: res } = await getRevenueByDate(values);
+            setReport(res.data);
             setLoading(false);
           }}
         >
@@ -73,7 +72,7 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
             <Flex alignItems="center" justifyContent="space-between">
               <Stack spacing={3}>
                 <SingleSelect
-                  registration={register('dateStart')}
+                  registration={register('date')}
                   setValues={setValue}
                   nameToSet="dateStart"
                 />
@@ -110,8 +109,8 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
           )}
         </Form>
       </Box>
-
-      {hasRevenue && (
+      <TableRevenue rowsTable={report} />
+      {/* {hasRevenue && (
         <>
           {reportType === EReportType.Full && (
             <>
@@ -238,6 +237,7 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
                   ))}
                 </Select>
               </Box>
+
               <RevenueDetail data={reportDetail} type={EReportType.Room} />
             </>
           )}
@@ -251,6 +251,7 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
                   type: EReportType.Time,
                 }}
               />
+
               <Box maxWidth="200px" my="5">
                 <Select
                   placeholder="Chọn suất chiếu"
@@ -267,7 +268,7 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
             </>
           )}
         </>
-      )}
+      )} */}
     </Stack>
   );
 };

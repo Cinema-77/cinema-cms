@@ -8,12 +8,16 @@ interface RevenuDTO {
   cinemaId: string;
 }
 
-export const getRevenueByQuarter = (data: RevenuDTO): Promise<RevenueQuarterResponse> => {
+export const getRevenueByQuarter = ({ cinemaId }: RevenuDTO): Promise<RevenueQuarterResponse> => {
   return axios.get(`/cinema/get/thong-ke-theo-quy`, {
     params: {
-      cinemaId: data.cinemaId,
+      cinemaId: cinemaId,
     },
   });
+};
+
+export const getAllRevenueByQuarter = (): Promise<RevenueQuarterResponse> => {
+  return axios.get(`/cinema/get/thong-ke-all-rap-theo-quy`);
 };
 
 type UseRevenueOptions = {
@@ -24,10 +28,18 @@ type UseRevenueOptions = {
 export const useGetRevenueByQuarter = ({ config, cinemaId }: UseRevenueOptions) => {
   return useQuery({
     ...config,
-    queryKey: ['revenue'],
+    queryKey: ['revenueByCinema'],
     queryFn: () =>
       getRevenueByQuarter({
         cinemaId,
       }),
+  });
+};
+
+export const useGetAllRevenueByQuarter = ({ config }: UseRevenueOptions = { cinemaId: '' }) => {
+  return useQuery({
+    ...config,
+    queryKey: ['revenueByAllCinema'],
+    queryFn: () => getAllRevenueByQuarter(),
   });
 };

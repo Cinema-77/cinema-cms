@@ -39,7 +39,7 @@ export const PaymentComplete = () => {
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useHistory();
-  console.log(bills);
+
   if (isEmptyObject(bills)) {
     return <Redirect to={ROUTES.SELLER} />;
   }

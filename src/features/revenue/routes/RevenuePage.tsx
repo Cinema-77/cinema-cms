@@ -2,9 +2,10 @@ import { Box, Flex, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chak
 
 import { SiteHeader } from '@/components';
 import { ROUTES } from '@/constants';
-import { RevenueByDateForm } from '@/features/revenue';
+import { AuthUser } from '@/features/auth';
+import { RevenueByDateForm, RevenueByQuarterForm, RevenueByMovieForm } from '@/features/revenue';
 import { useAuth } from '@/lib/auth';
-import { Authorization, ROLES } from '@/lib/authorization';
+import { Authorization, POLICIES, ROLES } from '@/lib/authorization';
 
 export const RevenuePage = () => {
   const { user } = useAuth();
@@ -36,14 +37,25 @@ export const RevenuePage = () => {
                 <Tab>Doanh thu của rạp theo ngày </Tab>
                 <Tab>Doanh thu của rạp theo quý </Tab>
                 <Tab>Doanh thu của phim </Tab>
+                <Authorization policyCheck={POLICIES['revenue:all-cinema'](user as AuthUser)}>
+                  <Tab>Doanh thu tất cả rạp theo quý </Tab>
+                </Authorization>
               </TabList>
               <TabPanels>
                 <TabPanel>
                   <RevenueByDateForm cinemaId={user?.cinema._id as string} />
                 </TabPanel>
                 <TabPanel>
-                  {/* <RevenueByQuarterForm cinemaId={user?.cinema._id as string} /> */}
+                  <RevenueByQuarterForm cinemaId={user?.cinema._id as string} type="One" />
                 </TabPanel>
+                <TabPanel>
+                  <RevenueByMovieForm cinemaId={user?.cinema._id as string} />
+                </TabPanel>
+                <Authorization policyCheck={POLICIES['revenue:all-cinema'](user as AuthUser)}>
+                  <TabPanel>
+                    <RevenueByQuarterForm cinemaId={user?.cinema._id as string} type="All" />
+                  </TabPanel>
+                </Authorization>
               </TabPanels>
             </Tabs>
           </Stack>

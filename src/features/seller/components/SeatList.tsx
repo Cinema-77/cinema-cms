@@ -31,7 +31,6 @@ export const SeatList: React.FC<SeatListProps> = ({
       hasSeat.price = oldPrice;
       hasSeat.type = 1;
     }
-    console.log(seat);
 
     setDisplayPrice(hasSeat ? 0 : seat.price);
     setSelectedSeats(selectedSeat);

@@ -39,6 +39,23 @@ const generateOptions = (props: GenerateOptionsColumnType) => {
         },
       ];
       break;
+    case 'Quarter':
+    case 'ByMovie':
+      seriesData = [
+        {
+          name: 'Doanh thu vé',
+          data: data.map((value: any) => value.totalTicket),
+        },
+        {
+          name: 'Doanh thu thức ăn',
+          data: data.map((value: any) => value.totalFood),
+        },
+        {
+          name: 'Doanh thu cả hai',
+          data: data.map((value: any) => value.totalPrice),
+        },
+      ];
+      break;
 
     default:
       seriesData = [];

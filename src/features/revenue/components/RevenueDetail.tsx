@@ -39,6 +39,7 @@ export const RevenueDetail: React.FC<RevenueDetailProps> = ({ type, data }) => {
           <Tr>
             <Th>Tiêu đề</Th>
             <Th>Số lượng</Th>
+            <Th>Đơn giá</Th>
             <Th>Doanh thu</Th>
           </Tr>
         </thead>
@@ -46,16 +47,19 @@ export const RevenueDetail: React.FC<RevenueDetailProps> = ({ type, data }) => {
           <Tr>
             <Td>{statistical.ticket.adult.name}</Td>
             <Td>{statistical.ticket.adult.count}</Td>
+            <Td>{formatNumber(statistical.ticket.adult.price)}</Td>
             <Td>{formatNumber(statistical.ticket.adult.price * statistical.ticket.adult.count)}</Td>
           </Tr>
           <Tr>
             <Td>{statistical.ticket.child.name}</Td>
             <Td>{statistical.ticket.child.count}</Td>
+            <Td>{formatNumber(statistical.ticket.child.price)}</Td>
             <Td>{formatNumber(statistical.ticket.child.price * statistical.ticket.child.count)}</Td>
           </Tr>
           <Tr>
             <Td>{statistical.ticket.student.name}</Td>
             <Td>{statistical.ticket.student.count}</Td>
+            <Td>{formatNumber(statistical.ticket.student.price)}</Td>
             <Td>
               {formatNumber(statistical.ticket.student.price * statistical.ticket.student.count)}
             </Td>
@@ -64,31 +68,37 @@ export const RevenueDetail: React.FC<RevenueDetailProps> = ({ type, data }) => {
             <Tr key={combo._id}>
               <Td>Thức ăn {combo.name}</Td>
               <Td> {combo.count}</Td>
+              <Td>{formatNumber(combo.price)}</Td>
               <Td>{formatNumber(combo.price * combo.count)}</Td>
             </Tr>
           ))}
           <Tr>
             <Td>Tổng tiền vé</Td>
             <Td></Td>
+            <Td></Td>
             <Td>{formatNumber(statistical.ticket.total)}</Td>
           </Tr>
           <Tr>
             <Td>Tổng tiền vé khuyến mãi</Td>
+            <Td></Td>
             <Td></Td>
             <Td>{formatNumber(statistical.ticket.totalPromotion)}</Td>
           </Tr>
           <Tr>
             <Td>Tổng tiền thức ăn</Td>
             <Td></Td>
+            <Td></Td>
             <Td>{formatNumber(statistical.food.total)}</Td>
           </Tr>
           <Tr>
             <Td>Tổng tiền thức ăn khuyến mãi</Td>
             <Td></Td>
+            <Td></Td>
             <Td>{formatNumber(statistical.ticket.totalPromotion)}</Td>
           </Tr>
           <Tr>
             <Td>Tổng cộng</Td>
+            <Td></Td>
             <Td></Td>
             <Td>{formatNumber(statistical.totalPrice)}</Td>
           </Tr>
