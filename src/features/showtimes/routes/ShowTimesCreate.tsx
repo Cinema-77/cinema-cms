@@ -45,6 +45,7 @@ import {
 import { useAuth } from '@/lib/auth';
 import { Authorization, ROLES } from '@/lib/authorization';
 import { useRoomsByMovieStore } from '@/stores/timeSlot';
+import { formatDate } from '@/utils/format';
 import { isEmptyObject } from '@/utils/object';
 
 export type ShowTimesValues = {
@@ -129,7 +130,6 @@ export const ShowTimesCreate = () => {
                       >
                         <Form<ShowTimesValues>
                           onSubmit={async (data) => {
-                            console.log(data);
                             if (data['showTimes'] === undefined || isEmptyObject(data.showTimes)) {
                               toast({
                                 title: 'Vui lòng chọn lịch chiếu',
@@ -149,8 +149,7 @@ export const ShowTimesCreate = () => {
                           }}
                           options={{
                             defaultValues: {
-                              date: '11/19/2021',
-                              dateStart: '11/20/2021',
+                              date: formatDate(new Date()),
                             },
                           }}
                         >
@@ -161,7 +160,7 @@ export const ShowTimesCreate = () => {
                                   <SingleSelect
                                     registration={register('date')}
                                     label="Ngày tạo"
-                                    defaultValue="11/19/2021"
+                                    defaultValue={formatDate(new Date())}
                                   />
                                   {moviesQuery.data && (
                                     <SelectField

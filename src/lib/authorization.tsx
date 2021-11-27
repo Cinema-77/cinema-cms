@@ -15,7 +15,7 @@ type RoleTypes = typeof ROLES[RoleKeys];
 
 export const POLICIES = {
   'movie:create': (user: AuthUser) => {
-    if (user.permission.type === '1') {
+    if (user.permission.type === '0') {
       return true;
     }
 
@@ -36,6 +36,13 @@ export const POLICIES = {
     return false;
   },
   'cinema:update': (user: AuthUser) => {
+    if (user.permission.type === '0') {
+      return true;
+    }
+
+    return false;
+  },
+  'revenue:all-cinema': (user: AuthUser) => {
     if (user.permission.type === '0') {
       return true;
     }

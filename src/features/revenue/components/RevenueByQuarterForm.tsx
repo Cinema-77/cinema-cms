@@ -1,14 +1,17 @@
-import { Spinner, Flex, Heading, Box } from '@chakra-ui/react';
+import { Spinner, Flex, Heading, Box, Table, Td, Th, Tr, SimpleGrid } from '@chakra-ui/react';
 import React from 'react';
 
-import { useGetRevenueByQuarter } from '@/features/revenue';
+import { ColumnChart, useGetRevenueByQuarter, useGetAllRevenueByQuarter } from '@/features/revenue';
+import { formatNumber } from '@/utils/format';
 
 interface RevenueByQuarterFormProps {
   cinemaId: string;
+  type: string;
 }
 
-export const RevenueByQuarterForm: React.FC<RevenueByQuarterFormProps> = ({ cinemaId }) => {
-  const revenueByQuarterQuery = useGetRevenueByQuarter({ cinemaId });
+export const RevenueByQuarterForm: React.FC<RevenueByQuarterFormProps> = ({ cinemaId, type }) => {
+  const revenueByQuarterQuery =
+    type === 'All' ? useGetAllRevenueByQuarter() : useGetRevenueByQuarter({ cinemaId });
 
   if (revenueByQuarterQuery.isLoading) {
     return (
@@ -36,5 +39,50 @@ export const RevenueByQuarterForm: React.FC<RevenueByQuarterFormProps> = ({ cine
     );
   }
 
-  return null;
+  const { data } = revenueByQuarterQuery.data;
+
+  return (
+    <Box>
+      <ColumnChart
+        data={{
+          data: data,
+          xCategories: data.map((value: any) => `Quý ${value.quarter}`),
+          text: 'Doanh thu ',
+          type: 'Quarter',
+        }}
+      />
+
+      <SimpleGrid columns={2} spacing={10}>
+        {data.map((rv) => (
+          <Box key={rv.quarter}>
+            <Heading as="h3" fontSize="20px" my={3}>
+              Quý {rv.quarter}
+            </Heading>
+            <Table w="full">
+              <thead>
+                <Tr>
+                  <Th>Tiêu đề</Th>
+                  <Th>Doanh thu</Th>
+                </Tr>
+              </thead>
+              <tbody>
+                <Tr>
+                  <Td>Tổng tiền vé</Td>
+                  <Td>{formatNumber(rv.totalTicket)}</Td>
+                </Tr>
+                <Tr>
+                  <Td>Tổng tiền thức ăn</Td>
+                  <Td>{formatNumber(rv.totalFood)}</Td>
+                </Tr>
+                <Tr>
+                  <Td>Tổng cộng</Td>
+                  <Td>{formatNumber(rv.totalPrice)}</Td>
+                </Tr>
+              </tbody>
+            </Table>
+          </Box>
+        ))}
+      </SimpleGrid>
+    </Box>
+  );
 };

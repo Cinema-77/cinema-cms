@@ -37,3 +37,5 @@ export const extractObjectKeys = (object: any) => {
 
   return objectKeys.sort();
 };
+
+export const makeData = () => {};

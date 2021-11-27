@@ -1,13 +1,41 @@
-import { Image, Box, Flex, Spinner, Stack } from '@chakra-ui/react';
+import { Image, Box, Flex, Spinner, Stack, Button, useColorModeValue } from '@chakra-ui/react';
+import * as React from 'react';
+import { MdAdd } from 'react-icons/md';
 
 import { Table, Td, Th, Tr, SiteHeader } from '@/components';
-import { ROUTES } from '@/constants';
-import { useFoods, FoodCreateModal } from '@/features/foods';
+import { ROUTES, FOOD_FORM } from '@/constants';
+import {
+  useFoods,
+  FoodFormModal,
+  FoodDropdown,
+  FoodWarningModal,
+  useDeleteFood,
+} from '@/features/foods';
 import { Authorization, ROLES } from '@/lib/authorization';
+import { useFoodStore } from '@/stores/food';
 import { formatNumber } from '@/utils/format';
 
 export const FoodsPage = () => {
   const foodsQuery = useFoods();
+  const deleteFoodMutation = useDeleteFood();
+  const { onOpen, setType } = useFoodStore();
+  const [warningDialogVisible, setWarningDialogVisible] = React.useState(false);
+  const bg = useColorModeValue('gray.900', 'white');
+  const color = useColorModeValue('white', 'gray.900');
+
+  const onDelete = () => {
+    setWarningDialogVisible(true);
+  };
+
+  const onConfirmDeleteFood = (foodId: string) => {
+    deleteFoodMutation.mutateAsync({ foodId });
+
+    hideWarningDialog();
+  };
+
+  const hideWarningDialog = () => {
+    setWarningDialogVisible(false);
+  };
 
   const spinner = (
     <Flex justifyContent="center">
@@ -37,7 +65,14 @@ export const FoodsPage = () => {
 
               <Td>{food.unit}</Td>
               <Td>{formatNumber(food.price)}</Td>
-              <Td>{/* <MenuListRoom roomId={room._id} /> */}</Td>
+              <Td>
+                <FoodDropdown food={food} onDelete={onDelete} />
+                <FoodWarningModal
+                  onCancel={hideWarningDialog}
+                  onConfirm={async () => await onConfirmDeleteFood(food._id)}
+                  visible={warningDialogVisible}
+                />
+              </Td>
             </Box>
           );
         })}
@@ -59,7 +94,33 @@ export const FoodsPage = () => {
             forbiddenFallback={<div>Only manager can view this.</div>}
             allowedRoles={[ROLES.MANAGER]}
           >
-            <FoodCreateModal />
+            <Button
+              leftIcon={<MdAdd />}
+              backgroundColor={bg}
+              color={color}
+              fontWeight="medium"
+              _hover={{ bg: 'gray.700' }}
+              _active={{
+                bg: 'gray.800',
+                transform: 'scale(0.95)',
+              }}
+              onClick={() => {
+                onOpen();
+                setType({
+                  type: FOOD_FORM.ADD,
+                  data: {
+                    name: '',
+                    price: '',
+                    unit: '',
+                    image: '',
+                  },
+                  foodId: '',
+                  imageSource: '',
+                });
+              }}
+            >
+              Thêm sản phẩm
+            </Button>
           </Authorization>
         }
       />
@@ -78,6 +139,8 @@ export const FoodsPage = () => {
           <Box overflowX="scroll">{foodsQuery.isLoading ? spinner : tableFoods}</Box>
         </Stack>
       </Flex>
+
+      <FoodFormModal />
     </Authorization>
   );
 };
