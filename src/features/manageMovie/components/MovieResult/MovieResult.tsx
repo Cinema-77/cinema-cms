@@ -68,7 +68,6 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
   useEffect(() => {
     setMovieList([]);
     const _filter = {
-      ...query,
       page: Number(query.page) || 1,
       limit: Number(query.limit) || 3,
     };
@@ -80,10 +79,10 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
     getMovieAll(qs.stringify(params))
       .then((res) => {
         setMovieList(res.values.movies);
-        setTotalPage(res.values.pageNumber);
+        setTotalPage(Math.ceil(res.values.pageNumber));
       })
       .catch((err) => console.log(err));
-  }, [movie, query]);
+  }, [movie, query.page, query.limit]);
   const handleValue = async (data: MovieType) => {
     const body = {
       name: data.name,

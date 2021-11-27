@@ -30,6 +30,9 @@ export const getMovie = (id: string) => {
   return axios.get(`/movie/${id}`);
 };
 
-export const updateMovie = (id: string, data: MovieType): Promise<MovieRespon> => {
+export const updateMovie = (
+  id: string | string[] | null,
+  data: MovieType,
+): Promise<MovieRespon> => {
   return axios.put(`/movie/update/${id}`, data);
 };

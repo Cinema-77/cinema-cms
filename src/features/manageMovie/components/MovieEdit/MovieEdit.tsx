@@ -1,6 +1,7 @@
 import { useToast } from '@chakra-ui/toast';
 import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import React, { ChangeEventHandler, useEffect, useState } from 'react';
+import qs from 'query-string';
+import React, { ChangeEventHandler, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useHistory, useLocation } from 'react-router';
 
@@ -67,7 +68,7 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
     },
   });
   const location = useLocation();
-  const idMovie = location.search.split('?id=');
+  const query = useMemo(() => qs.parse(location.search), [location.search]);
   const history = useHistory();
   const toast = useToast();
   const handleValue = async (data: MovieType) => {
@@ -96,7 +97,7 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
         });
         return;
       }
-      const res = await updateMovie(idMovie[1], body);
+      const res = await updateMovie(query.id, body);
       if (res.success === false) {
         if (res.errors.name) {
           toast({

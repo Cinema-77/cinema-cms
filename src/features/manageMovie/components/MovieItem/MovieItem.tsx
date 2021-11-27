@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router';
+import qs from 'query-string';
+import React, { useMemo, useState } from 'react';
+import { useHistory, useLocation } from 'react-router';
 
 import { getMovie } from '../..';
 import { MovieItemType } from '../../type';
@@ -33,6 +34,8 @@ export const MovieItem: React.FC<MovieItemProps> = ({
   const [movieValue, setMovieValue] = useState<any>('');
   const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
+  const location = useLocation();
+  const query = useMemo(() => qs.parse(location.search), [location.search]);
 
   const handleDelete = (id: string) => {
     setIsMovie(true);
@@ -40,7 +43,11 @@ export const MovieItem: React.FC<MovieItemProps> = ({
   };
   const handleEdit = async (id: string) => {
     setIsLoading(true);
-    history.push(`/app/managemovie?id=${id}`);
+    const params = {
+      ...query,
+      id: id,
+    };
+    history.push(`/app/managemovie?${qs.stringify(params)}`);
     await getMovie(id)
       .then((res: any) => setMovieValue(res.values.movie))
       .catch((err) => console.log('err', err));
