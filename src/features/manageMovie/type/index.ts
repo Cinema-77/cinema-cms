@@ -67,3 +67,14 @@ export interface MoviesResponse {
     movies: MovieItemType[];
   };
 }
+
+export interface IMovieCMS {
+  movieGroupName: string;
+  movies: MovieItemType[];
+}
+
+export interface MovieCMSResponse {
+  success: boolean;
+  message: string;
+  values: IMovieCMS[];
+}

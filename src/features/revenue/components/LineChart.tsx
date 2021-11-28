@@ -2,9 +2,8 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 // import { Button, ButtonGroup } from '@chakra-ui/react';
-import { IRevenueData } from '@/features/revenue';
 
-const generateOptions = (data: IRevenueData[]) => {
+const generateOptions = (data: any[]) => {
   const categories = data.map((item) => item.date);
 
   return {
@@ -52,7 +51,7 @@ const generateOptions = (data: IRevenueData[]) => {
   };
 };
 
-export const LineChart = ({ data }: { data: IRevenueData[] }) => {
+export const LineChart = ({ data }: { data: any[] }) => {
   return (
     <>
       <HighchartsReact highcharts={Highcharts} options={generateOptions(data)} />

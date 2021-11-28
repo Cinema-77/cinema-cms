@@ -126,13 +126,17 @@ export const CinemaModalUpdate: React.FC<CinemaValues> = (props) => {
                     registration={register('address.city')}
                     error={formState.errors['address']?.city}
                     defaultValue={props.address.city}
-                    options={
-                      cityQuery.data &&
-                      cityQuery?.data.map((city) => ({
-                        label: city.name,
-                        value: `${city.code}-${city.name}`,
-                      }))
-                    }
+                    options={[
+                      {
+                        title: '',
+                        items: cityQuery.data
+                          ? cityQuery?.data.map((city) => ({
+                              label: city.name,
+                              value: `${city.code}-${city.name}`,
+                            }))
+                          : [],
+                      },
+                    ]}
                     onChanging={onChangeCity}
                     mt="4"
                   />
@@ -140,10 +144,15 @@ export const CinemaModalUpdate: React.FC<CinemaValues> = (props) => {
                     label="Quận / Huyện"
                     registration={register('address.district')}
                     error={formState.errors['address']?.district}
-                    options={address?.districts.map((d) => ({
-                      label: d.name,
-                      value: `${d.code}-${d.name}`,
-                    }))}
+                    options={[
+                      {
+                        title: '',
+                        items: address?.districts.map((d) => ({
+                          label: d.name,
+                          value: `${d.code}-${d.name}`,
+                        })),
+                      },
+                    ]}
                     defaultValue={props.address.district}
                     onChanging={onChangeDistrict}
                     mt="4"
@@ -152,10 +161,15 @@ export const CinemaModalUpdate: React.FC<CinemaValues> = (props) => {
                     label="Phường"
                     registration={register('address.ward')}
                     error={formState.errors['address']?.ward}
-                    options={address?.wards.map((d) => ({
-                      label: d.name,
-                      value: `${d.code}-${d.name}`,
-                    }))}
+                    options={[
+                      {
+                        title: '',
+                        items: address?.wards.map((d) => ({
+                          label: d.name,
+                          value: `${d.code}-${d.name}`,
+                        })),
+                      },
+                    ]}
                     defaultValue={props.address.ward}
                     mt="4"
                   />

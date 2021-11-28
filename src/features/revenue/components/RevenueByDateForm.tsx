@@ -1,9 +1,10 @@
-import { Box, Button, Flex, Heading, Radio, RadioGroup, Stack } from '@chakra-ui/react';
-import React from 'react';
+import { Box, Button, Flex, Heading, Stack, Spinner } from '@chakra-ui/react';
+import * as R from 'ramda';
+import * as React from 'react';
 
 import { Form, SingleSelect } from '@/components';
-import { REVENUE_TYPE } from '@/constants';
-import { getRevenueByDate, TableRevenue } from '@/features/revenue';
+import { TableRevenue, useGetRevenueByDate, ColumnChart } from '@/features/revenue';
+import { formatDate } from '@/utils/format';
 // import { formatNumber } from '@/utils/format';
 
 type RevenueValues = {
@@ -11,61 +12,69 @@ type RevenueValues = {
   date: string;
 };
 
-enum EReportType {
-  Full = 'Full',
-  Movie = 'Movie',
-  Room = 'Room',
-  Time = 'Time',
-}
 interface RevenueByDateFormProps {
   cinemaId: string;
 }
 
 export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }) => {
-  const [report, setReport] = React.useState<any>([]);
-  // const [reportDetail, setReportDetail] = React.useState({});
-  const [reportType, setReportType] = React.useState<string>(EReportType.Full);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [date, setDate] = React.useState<string>(formatDate(new Date()));
 
-  // const hasRevenue = report.length > 0;
+  const useRevenueByDateQuery = useGetRevenueByDate({
+    cinemaId,
+    date: date,
+    config: {
+      refetchInterval: 2000,
+    },
+  });
 
-  const onChangeReportType = (value: string) => {
-    setReport([]);
-    setReportType(value);
-  };
+  if (useRevenueByDateQuery.isLoading) {
+    return (
+      <Flex justifyContent="center">
+        <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
+      </Flex>
+    );
+  }
 
-  // const onGetDetail = (id: string, type: string) => {
-  //   switch (type) {
-  //     case EReportType.Movie: {
-  //       const rpDetail = report.find((r: any) => r.movie._id === id);
-  //       return rpDetail ? setReportDetail(rpDetail) : undefined;
-  //     }
-  //     case EReportType.Room: {
-  //       const rpDetail = report.find((r: any) => r.room._id === id);
-  //       return rpDetail ? setReportDetail(rpDetail) : undefined;
-  //     }
-  //     case EReportType.Time: {
-  //       const rpDetail = report.find((r: any) => r.timeSlot._id === id);
-  //       return rpDetail ? setReportDetail(rpDetail) : undefined;
-  //     }
-  //     default:
-  //       undefined;
-  //   }
-  // };
+  if (!useRevenueByDateQuery.data) {
+    return null;
+  }
+
+  const { values } = useRevenueByDateQuery.data;
+  const hasRevenue = values.data.length > 0;
+  const lstTitleMovie = R.uniq(values.data.map((v) => v.movieName));
+
+  const noData = (
+    <Box
+      role="list"
+      aria-label="comments"
+      backgroundColor="white"
+      textColor="gray.500"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      flexDirection="column"
+      height="40"
+    >
+      <Heading as="h4" size="xl" fontSize="25px">
+        Không có dữ liệu được tìm thấy
+      </Heading>
+    </Box>
+  );
 
   return (
-    <Stack spacing={5} width="full">
-      <Stack direction="column" justifyContent="center" mx={4}>
+    <Stack spacing={3} width="full">
+      <Stack direction="column" justifyContent="center">
         <Heading fontSize="20px">Thống kê doanh thu </Heading>
       </Stack>
-      <Box>
+      <Box paddingBottom={5} borderBottom="1px solid" borderColor="gray.300">
         <Form<RevenueValues>
-          onSubmit={async (data) => {
-            setLoading(true);
-            const values = { ...data, cinemaId };
-            const { values: res } = await getRevenueByDate(values);
-            setReport(res.data);
-            setLoading(false);
+          onSubmit={({ date }) => {
+            setDate(date);
+          }}
+          options={{
+            defaultValues: {
+              date,
+            },
           }}
         >
           {({ register, setValue }) => (
@@ -75,20 +84,8 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
                   registration={register('date')}
                   setValues={setValue}
                   nameToSet="dateStart"
+                  defaultValue={date}
                 />
-                <RadioGroup
-                  defaultValue={EReportType.Full}
-                  onChange={onChangeReportType}
-                  value={reportType}
-                >
-                  <Stack direction="row" spacing={5}>
-                    {REVENUE_TYPE.map((r) => (
-                      <Radio colorScheme="cyan" value={r.id} key={r.id}>
-                        {r.name}
-                      </Radio>
-                    ))}
-                  </Stack>
-                </RadioGroup>
               </Stack>
               <Button
                 backgroundColor="cyan.400"
@@ -101,7 +98,7 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
                 maxWidth="200px"
                 alignSelf="flex-end"
                 ml={4}
-                isLoading={loading}
+                isLoading={useRevenueByDateQuery.isLoading}
               >
                 Thống kê
               </Button>
@@ -109,166 +106,21 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
           )}
         </Form>
       </Box>
-      <TableRevenue rowsTable={report} />
-      {/* {hasRevenue && (
+      {hasRevenue ? (
         <>
-          {reportType === EReportType.Full && (
-            <>
-              <ColumnChart
-                data={{
-                  data: report[0],
-                  xCategories: ['Doanh thu tiền vé', 'Doanh thu thức ăn', 'Doanh thu cả hai'],
-                  text: 'Doanh thu ',
-                }}
-              />
-              <Table w="full">
-                <thead>
-                  <Tr>
-                    <Th>Tiêu đề</Th>
-                    <Th>Số lượng</Th>
-                    <Th>Doanh thu</Th>
-                  </Tr>
-                </thead>
-                <tbody>
-                  <Box as="tr">
-                    <Td>{report[0].ticket.adult.name}</Td>
-                    <Td>{report[0].ticket.adult.count}</Td>
-                    <Td>
-                      {formatNumber(report[0].ticket.adult.price * report[0].ticket.adult.count)}
-                    </Td>
-                  </Box>
-                  <Box as="tr">
-                    <Td>{report[0].ticket.child.name}</Td>
-                    <Td>{report[0].ticket.child.count}</Td>
-                    <Td>
-                      {formatNumber(report[0].ticket.child.price * report[0].ticket.child.count)}
-                    </Td>
-                  </Box>
-                  <Box as="tr">
-                    <Td>{report[0].ticket.student.name}</Td>
-                    <Td>{report[0].ticket.student.count}</Td>
-                    <Td>
-                      {formatNumber(
-                        report[0].ticket.student.price * report[0].ticket.student.count,
-                      )}
-                    </Td>
-                  </Box>
-                  {report[0].food.combo.map((combo: any) => (
-                    <Box as="tr" key={combo._id}>
-                      <Td>Thức ăn {combo.name}</Td>
-                      <Td> {combo.count}</Td>
-                      <Td>{formatNumber(combo.price * combo.count)}</Td>
-                    </Box>
-                  ))}
-                  <Box as="tr">
-                    <Td>Tổng tiền vé</Td>
-                    <Td></Td>
-                    <Td>{formatNumber(report[0].ticket.total)}</Td>
-                  </Box>
-                  <Box as="tr">
-                    <Td>Tổng tiền vé khuyến mãi</Td>
-                    <Td></Td>
-                    <Td>{formatNumber(report[0].ticket.totalPromotion)}</Td>
-                  </Box>
-                  <Box as="tr">
-                    <Td>Tổng tiền thức ăn</Td>
-                    <Td></Td>
-                    <Td>{formatNumber(report[0].food.total)}</Td>
-                  </Box>
-                  <Box as="tr">
-                    <Td>Tổng tiền thức ăn khuyến mãi</Td>
-                    <Td></Td>
-                    <Td>{formatNumber(report[0].ticket.totalPromotion)}</Td>
-                  </Box>
-                  <Box as="tr">
-                    <Td>Tổng cộng</Td>
-                    <Td></Td>
-                    <Td>{formatNumber(report[0].totalPrice)}</Td>
-                  </Box>
-                </tbody>
-              </Table>
-            </>
-          )}
-
-          {reportType === EReportType.Movie && (
-            <>
-              <ColumnChart
-                data={{
-                  data: report,
-                  xCategories: report.map((value: any) => value.movie.name),
-                  text: 'Doanh thu ',
-                  type: EReportType.Movie,
-                }}
-              />
-              <Box maxWidth="200px" my="5">
-                <Select
-                  placeholder="Chọn phim"
-                  onChange={(e) => onGetDetail(e.target.value, EReportType.Movie)}
-                >
-                  {report.map((rp: any) => (
-                    <option key={rp.movie._id} value={rp.movie._id}>
-                      {rp.movie.name}
-                    </option>
-                  ))}
-                </Select>
-              </Box>
-              <RevenueDetail data={reportDetail} type={EReportType.Movie} />
-            </>
-          )}
-          {reportType === EReportType.Room && (
-            <>
-              <ColumnChart
-                data={{
-                  data: report,
-                  xCategories: report.map((value: any) => value.room.name),
-                  text: 'Doanh thu ',
-                  type: EReportType.Room,
-                }}
-              />
-              <Box maxWidth="200px" my="5">
-                <Select
-                  placeholder="Chọn phòng"
-                  onChange={(e) => onGetDetail(e.target.value, EReportType.Room)}
-                >
-                  {report.map((rp: any) => (
-                    <option key={rp.room._id} value={rp.room._id}>
-                      {rp.room.name}
-                    </option>
-                  ))}
-                </Select>
-              </Box>
-
-              <RevenueDetail data={reportDetail} type={EReportType.Room} />
-            </>
-          )}
-          {reportType === EReportType.Time && (
-            <>
-              <ColumnChart
-                data={{
-                  data: report,
-                  xCategories: report.map((value: any) => value.timeSlot.time),
-                  text: 'Doanh thu',
-                  type: EReportType.Time,
-                }}
-              />
-
-              <Box maxWidth="200px" my="5">
-                <Select
-                  placeholder="Chọn suất chiếu"
-                  onChange={(e) => onGetDetail(e.target.value, EReportType.Time)}
-                >
-                  {report.map((rp: any) => (
-                    <option key={rp.timeSlot._id} value={rp.timeSlot._id}>
-                      {rp.timeSlot.time}
-                    </option>
-                  ))}
-                </Select>
-              </Box>
-              <RevenueDetail data={reportDetail} type={EReportType.Time} />
-            </>
-          )}
+          <ColumnChart
+            data={{
+              xCategories: lstTitleMovie,
+              data: values.data,
+              text: `Doanh thu ngày ${date}`,
+              type: 'Full',
+            }}
+          />
+          <TableRevenue rowsTable={values.data} />{' '}
         </>
-      )} */}
+      ) : (
+        noData
+      )}
     </Stack>
   );
 };

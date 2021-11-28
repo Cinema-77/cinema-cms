@@ -1,4 +1,4 @@
-import { MovieType, MovieRespon, MoviesResponse } from '../type';
+import { MovieType, MovieRespon, MoviesResponse, MovieCMSResponse } from '../type';
 
 import { axios } from '@/lib/axios';
 
@@ -32,4 +32,8 @@ export const getMovie = (id: string) => {
 
 export const updateMovie = (id: string, data: MovieType): Promise<MovieRespon> => {
   return axios.put(`/movie/update/${id}`, data);
+};
+
+export const getMovieAllCMS = (): Promise<MovieCMSResponse> => {
+  return axios.get('/movie/get/movie-play-cms');
 };

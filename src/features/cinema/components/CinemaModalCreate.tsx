@@ -131,13 +131,17 @@ export const CinemaModalCreate: React.FC<any> = () => {
                     placeholder="Thành phố"
                     registration={register('address.city')}
                     error={formState.errors['address']?.city}
-                    options={
-                      cityQuery.data &&
-                      cityQuery?.data.map((city) => ({
-                        label: city.name,
-                        value: `${city.code}-${city.name}`,
-                      }))
-                    }
+                    options={[
+                      {
+                        title: '',
+                        items: cityQuery.data
+                          ? cityQuery?.data.map((city) => ({
+                              label: city.name,
+                              value: `${city.code}-${city.name}`,
+                            }))
+                          : [],
+                      },
+                    ]}
                     onChanging={onChangeCity}
                     mt="4"
                   />
@@ -146,10 +150,15 @@ export const CinemaModalCreate: React.FC<any> = () => {
                     placeholder="Quận / Huyện"
                     registration={register('address.district')}
                     error={formState.errors['address']?.district}
-                    options={address?.districts.map((d) => ({
-                      label: d.name,
-                      value: `${d.code}-${d.name}`,
-                    }))}
+                    options={[
+                      {
+                        title: '',
+                        items: address?.districts.map((d) => ({
+                          label: d.name,
+                          value: `${d.code}-${d.name}`,
+                        })),
+                      },
+                    ]}
                     onChanging={onChangeDistrict}
                     mt="4"
                   />
@@ -158,10 +167,15 @@ export const CinemaModalCreate: React.FC<any> = () => {
                     placeholder="Phường"
                     registration={register('address.ward')}
                     error={formState.errors['address']?.ward}
-                    options={address?.wards.map((d) => ({
-                      label: d.name,
-                      value: `${d.code}-${d.name}`,
-                    }))}
+                    options={[
+                      {
+                        title: '',
+                        items: address?.wards.map((d) => ({
+                          label: d.name,
+                          value: `${d.code}-${d.name}`,
+                        })),
+                      },
+                    ]}
                     mt="4"
                   />
                   <InputField

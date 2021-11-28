@@ -6,7 +6,7 @@ export const ROUTES = {
   MOVIE: '/app/managemovie',
   REVENUE: '/app/revenue',
   ROOM_LIST: '/app/room/listRoom',
-  SHOWTIMES_CREATE: '/app/showtimes/create',
+  SHOWTIMES_CREATE: '/app/showtimes',
   SELLER: '/app/seller',
   PAYMENT_COMPLETE: '/app/seller/paymentComplete',
   SELLER_TICKET_ID: '/app/seller/bookTicket/:_id',

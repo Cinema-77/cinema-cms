@@ -1,20 +1,25 @@
-import { Thead, chakra, Tbody, Table, Tr, Th, Td, Icon } from '@chakra-ui/react';
+import { Thead, Tbody, chakra, Table, Tr, Th, Td, Icon } from '@chakra-ui/react';
 import * as React from 'react';
 // import { GoTriangleDown, GoTriangleUp } from 'react-icons/go';
 import { FiArrowRight, FiArrowDown, FiXCircle, FiBox } from 'react-icons/fi';
 import { useTable, useGroupBy, useExpanded } from 'react-table';
+
+import { mapDataRevenue } from '@/features/revenue';
+import { formatNumber } from '@/utils/format';
 
 interface TableRevenueProps {
   rowsTable: any;
 }
 
 export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
-  const data = React.useMemo(() => rowsTable, [rowsTable]);
+  const data = React.useMemo(() => mapDataRevenue(rowsTable), [rowsTable]);
 
   const columns = React.useMemo(
     () => [
       {
         Header: 'Thông tin',
+        Footer: 'Thông tin',
+
         columns: [
           {
             Header: 'Tên phim',
@@ -36,6 +41,8 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
       },
       {
         Header: 'Doanh thu bán hàng',
+        Footer: 'Doanh thu bán hàng',
+
         columns: [
           {
             Header: 'Số lượng',
@@ -51,7 +58,19 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
           },
           {
             Header: 'Tổng',
-            accessor: 'total',
+            accessor: 'totalString',
+            Footer: (info: any) => {
+              // Only calculate total visits if rows change
+
+              const total = React.useMemo(
+                () =>
+                  info.rows.reduce((sum: any, row: any) => parseInt(row.original.total) + sum, 0),
+                // eslint-disable-next-line
+                [],
+              );
+
+              return <>Tổng: {formatNumber(total)}</>;
+            },
           },
         ],
       },
@@ -59,11 +78,8 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
     [],
   );
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
-    { columns, data },
-    useGroupBy,
-    useExpanded,
-  );
+  const { getTableProps, getTableBodyProps, headerGroups, footerGroups, rows, prepareRow } =
+    useTable({ columns, data }, useGroupBy, useExpanded);
 
   return (
     <Table {...getTableProps()}>
@@ -148,6 +164,17 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
           );
         })}
       </Tbody>
+      <tfoot>
+        {footerGroups.map((group: any) => (
+          <tr {...group.getFooterGroupProps()} key={group.id}>
+            {group.headers.map((column: any) => (
+              <td {...column.getFooterProps()} key={column.id}>
+                {column.render('Footer')}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tfoot>
     </Table>
   );
 };
