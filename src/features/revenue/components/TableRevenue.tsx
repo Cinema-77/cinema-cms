@@ -15,12 +15,14 @@ import {
   MenuItemOption,
   MenuOptionGroup,
   Stack,
+  Select,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { FiArrowRight, FiArrowDown } from 'react-icons/fi';
 import { GoTriangleDown, GoTriangleUp } from 'react-icons/go';
 import {
   useTable,
+  usePagination,
   useGroupBy,
   useExpanded,
   useSortBy,
@@ -91,16 +93,22 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
         Footer: 'Thông tin',
         columns: [
           {
+            Header: 'Mã HD',
+            accessor: 'billId',
+            aggregate: 'count',
+            Aggregated: ({ value }: any) => `${value} hđ`,
+          },
+          {
             Header: 'Tên phim',
             accessor: 'movieName',
             aggregate: 'count',
-            Aggregated: ({ value }: any) => `${value} Names`,
+            Aggregated: ({ value }: any) => `${value} phim`,
           },
           {
             Header: 'Phòng',
             accessor: 'roomName',
             aggregate: 'uniqueCount',
-            Aggregated: ({ value }) => `${value} Unique Room`,
+            Aggregated: ({ value }) => `${value} phòng`,
           },
           {
             Header: 'Màn hình',
@@ -155,19 +163,34 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
     getTableBodyProps,
     headerGroups,
     footerGroups,
-    rows,
     prepareRow,
-    state,
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize, globalFilter },
     preGlobalFilteredRows,
     setGlobalFilter,
-  } = useTable({ columns, data }, useGroupBy, useGlobalFilter, useSortBy, useExpanded) as any;
+  } = useTable(
+    { columns, data },
+    useGroupBy,
+    useGlobalFilter,
+    useSortBy,
+    useExpanded,
+    usePagination,
+  ) as any;
 
   return (
     <>
       <Stack spacing={2} direction="row" justifyContent="flex-end">
         <GlobalFilter
           preGlobalFilteredRows={preGlobalFilteredRows}
-          globalFilter={state.globalFilter}
+          globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
         />
         <MenuFilter headerGroups={headerGroups} />
@@ -199,18 +222,12 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
           ))}
         </Thead>
         <Tbody {...getTableBodyProps()}>
-          {rows.map((row: any) => {
+          {page.map((row: any) => {
             prepareRow(row);
             return (
               <Tr {...row.getRowProps()} key={row.id}>
                 {row.cells.map((cell: any, index: number) => (
-                  <Td
-                    // For educational purposes, let's color the
-                    // cell depending on what type it is given
-                    // from the useGroupBy hook
-                    key={index}
-                    {...cell.getCellProps()}
-                  >
+                  <Td key={index} {...cell.getCellProps()}>
                     {cell.isGrouped ? (
                       // If it's a grouped cell, add an expander and row count
                       <>
@@ -220,7 +237,7 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
                           ) : (
                             <Icon as={FiArrowRight} aria-label="unexpanded" />
                           )}
-                        </chakra.span>{' '}
+                        </chakra.span>
                         {cell.render('Cell')} ({row.subRows.length})
                       </>
                     ) : cell.isAggregated ? (
@@ -249,6 +266,52 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
           ))}
         </tfoot>
       </Table>
+
+      <Stack spacing={3} direction="row">
+        <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+          {'<<'}
+        </Button>
+        <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+          {'<'}
+        </Button>
+        <Button onClick={() => nextPage()} disabled={!canNextPage}>
+          {'>'}
+        </Button>
+        <Button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+          {'>>'}
+        </Button>
+        <chakra.span display="flex" alignItems="center">
+          Page
+          <strong style={{ marginLeft: '4px' }}>
+            {pageIndex + 1} of {pageOptions.length}
+          </strong>
+        </chakra.span>
+        <chakra.span>
+          | Go to page:{' '}
+          <Input
+            type="number"
+            defaultValue={pageIndex + 1}
+            onChange={(e) => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0;
+              gotoPage(page);
+            }}
+            width="100px"
+          />
+        </chakra.span>{' '}
+        <Select
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value));
+          }}
+          maxWidth="240px"
+        >
+          {[10, 20, 30, 40, 50].map((pageSize) => (
+            <option key={pageSize} value={pageSize}>
+              Xem {pageSize}
+            </option>
+          ))}
+        </Select>
+      </Stack>
     </>
   );
 };
