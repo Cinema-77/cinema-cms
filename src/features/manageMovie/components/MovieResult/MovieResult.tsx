@@ -3,10 +3,13 @@ import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase
 import qs from 'query-string';
 import React, { ChangeEventHandler, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 
-import { categoryType, MovieItemType, MovieType, filterProps } from '../../type';
+import { categoryType, MovieType, filterProps } from '../../type';
+import { MovieSkeletion } from '../MovieItem/MovieSkeletion';
 import { MoviePagination } from '../MoviePagination/MoviePagination';
+import { getMovieList } from '../MovieSlice';
 
 import * as S from './MovieResult.style';
 
@@ -18,9 +21,7 @@ import { CheckboxField } from '@/components/Form2/CheckboxField/CheckboxField';
 import {
   MovieItem,
   getCategoryAll,
-  deleteMovie,
   getDirectorAll,
-  getMovieAll,
   getScreenAll,
   createMovie,
 } from '@/features/manageMovie';
@@ -39,14 +40,15 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
   const [categoryValue, setCategoryValue] = useState<string[]>([]);
   const [urlIMG, setUrlIMG] = useState<string>('');
   const [urlVideo, setUrlVideo] = useState<string>('');
-  const [movieList, setMovieList] = useState<MovieItemType[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const update = useSelector((state: any) => state.movie.isLoading);
+  const dispatch = useDispatch();
   const [movie, setMovie] = useState(false);
   const toast = useToast();
   const [filters, setFilters] = useState<filterProps>({
     page: 1,
     limit: 3,
   });
-  const [totalPage, setTotalPage] = useState<number>(0 || 1);
   const location = useLocation();
   const query = useMemo(() => qs.parse(location.search), [location.search]);
   const { control, getValues, reset, handleSubmit, register } = useForm({
@@ -66,7 +68,6 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
     },
   });
   useEffect(() => {
-    setMovieList([]);
     const _filter = {
       page: Number(query.page) || 1,
       limit: Number(query.limit) || 3,
@@ -76,13 +77,19 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
       page: _filter.page,
       limit: _filter.limit,
     };
-    getMovieAll(qs.stringify(params))
-      .then((res) => {
-        setMovieList(res.values.movies);
-        setTotalPage(Math.ceil(res.values.pageNumber));
-      })
-      .catch((err) => console.log(err));
-  }, [movie, query.page, query.limit]);
+    const _getMovieList = async () => {
+      const data = await dispatch(getMovieList(qs.stringify(params)));
+      console.log(data);
+    };
+    _getMovieList();
+  }, [movie, query.page, query.limit, dispatch]);
+
+  useEffect(() => {
+    if (update) {
+      setIsLoading(false);
+    }
+  }, [update]);
+
   const handleValue = async (data: MovieType) => {
     const body = {
       name: data.name,
@@ -235,16 +242,6 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
       setScreenValue([...screenValue, e.target.value]);
     } else {
       setScreenValue(screenValue.filter((value: any) => e.target.value !== value));
-    }
-  };
-
-  const handleDeleteMovie = async (id: string) => {
-    const res = await deleteMovie(id);
-    if (res.success === true) {
-      setMovieList(movieList.filter((movie) => movie._id !== id));
-      toast({ title: res.message, position: 'top-right', status: 'success', duration: 3000 });
-    } else {
-      toast({ title: res.message, position: 'top-right', status: 'error', duration: 3000 });
     }
   };
 
@@ -465,15 +462,16 @@ export const MovieResult: React.FC<MovieResultProps> = () => {
       <S.Movie>
         <S.MovieListTitle>
           <S.MovieTitle>List Movie</S.MovieTitle>
-          <MoviePagination filters={filters} totalPage={totalPage} />
+          <MoviePagination filters={filters} setIsLoading={setIsLoading} />
         </S.MovieListTitle>
         <S.MovieList>
-          <MovieItem
-            movieList={movieList}
-            handleDeleteMovie={handleDeleteMovie}
-            setMovie={setMovie}
-            movie={movie}
-          />
+          {isLoading ? (
+            Array(3)
+              .fill(0)
+              .map((item, index) => <MovieSkeletion key={index} />)
+          ) : (
+            <MovieItem setMovie={setMovie} movie={movie} />
+          )}
         </S.MovieList>
       </S.Movie>
     </>

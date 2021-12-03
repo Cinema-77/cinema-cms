@@ -72,7 +72,6 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
   const history = useHistory();
   const toast = useToast();
   const handleValue = async (data: MovieType) => {
-    console.log(data);
     const body = {
       name: name,
       moveDuration: moveDuration,
@@ -173,7 +172,7 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
         }
       } else {
         toast({ title: res.message, position: 'top-right', status: 'success', duration: 3000 });
-        history.push('/app/managemovie');
+        history.push(`/app/managemovie?${qs.stringify({ page: query.page, limit: query.limit })}`);
         setMovieValue('');
         setMovie(!movie);
         console.log(res);
