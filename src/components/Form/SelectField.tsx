@@ -4,13 +4,19 @@ import { UseFormRegisterReturn } from 'react-hook-form';
 import { MdArrowDropDown } from 'react-icons/md';
 
 import { FieldWrapper, FieldWrapperPassThroughProps } from './FieldWrapper';
+
 type Option = {
   label: React.ReactNode;
   value: string | number | string[];
 };
 
+type Group = {
+  title: string;
+  items: Option[];
+};
+
 type SelectFieldProps = FieldWrapperPassThroughProps & {
-  options?: Option[];
+  options?: Group[];
   defaultValue?: string;
   placeholder?: string;
   registration: Partial<UseFormRegisterReturn>;
@@ -44,10 +50,14 @@ export const SelectField = (props: SelectFieldProps) => {
       >
         {defaultValue && <option value={defaultValue}>{defaultValue}</option>}
         {options &&
-          options.map(({ label, value }) => (
-            <option key={label?.toString()} value={value}>
-              {label}
-            </option>
+          options.map((option) => (
+            <optgroup label={option.title} key={option.title}>
+              {option.items.map((item, index) => (
+                <option value={item.value} key={index}>
+                  {item.label}
+                </option>
+              ))}
+            </optgroup>
           ))}
       </Select>
     </FieldWrapper>

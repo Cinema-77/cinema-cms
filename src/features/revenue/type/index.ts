@@ -44,8 +44,16 @@ export interface IRevenueWithTime {
   statistical: IStatistical;
 }
 
-export interface IRevenueData extends IStatistical {
-  date: string;
+export interface IRevenueData {
+  billId: string;
+  createdAt: string;
+  movieName: string;
+  price: number;
+  quantity: number;
+  roomName: string;
+  screenName: string;
+  total: number;
+  type: string;
 }
 
 export interface RevenueResponse extends BaseEntity {

@@ -79,7 +79,7 @@ const LinkItems = () => {
     checkAccess({ allowedRoles: [ROLES.MANAGER] }) && {
       name: 'Lịch chiếu',
       icon: AiOutlineSchedule,
-      to: '/app/showtimes/create',
+      to: '/app/showtimes',
     },
     checkAccess({ allowedRoles: [ROLES.MANAGER] }) && {
       name: 'Nhân viên',

@@ -36,7 +36,7 @@ import { ROUTES } from '@/constants';
 import { colorBadge, Room } from '@/features/room';
 import {
   useCreateShowTime,
-  useMovies,
+  useMoviesCMS,
   ShowTimesList,
   TimeSlotCreate,
   CheckBoxTimeGroup,
@@ -58,7 +58,7 @@ export type ShowTimesValues = {
 };
 
 export const ShowTimesCreate = () => {
-  const moviesQuery = useMovies();
+  const moviesQuery = useMoviesCMS();
   const { listRoomByMovie, fetchRooms, checkedTimes, reset, loading } = useRoomsByMovieStore();
 
   const { user } = useAuth();
@@ -102,10 +102,13 @@ export const ShowTimesCreate = () => {
           >
             <Tabs variant="enclosed" width="full">
               <TabList>
-                <Tab>Tạo lịch chiếu </Tab>
                 <Tab>Doanh sách lịch chiếu</Tab>
+                <Tab>Tạo lịch chiếu </Tab>
               </TabList>
               <TabPanels>
+                <TabPanel>
+                  <ShowTimesList />
+                </TabPanel>
                 <TabPanel>
                   {moviesQuery.isLoading ? (
                     <Flex justifyContent="center">
@@ -168,12 +171,13 @@ export const ShowTimesCreate = () => {
                                       placeholder="Chọn 1 bộ phim"
                                       registration={register('movieId')}
                                       error={formState.errors['movieId']}
-                                      options={moviesQuery.data?.values?.movies.map(
-                                        ({ name, _id }) => ({
-                                          label: name,
-                                          value: _id,
-                                        }),
-                                      )}
+                                      options={moviesQuery.data?.values.map((movie) => ({
+                                        title: movie.movieGroupName,
+                                        items: movie.movies.map((m) => ({
+                                          label: m.name,
+                                          value: m._id,
+                                        })),
+                                      }))}
                                       onChanging={onChangeMovie}
                                     />
                                   )}
@@ -227,9 +231,6 @@ export const ShowTimesCreate = () => {
                     </>
                   )}
                 </TabPanel>
-                <TabPanel>
-                  <ShowTimesList />
-                </TabPanel>
               </TabPanels>
             </Tabs>
           </Stack>
@@ -278,7 +279,7 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = (props) => {
         flexDirection="column"
         height="40"
       >
-        <Heading as="h4" size="xl">
+        <Heading as="h4" size="xl" fontSize="25px">
           Không có phòng được tìm thấy
         </Heading>
       </Box>

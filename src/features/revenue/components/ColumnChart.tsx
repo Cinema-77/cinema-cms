@@ -1,6 +1,8 @@
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
+import { getTotalMovie } from '@/features/revenue';
+
 type GenerateOptionsColumnType = {
   data: any;
   xCategories: string[];
@@ -17,25 +19,7 @@ const generateOptions = (props: GenerateOptionsColumnType) => {
       seriesData = [
         {
           name: 'Doanh thu',
-          data: [data.ticket.total, data.food.total, data.totalPrice],
-        },
-      ];
-      break;
-    case 'Movie':
-    case 'Room':
-    case 'Time':
-      seriesData = [
-        {
-          name: 'Doanh thu vé',
-          data: data.map((value: any) => value.statistical.ticket.total),
-        },
-        {
-          name: 'Doanh thu thức ăn',
-          data: data.map((value: any) => value.statistical.food.total),
-        },
-        {
-          name: 'Doanh thu cả hai',
-          data: data.map((value: any) => value.totalPrice),
+          data: xCategories.map((x) => getTotalMovie(data, x)),
         },
       ];
       break;

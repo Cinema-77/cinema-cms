@@ -78,3 +78,13 @@ export interface filterProps {
   page: number;
   limit: number;
 }
+export interface IMovieCMS {
+  movieGroupName: string;
+  movies: MovieItemType[];
+}
+
+export interface MovieCMSResponse {
+  success: boolean;
+  message: string;
+  values: IMovieCMS[];
+}

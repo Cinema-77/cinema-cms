@@ -94,13 +94,17 @@ export const RoomCreateModal = () => {
                     label="Màn hình"
                     registration={register('screenId')}
                     error={formState.errors['screenId']}
-                    options={
-                      screensQuery.data &&
-                      screensQuery.data?.values.screens.map(({ _id, name }) => ({
-                        label: name,
-                        value: _id,
-                      }))
-                    }
+                    options={[
+                      {
+                        title: '',
+                        items: screensQuery.data
+                          ? screensQuery.data?.values.screens.map(({ _id, name }) => ({
+                              label: name,
+                              value: _id,
+                            }))
+                          : [],
+                      },
+                    ]}
                   />
                   <InputNumberField
                     label="Số hàng ghế"

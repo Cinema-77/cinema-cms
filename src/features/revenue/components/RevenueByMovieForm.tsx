@@ -20,11 +20,11 @@ export const RevenueByMovieForm: React.FC<RevenueByMovieFormProps> = ({ cinemaId
   const useRevenueMovieMutation = useGetRevenueByMovie();
 
   return (
-    <Stack spacing={5} width="full">
-      <Stack direction="column" justifyContent="center" mx={4}>
+    <Stack spacing={3} width="full">
+      <Stack direction="column" justifyContent="center">
         <Heading fontSize="20px">Thống kê doanh thu </Heading>
       </Stack>
-      <Box>
+      <Box paddingBottom={5} borderBottom="1px solid" borderColor="gray.300">
         <Form<RevenueValues>
           onSubmit={async (data) => {
             const values = { ...data, cinemaId };
