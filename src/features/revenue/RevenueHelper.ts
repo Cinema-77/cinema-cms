@@ -15,5 +15,6 @@ export const mapDataRevenue = (data: IRevenueData[]) => {
     ...revenue,
     price: formatNumber(revenue.price),
     totalString: formatNumber(revenue.total),
+    promotion: revenue.promotion * -1,
   }));
 };

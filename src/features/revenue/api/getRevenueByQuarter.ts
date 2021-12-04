@@ -1,45 +1,42 @@
 import { useQuery } from 'react-query';
 
-import { RevenueQuarterResponse } from '@/features/revenue';
+import { RevenueResponse } from '@/features/revenue';
 import { axios } from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 
 interface RevenuDTO {
-  cinemaId: string;
+  month: string;
+  year: string;
 }
 
-export const getRevenueByQuarter = ({ cinemaId }: RevenuDTO): Promise<RevenueQuarterResponse> => {
-  return axios.get(`/cinema/get/thong-ke-theo-quy`, {
+export const getRevenueByMonth = ({ month, year }: RevenuDTO): Promise<RevenueResponse> => {
+  return axios.get(`/cinema/get/thong-ke-doanh-thu-theo-thang`, {
     params: {
-      cinemaId: cinemaId,
+      month,
+      year,
     },
   });
 };
 
-export const getAllRevenueByQuarter = (): Promise<RevenueQuarterResponse> => {
+export const getAllRevenueByQuarter = (): Promise<RevenueResponse> => {
   return axios.get(`/cinema/get/thong-ke-all-rap-theo-quy`);
 };
 
 type UseRevenueOptions = {
-  config?: QueryConfig<typeof getRevenueByQuarter>;
+  config?: QueryConfig<typeof getRevenueByMonth>;
   cinemaId: string;
+  month: string;
+  year: string;
 };
 
-export const useGetRevenueByQuarter = ({ config, cinemaId }: UseRevenueOptions) => {
+export const useRevenueByMonthQuery = ({ config, cinemaId, month, year }: UseRevenueOptions) => {
   return useQuery({
     ...config,
-    queryKey: ['revenueByCinema'],
+    queryKey: ['revenueByMonth', cinemaId, month, year],
     queryFn: () =>
-      getRevenueByQuarter({
-        cinemaId,
+      getRevenueByMonth({
+        month,
+        year,
       }),
-  });
-};
-
-export const useGetAllRevenueByQuarter = ({ config }: UseRevenueOptions = { cinemaId: '' }) => {
-  return useQuery({
-    ...config,
-    queryKey: ['revenueByAllCinema'],
-    queryFn: () => getAllRevenueByQuarter(),
   });
 };

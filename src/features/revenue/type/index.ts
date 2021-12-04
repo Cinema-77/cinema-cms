@@ -50,10 +50,12 @@ export interface IRevenueData {
   movieName: string;
   price: number;
   quantity: number;
+  promotion: number;
   roomName: string;
   screenName: string;
   total: number;
   type: string;
+  date: string;
 }
 
 export interface RevenueResponse extends BaseEntity {
@@ -73,17 +75,6 @@ export interface RevenueResponseRoom extends BaseEntity {
 
 export interface RevenueResponseTime extends BaseEntity {
   data: IRevenueWithTime[];
-}
-
-export interface RevenueQuarterResponse extends BaseEntity {
-  data: IRevenueQuarter[];
-}
-export interface IRevenueQuarter {
-  quarter: number;
-  months: number[];
-  totalFood: number;
-  totalTicket: number;
-  totalPrice: number;
 }
 
 export interface IRevenueByMovie {
