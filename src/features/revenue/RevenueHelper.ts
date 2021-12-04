@@ -10,6 +10,24 @@ export const getTotalMovie = (data: IRevenueData[], groupName: string) => {
   return R.sum(R.map(getTotalEachMovie, R.filter(isGroupName, data)));
 };
 
+const getTotalMovieInRangeDate = (movieName: string, data: IRevenueData[]) => {
+  const lstDate = R.uniq(data.map((d) => d.date));
+  return lstDate.map((date) => {
+    const isMovieAndDate = (n: IRevenueData) => n.date === date && n.movieName === movieName;
+    const getTotalEachMovie = (n: IRevenueData) => n.total;
+
+    return R.sum(R.map(getTotalEachMovie, R.filter(isMovieAndDate, data)));
+  });
+};
+
+export const getSeriesByMonth = (data: IRevenueData[]) => {
+  const lstMovie = R.uniq(data.map((d) => d.movieName));
+  return lstMovie.map((movieName) => ({
+    name: movieName,
+    data: getTotalMovieInRangeDate(movieName, data),
+  }));
+};
+
 export const mapDataRevenue = (data: IRevenueData[]) => {
   return data.map((revenue) => ({
     ...revenue,

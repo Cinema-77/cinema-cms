@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { Form, SingleSelect } from '@/components';
 import { TableRevenue, useGetRevenueByDate, ColumnChart } from '@/features/revenue';
-import { formatDate, formatNumber } from '@/utils/format';
+import { formatDate, formatNumber, convertToMoney } from '@/utils/format';
 
 type RevenueValues = {
   cinemaId: string;
@@ -80,12 +80,14 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
 
               const total = React.useMemo(
                 () =>
-                  info.rows.reduce((sum: any, row: any) => parseInt(row.original.total) + sum, 0),
-                // eslint-disable-next-line
-                [],
+                  info.rows.reduce(
+                    (sum: any, row: any) => convertToMoney(row.values.totalString) + sum,
+                    0,
+                  ),
+                [info.rows],
               );
 
-              return <>Tổng: {formatNumber(total)}</>;
+              return <>Tổng {formatNumber(total)}</>;
             },
           },
         ],
@@ -190,7 +192,7 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
               type: 'Full',
             }}
           />
-          <TableRevenue rowsTable={values.data} columns={columns} />
+          <TableRevenue rowsTable={values.data} columnsTable={columns} />
         </>
       ) : (
         noData

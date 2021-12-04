@@ -1,8 +1,9 @@
 import { Spinner, Flex, Heading, Box, Stack, Select } from '@chakra-ui/react';
-import React from 'react';
+import * as R from 'ramda';
+import * as React from 'react';
 
-import { ColumnChart, TableRevenue, useRevenueByMonthQuery } from '@/features/revenue';
-import { formatNumber } from '@/utils/format';
+import { LineChart, TableRevenue, useRevenueByMonthQuery } from '@/features/revenue';
+import { formatNumber, convertToMoney } from '@/utils/format';
 
 interface RevenueByQuarterFormProps {
   cinemaId: string;
@@ -28,12 +29,6 @@ export const RevenueByQuarterForm: React.FC<RevenueByQuarterFormProps> = ({ cine
             aggregate: 'count',
             Aggregated: ({ value }: any) => `${value} phim`,
           },
-          // {
-          //   Header: 'Phòng',
-          //   accessor: 'roomName',
-          //   aggregate: 'uniqueCount',
-          //   Aggregated: ({ value }) => `${value} phòng`,
-          // },
           {
             Header: 'Màn hình',
             accessor: 'screenName',
@@ -73,12 +68,14 @@ export const RevenueByQuarterForm: React.FC<RevenueByQuarterFormProps> = ({ cine
 
               const total = React.useMemo(
                 () =>
-                  info.rows.reduce((sum: any, row: any) => parseInt(row.original.total) + sum, 0),
-                // eslint-disable-next-line
-                [],
+                  info.rows.reduce(
+                    (sum: any, row: any) => convertToMoney(row.values.totalString) + sum,
+                    0,
+                  ),
+                [info.rows],
               );
 
-              return <>Tổng: {formatNumber(total)}</>;
+              return <>Tổng {formatNumber(total)}</>;
             },
           },
         ],
@@ -166,15 +163,14 @@ export const RevenueByQuarterForm: React.FC<RevenueByQuarterFormProps> = ({ cine
       </Stack>
       {hasRevenue ? (
         <>
-          <ColumnChart
+          <LineChart
             data={{
-              xCategories: [''],
+              title: `Doanh thu tháng ${dataDTO.month}`,
               data: revenueByMonthQuery.data.values.data,
-              text: `Doanh thu tháng ${dataDTO.month}`,
-              type: 'Full',
+              xCategories: R.uniq(revenueByMonthQuery.data.values.data.map((m: any) => m.date)),
             }}
           />
-          <TableRevenue rowsTable={revenueByMonthQuery.data.values.data} columns={columns} />
+          <TableRevenue rowsTable={revenueByMonthQuery.data.values.data} columnsTable={columns} />
         </>
       ) : (
         noData

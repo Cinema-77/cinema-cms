@@ -74,6 +74,13 @@ export const formatNumber = (num: number) => {
   return new Intl.NumberFormat('vn', { maximumFractionDigits: 3 }).format(num);
 };
 
+export const convertToMoney = (num: string) => {
+  if (num) {
+    return parseFloat(num.replace(/,/g, ''));
+  }
+  return 0;
+};
+
 export function removeAccents(str: string) {
   return str
     .normalize('NFD')

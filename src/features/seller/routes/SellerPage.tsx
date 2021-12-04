@@ -14,15 +14,19 @@ import { SiteHeader } from '@/components';
 import { ROUTES } from '@/constants';
 import { getRangeDate } from '@/features/seller';
 import { ShowTimesItem, useShowTimesByDate } from '@/features/showtimes';
+import { useAuth } from '@/lib/auth';
 import { Authorization, ROLES } from '@/lib/authorization';
 import { getDay } from '@/utils/format';
 
 export const SellerPage = () => {
   const { rangeDate, startDay } = getRangeDate();
+  const { user } = useAuth();
 
   const [activeDate, setActiveDate] = React.useState<string>(format(startDay, 'MM/dd/yyyy'));
 
-  const showTimesByDateQuery = useShowTimesByDate({ date: activeDate });
+  const showTimesByDateQuery = useShowTimesByDate({
+    data: { date: activeDate, cinemaId: user?.cinema._id || '' },
+  });
 
   return (
     <Box>

@@ -108,10 +108,10 @@ const ButtonExportCSV = ({ csvData, fileName }: { csvData: any; fileName: string
 
 interface TableRevenueProps {
   rowsTable: any;
-  columns: any;
+  columnsTable: any;
 }
 
-export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable, columns }) => {
+export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable, columnsTable }) => {
   const data = React.useMemo(() => mapDataRevenue(rowsTable), [rowsTable]);
 
   const {
@@ -133,7 +133,7 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable, columns }
     preGlobalFilteredRows,
     setGlobalFilter,
   } = useTable(
-    { columns, data },
+    { columns: columnsTable, data },
     useGroupBy,
     useGlobalFilter,
     useSortBy,
@@ -153,7 +153,7 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable, columns }
         <ButtonExportCSV csvData={rowsTable} fileName="doanhthu" />
       </Stack>
 
-      <Table {...getTableProps()} marginY={5}>
+      <Table {...getTableProps()} marginY="5">
         <Thead>
           {headerGroups.map((headerGroup: any) => (
             <Tr {...headerGroup.getHeaderGroupProps()} key={uuidv4()}>
@@ -238,13 +238,13 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable, columns }
           {'>>'}
         </Button>
         <chakra.span display="flex" alignItems="center">
-          Page
+          Trang
           <Text as="strong" marginLeft="4px">
-            {pageIndex + 1} of {pageOptions.length}
+            {pageIndex + 1} trên {pageOptions.length}
           </Text>
         </chakra.span>
         <chakra.span>
-          | Go to page:{' '}
+          | Đi đến trang:{' '}
           <Input
             type="number"
             defaultValue={pageIndex + 1}

@@ -1,57 +1,67 @@
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-// import { Button, ButtonGroup } from '@chakra-ui/react';
+import { getSeriesByMonth } from '../RevenueHelper';
 
-const generateOptions = (data: any[]) => {
-  const categories = data.map((item) => item.date);
-
+const generateOptions = (props: any) => {
+  const { xCategories, data, title } = props;
+  console.log(getSeriesByMonth(data));
   return {
-    chart: {
-      height: 500,
-    },
     title: {
-      text: 'Doanh thu rạp phim',
+      text: title,
     },
-    xAxis: {
-      categories: categories,
-      crosshair: true,
+
+    subtitle: {
+      text: 'Source: thesolarfoundation.com',
     },
-    colors: ['#F3585B'],
+
     yAxis: {
-      min: 0,
       title: {
-        text: null,
-      },
-      labels: {
-        align: 'right',
+        text: 'Number of Employees',
       },
     },
-    tooltip: {
-      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-      pointFormat:
-        '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-        '<td style="padding:0"><b>{point.y} VNĐ</b></td></tr>',
-      footerFormat: '</table>',
-      shared: true,
-      useHTML: true,
+
+    xAxis: {
+      categories: xCategories,
     },
-    plotOptions: {
-      column: {
-        pointPadding: 0.2,
-        borderWidth: 0,
-      },
+
+    legend: {
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
     },
-    series: [
-      {
-        name: 'Tổng doanh thu',
-        data: data.map((item) => item.totalPrice),
-      },
-    ],
+
+    // plotOptions: {
+    //   series: {
+    //     label: {
+    //       connectorAllowed: false,
+    //     },
+    //     pointStart: 2010,
+    //   },
+    // },
+
+    series: getSeriesByMonth(data),
+
+    responsive: {
+      rules: [
+        {
+          condition: {
+            maxWidth: 500,
+          },
+          chartOptions: {
+            legend: {
+              layout: 'horizontal',
+              align: 'center',
+              verticalAlign: 'bottom',
+            },
+          },
+        },
+      ],
+    },
   };
 };
 
-export const LineChart = ({ data }: { data: any[] }) => {
+export const LineChart = ({ data }: { data: any }) => {
   return (
     <>
       <HighchartsReact highcharts={Highcharts} options={generateOptions(data)} />

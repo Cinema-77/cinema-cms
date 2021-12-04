@@ -8,6 +8,7 @@ import { QueryConfig } from '@/lib/react-query';
 interface ShowTimesDTO {
   dateStart: string;
   dateEnd: string;
+  cinemaId: string;
 }
 
 export const getShowTimes = (data: ShowTimesDTO): Promise<ShowTimesListByDayRangeResponse> => {
