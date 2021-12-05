@@ -14,13 +14,8 @@ export const rules = {
       value: true,
       message: 'Thời lượng là bắt buộc nhập',
     },
-    maxLength: {
-      value: 160,
-      message: 'Thời lượng có độ dài tối đa là 160 ký tự',
-    },
     validate: {
-      thoiluong: (value: string) =>
-        /^[0-9]*$/.test(value) || 'Thời lượng là số, không phải là ký tự.',
+      number: (value: any) => /^[0-9]*$/.test(value) || 'Vui lòng nhập đúng định dạng là số',
     },
   },
   age: {
@@ -29,7 +24,7 @@ export const rules = {
       message: 'Tuổi là bắt buộc nhập',
     },
     validate: {
-      thoiluong: (value: string) => /^[0-9]*$/.test(value) || 'Tuổi là số, không phải là ký tự.',
+      number: (value: any) => /^[0-9]*$/.test(value) || 'Vui lòng nhập đúng định dạng là số',
     },
   },
   daodien: {
@@ -45,11 +40,7 @@ export const rules = {
   theloai: {
     required: {
       value: true,
-      message: 'Thể loại là bắt buộc nhập',
-    },
-    maxLength: {
-      value: 160,
-      message: 'Thể loại có độ dài tối đa là 160 ký tự',
+      message: 'Thể loại là bắt buộc check',
     },
   },
   loaiman: {
@@ -79,19 +70,11 @@ export const rules = {
       value: true,
       message: 'Image là bắt buộc nhập',
     },
-    maxLength: {
-      value: 160,
-      message: 'Image có độ dài tối đa 160 ký tự',
-    },
   },
   trailer: {
     required: {
       value: true,
       message: 'Trailer là bắt buộc nhập',
-    },
-    maxLength: {
-      value: 160,
-      message: 'Trailer có độ dài tối đa 160 ký tự',
     },
   },
 };

@@ -28,7 +28,7 @@ export const MovieItem: React.FC<MovieItemProps> = ({ setMovie, movie }) => {
   const [openTrailer, setOpenTrailer] = useState(false);
   const [isMovie, setIsMovie] = useState(false);
   const [idMovie, setIdMovie] = useState<string>('');
-  const [movieValue, setMovieValue] = useState<any>('');
+  const [movieValue, setMovieValue] = useState<MovieItemType | undefined>();
   const [listMovie, setMovieList] = useState<MovieItemType[]>([]);
   const update = useSelector((state: any) => state.movie.list.movies);
   const history = useHistory();
@@ -49,7 +49,11 @@ export const MovieItem: React.FC<MovieItemProps> = ({ setMovie, movie }) => {
 
   const handleDeleteMovie = async (id: string) => {
     const data: any = await dispatch(DeleteMovie(id));
-    const res: any = unwrapResult(data);
+    type Respon = {
+      success: boolean;
+      message: string;
+    };
+    const res: Respon = unwrapResult(data);
     if (res.success === true) {
       toast({
         title: res.message,
@@ -70,8 +74,8 @@ export const MovieItem: React.FC<MovieItemProps> = ({ setMovie, movie }) => {
     };
     history.push(`/app/managemovie?${qs.stringify(params)}`);
     await getMovie(id)
-      .then((res: any) => setMovieValue(res.values.movie))
-      .catch((err) => console.log('err', err));
+      .then((res) => setMovieValue(res.values.movie))
+      .catch(console.log);
   };
   return (
     <>
@@ -133,12 +137,12 @@ export const MovieItem: React.FC<MovieItemProps> = ({ setMovie, movie }) => {
                       <S.MovieSpan>Loại màn:</S.MovieSpan>
                       <S.MovieSpan>
                         {movie.screens.length > 1 &&
-                          movie.screens.map((screen) => (
-                            <span key={screen._id}>{screen.name}, </span>
+                          movie.screens.map((screen, index) => (
+                            <span key={index}>{screen.name}, </span>
                           ))}
                         {movie.screens.length === 1 &&
-                          movie.screens.map((screen) => (
-                            <span key={screen._id}>{screen.name}</span>
+                          movie.screens.map((screen, index) => (
+                            <span key={index}>{screen.name}</span>
                           ))}
                       </S.MovieSpan>
                     </>

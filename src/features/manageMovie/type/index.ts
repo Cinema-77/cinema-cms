@@ -27,12 +27,6 @@ export interface directorType {
   male: boolean;
 }
 
-export interface categoryType {
-  _id: string;
-  name: string;
-  image: string;
-}
-
 export interface screenType {
   _id: string;
   name: string;
@@ -50,7 +44,7 @@ export interface MovieItemType {
   director: directorType;
   cast: string;
   age: number;
-  categories: categoryType[];
+  categories: CategoryItem[];
   screens: screenType[];
   dateStart: string;
   dateEnd: string;
@@ -87,4 +81,42 @@ export interface MovieCMSResponse {
   success: boolean;
   message: string;
   values: IMovieCMS[];
+}
+
+export interface CategoryItem {
+  _id: string;
+  name: string;
+  image: string;
+}
+
+export interface CategoryRespon {
+  success: boolean;
+  message: string;
+  values: {
+    categories: CategoryItem[];
+  };
+}
+
+export interface DirectorRespon {
+  success: boolean;
+  message: string;
+  values: {
+    directors: directorType[];
+  };
+}
+
+export interface ScreenRespon {
+  success: boolean;
+  message: string;
+  values: {
+    screens: screenType[];
+  };
+}
+
+export interface getMovieRespon {
+  success: boolean;
+  message: string;
+  values: {
+    movie: MovieItemType;
+  };
 }

@@ -44,6 +44,4 @@ const movie = createSlice({
   },
 });
 
-const movieReducer = movie.reducer;
-
-export default movieReducer;
+export const movieReducer = movie.reducer;

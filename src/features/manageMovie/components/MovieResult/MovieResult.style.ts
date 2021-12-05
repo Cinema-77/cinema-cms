@@ -132,6 +132,7 @@ export const MovieForm = styled.div`
   }
 `;
 export const MovieFormController = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

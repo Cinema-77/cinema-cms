@@ -23,3 +23,6 @@ export const Checkbox = styled.div`
     padding: 8px;
   }
 `;
+export const Label = styled.h2`
+  font-size: 13px;
+`;

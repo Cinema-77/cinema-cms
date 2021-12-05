@@ -1,8 +1,17 @@
-import { MovieType, MovieRespon, MoviesResponse, MovieCMSResponse } from '../type';
+import {
+  MovieType,
+  MovieRespon,
+  MoviesResponse,
+  MovieCMSResponse,
+  CategoryRespon,
+  DirectorRespon,
+  ScreenRespon,
+  getMovieRespon,
+} from '../type';
 
 import { axios } from '@/lib/axios';
 
-export const getCategoryAll = () => {
+export const getCategoryAll = (): Promise<CategoryRespon> => {
   return axios.get('/category/all');
 };
 
@@ -14,7 +23,7 @@ export const deleteMovie = (id: string): Promise<MovieRespon> => {
   return axios.delete(`movie/delete/${id}`);
 };
 
-export const getDirectorAll = () => {
+export const getDirectorAll = (): Promise<DirectorRespon> => {
   return axios.get('/director/all');
 };
 
@@ -22,11 +31,11 @@ export const getMovieAll = (params?: string): Promise<MoviesResponse> => {
   return axios.get(`/movie/all?${params}`);
 };
 
-export const getScreenAll = () => {
+export const getScreenAll = (): Promise<ScreenRespon> => {
   return axios.get('/screen/all');
 };
 
-export const getMovie = (id: string) => {
+export const getMovie = (id: string): Promise<getMovieRespon> => {
   return axios.get(`/movie/${id}`);
 };
 

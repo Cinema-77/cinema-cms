@@ -15,7 +15,15 @@ interface MoviePaginationProps {
 export const MoviePagination: React.FC<MoviePaginationProps> = ({ filters, setIsLoading }) => {
   const history = useHistory();
   const [totalPage, setTotalPage] = useState(1);
-  const update = useSelector((state: any) => state.movie.list.pageNumber);
+  const update = useSelector(
+    (state: {
+      movie: {
+        list: {
+          pageNumber: number;
+        };
+      };
+    }) => state.movie.list.pageNumber,
+  );
 
   useEffect(() => {
     if (update) {

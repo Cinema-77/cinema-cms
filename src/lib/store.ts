@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import { movieReducer } from '@/features/manageMovie';
 // eslint-disable-next-line no-restricted-imports
-import movieReducer from '@/features/manageMovie/components/MovieSlice';
 
 const rootReducer = {
   movie: movieReducer,

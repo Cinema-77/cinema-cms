@@ -1,21 +1,32 @@
-import React from 'react';
+import React, { ChangeEventHandler } from 'react';
 
 import * as S from './SelectField.style';
 interface SelectFieldProps {
   name: string;
   title: string;
-  List: any;
-  change: any;
+  List: {
+    _id: string;
+    name: string;
+  }[];
+  change: ChangeEventHandler<HTMLSelectElement | undefined>;
   value?: string;
+  error: any;
 }
 
-export const SelectField: React.FC<SelectFieldProps> = ({ List, change, title, name, value }) => {
+export const SelectField: React.FC<SelectFieldProps> = ({
+  List,
+  change,
+  title,
+  name,
+  value,
+  error,
+}) => {
   return (
     <S.SelectField>
-      {title}
+      <S.Label>{title}</S.Label>
       {value && (
-        <S.Select name={name} onChange={change} value={value}>
-          {List.map((item: any) => (
+        <S.Select name={name} onChange={change} value={value} error={error[name]}>
+          {List.map((item) => (
             <S.Option key={item._id} value={item._id}>
               {item.name}
             </S.Option>
@@ -23,11 +34,11 @@ export const SelectField: React.FC<SelectFieldProps> = ({ List, change, title, n
         </S.Select>
       )}
       {!value && (
-        <S.Select name={name} onChange={change}>
+        <S.Select name={name} onChange={change} error={error[name]}>
           <S.Option value="" hidden>
             Mời bạn chọn...
           </S.Option>
-          {List.map((item: any) => (
+          {List.map((item) => (
             <S.Option key={item._id} value={item._id}>
               {item.name}
             </S.Option>
