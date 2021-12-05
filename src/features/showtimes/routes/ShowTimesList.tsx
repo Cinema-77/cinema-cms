@@ -15,10 +15,10 @@ import {
 } from '@/utils/format';
 
 interface ShowTimeListProps {
-  children?: React.ReactNode;
+  cinemaId: string;
 }
 
-export const ShowTimesList: React.FC<ShowTimeListProps> = () => {
+export const ShowTimesList: React.FC<ShowTimeListProps> = ({ cinemaId }) => {
   const [currentMonSun, setCurrentMonSun] = React.useState({
     mon: getCurrentMonday(),
     sun: getCurrentSunday(),
@@ -26,6 +26,7 @@ export const ShowTimesList: React.FC<ShowTimeListProps> = () => {
   const [dataShowTimes, setDataShowTimes] = React.useState({
     dateStart: currentMonSun.mon,
     dateEnd: currentMonSun.sun,
+    cinemaId,
   });
 
   const showTimesQuery = useShowTimes({
@@ -40,6 +41,7 @@ export const ShowTimesList: React.FC<ShowTimeListProps> = () => {
     });
 
     setDataShowTimes({
+      ...dataShowTimes,
       dateStart: getPrevMonday(currentMonSun.mon),
       dateEnd: getPrevSunday(currentMonSun.sun),
     });
@@ -53,6 +55,7 @@ export const ShowTimesList: React.FC<ShowTimeListProps> = () => {
     });
 
     setDataShowTimes({
+      ...dataShowTimes,
       dateStart: getNextMonday(currentMonSun.mon),
       dateEnd: getNextSunday(currentMonSun.sun),
     });

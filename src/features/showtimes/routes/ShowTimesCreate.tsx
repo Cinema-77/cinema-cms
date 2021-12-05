@@ -107,7 +107,7 @@ export const ShowTimesCreate = () => {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <ShowTimesList />
+                  <ShowTimesList cinemaId={user?.cinema._id || ''} />
                 </TabPanel>
                 <TabPanel>
                   {moviesQuery.isLoading ? (

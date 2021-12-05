@@ -1,19 +1,98 @@
-import { Spinner, Flex, Heading, Box, Table, Td, Th, Tr, SimpleGrid } from '@chakra-ui/react';
-import React from 'react';
+import { Spinner, Flex, Heading, Box, Stack, Select } from '@chakra-ui/react';
+import * as R from 'ramda';
+import * as React from 'react';
 
-import { ColumnChart, useGetRevenueByQuarter, useGetAllRevenueByQuarter } from '@/features/revenue';
-import { formatNumber } from '@/utils/format';
+import { LineChart, TableRevenue, useRevenueByMonthQuery } from '@/features/revenue';
+import { formatNumber, convertToMoney } from '@/utils/format';
 
 interface RevenueByQuarterFormProps {
   cinemaId: string;
   type: string;
 }
 
-export const RevenueByQuarterForm: React.FC<RevenueByQuarterFormProps> = ({ cinemaId, type }) => {
-  const revenueByQuarterQuery =
-    type === 'All' ? useGetAllRevenueByQuarter() : useGetRevenueByQuarter({ cinemaId });
+export const RevenueByQuarterForm: React.FC<RevenueByQuarterFormProps> = ({ cinemaId }) => {
+  const [dataDTO, setDataDTO] = React.useState({ month: '', year: '' });
 
-  if (revenueByQuarterQuery.isLoading) {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: 'Thông tin',
+        Footer: 'Thông tin',
+        columns: [
+          {
+            Header: 'Ngày',
+            accessor: 'date',
+          },
+          {
+            Header: 'Tên phim',
+            accessor: 'movieName',
+            aggregate: 'count',
+            Aggregated: ({ value }: any) => `${value} phim`,
+          },
+          {
+            Header: 'Màn hình',
+            accessor: 'screenName',
+          },
+        ],
+      },
+      {
+        Header: 'Doanh thu bán hàng',
+        Footer: 'Doanh thu bán hàng',
+
+        columns: [
+          {
+            Header: 'Số lượng',
+            accessor: 'quantity',
+            canGroupBy: false,
+          },
+          {
+            Header: 'Đơn giá',
+            accessor: 'price',
+            canGroupBy: false,
+          },
+          {
+            Header: 'Giảm',
+            accessor: 'promotion',
+            canGroupBy: false,
+          },
+          {
+            Header: 'Loại',
+            accessor: 'type',
+          },
+          {
+            Header: 'Tổng',
+            accessor: 'totalString',
+            canGroupBy: false,
+            Footer: (info: any) => {
+              // Only calculate total visits if rows change
+
+              const total = React.useMemo(
+                () =>
+                  info.rows.reduce(
+                    (sum: any, row: any) => convertToMoney(row.values.totalString) + sum,
+                    0,
+                  ),
+                [info.rows],
+              );
+
+              return <>Tổng {formatNumber(total)}</>;
+            },
+          },
+        ],
+      },
+    ],
+    [],
+  );
+  const revenueByMonthQuery = useRevenueByMonthQuery({
+    cinemaId,
+    month: dataDTO.month,
+    year: dataDTO.year,
+    config: {
+      enabled: !!dataDTO.month && !!dataDTO.year,
+    },
+  });
+
+  if (revenueByMonthQuery.isLoading) {
     return (
       <Flex justifyContent="center">
         <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
@@ -21,68 +100,81 @@ export const RevenueByQuarterForm: React.FC<RevenueByQuarterFormProps> = ({ cine
     );
   }
 
-  if (!revenueByQuarterQuery.data?.data) {
-    return (
-      <Box
-        backgroundColor="white"
-        textColor="gray.500"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        flexDirection="column"
-        height="40"
-      >
-        <Heading as="h4" size="lg">
-          Không có dữ liệu
-        </Heading>
-      </Box>
-    );
-  }
+  const noData = (
+    <Box
+      role="list"
+      aria-label="comments"
+      backgroundColor="white"
+      textColor="gray.500"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      flexDirection="column"
+      height="40"
+    >
+      <Heading as="h4" size="xl" fontSize="25px">
+        Không có dữ liệu được tìm thấy
+      </Heading>
+    </Box>
+  );
 
-  const { data } = revenueByQuarterQuery.data;
+  const hasRevenue = revenueByMonthQuery.data && revenueByMonthQuery.data.values.data.length > 0;
 
   return (
     <Box>
-      <ColumnChart
-        data={{
-          data: data,
-          xCategories: data.map((value: any) => `Quý ${value.quarter}`),
-          text: 'Doanh thu ',
-          type: 'Quarter',
-        }}
-      />
+      <Stack spacing={3} width="full" alignItems="center" marginBottom="10">
+        <Stack maxWidth="300px" paddingBottom={5} borderBottom="1px solid" borderColor="gray.300">
+          <Flex direction="column" justifyContent="center">
+            <Heading fontSize="20px">Thống kê doanh thu theo tháng </Heading>
+          </Flex>
+          <Stack spacing={3}>
+            <Select
+              placeholder="Chọn năm"
+              onChange={(e) => setDataDTO({ ...dataDTO, year: e.target.value })}
+              value={dataDTO.year}
+            >
+              {Array.from(Array(10).keys()).map((y: number) => {
+                const yearNow = new Date().getFullYear();
+                const year = yearNow - y;
+                return (
+                  <option key={year} value={year}>
+                    Năm {year}
+                  </option>
+                );
+              })}
+            </Select>
 
-      <SimpleGrid columns={2} spacing={10}>
-        {data.map((rv) => (
-          <Box key={rv.quarter}>
-            <Heading as="h3" fontSize="20px" my={3}>
-              Quý {rv.quarter}
-            </Heading>
-            <Table w="full">
-              <thead>
-                <Tr>
-                  <Th>Tiêu đề</Th>
-                  <Th>Doanh thu</Th>
-                </Tr>
-              </thead>
-              <tbody>
-                <Tr>
-                  <Td>Tổng tiền vé</Td>
-                  <Td>{formatNumber(rv.totalTicket)}</Td>
-                </Tr>
-                <Tr>
-                  <Td>Tổng tiền thức ăn</Td>
-                  <Td>{formatNumber(rv.totalFood)}</Td>
-                </Tr>
-                <Tr>
-                  <Td>Tổng cộng</Td>
-                  <Td>{formatNumber(rv.totalPrice)}</Td>
-                </Tr>
-              </tbody>
-            </Table>
-          </Box>
-        ))}
-      </SimpleGrid>
+            <Select
+              placeholder="Chọn tháng"
+              onChange={(e) => setDataDTO({ ...dataDTO, month: e.target.value })}
+              value={dataDTO.month}
+            >
+              {Array.from(Array(12).keys()).map((y: number) => {
+                const month = y + 1;
+                return (
+                  <option key={month} value={month}>
+                    Tháng {month}
+                  </option>
+                );
+              })}
+            </Select>
+          </Stack>
+        </Stack>
+      </Stack>
+      {hasRevenue ? (
+        <>
+          <LineChart
+            data={{
+              title: `Doanh thu tháng ${dataDTO.month}`,
+              data: revenueByMonthQuery.data.values.data,
+              xCategories: R.uniq(revenueByMonthQuery.data.values.data.map((m: any) => m.date)),
+            }}
+          />
+          <TableRevenue rowsTable={revenueByMonthQuery.data.values.data} columnsTable={columns} />
+        </>
+      ) : (
+        noData
+      )}
     </Box>
   );
 };

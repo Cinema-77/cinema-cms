@@ -51,11 +51,11 @@ export const RevenuePage = () => {
                 <TabPanel>
                   <RevenueByMovieForm cinemaId={user?.cinema._id as string} />
                 </TabPanel>
-                <Authorization policyCheck={POLICIES['revenue:all-cinema'](user as AuthUser)}>
+                {/* <Authorization policyCheck={POLICIES['revenue:all-cinema'](user as AuthUser)}>
                   <TabPanel>
                     <RevenueByQuarterForm cinemaId={user?.cinema._id as string} type="All" />
                   </TabPanel>
-                </Authorization>
+                </Authorization> */}
               </TabPanels>
             </Tabs>
           </Stack>

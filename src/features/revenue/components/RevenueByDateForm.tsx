@@ -4,8 +4,7 @@ import * as React from 'react';
 
 import { Form, SingleSelect } from '@/components';
 import { TableRevenue, useGetRevenueByDate, ColumnChart } from '@/features/revenue';
-import { formatDate } from '@/utils/format';
-// import { formatNumber } from '@/utils/format';
+import { formatDate, formatNumber, convertToMoney } from '@/utils/format';
 
 type RevenueValues = {
   cinemaId: string;
@@ -18,7 +17,84 @@ interface RevenueByDateFormProps {
 
 export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }) => {
   const [date, setDate] = React.useState<string>(formatDate(new Date()));
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: 'Thông tin',
+        Footer: '',
+        columns: [
+          {
+            Header: 'Mã HD',
+            accessor: 'billId',
+            aggregate: 'count',
+            Aggregated: ({ value }: any) => `${value} hoá đơn`,
+          },
+          {
+            Header: 'Tên phim',
+            accessor: 'movieName',
+            aggregate: 'count',
+            Aggregated: ({ value }: any) => `${value} phim`,
+          },
+          {
+            Header: 'Phòng',
+            accessor: 'roomName',
+            aggregate: 'uniqueCount',
+            Aggregated: ({ value }) => `${value} phòng`,
+          },
+          {
+            Header: 'Màn hình',
+            accessor: 'screenName',
+          },
+        ],
+      },
+      {
+        Header: 'Doanh thu bán hàng',
+        Footer: '',
 
+        columns: [
+          {
+            Header: 'Số lượng',
+            accessor: 'quantity',
+            canGroupBy: false,
+          },
+          {
+            Header: 'Đơn giá',
+            accessor: 'price',
+            canGroupBy: false,
+          },
+          {
+            Header: 'Giảm',
+            accessor: 'promotion',
+            canGroupBy: false,
+          },
+          {
+            Header: 'Loại',
+            accessor: 'type',
+          },
+          {
+            Header: 'Tổng',
+            accessor: 'totalString',
+            canGroupBy: false,
+            Footer: (info: any) => {
+              // Only calculate total visits if rows change
+
+              const total = React.useMemo(
+                () =>
+                  info.rows.reduce(
+                    (sum: any, row: any) => convertToMoney(row.values.totalString) + sum,
+                    0,
+                  ),
+                [info.rows],
+              );
+
+              return <>Tổng {formatNumber(total)}</>;
+            },
+          },
+        ],
+      },
+    ],
+    [],
+  );
   const useRevenueByDateQuery = useGetRevenueByDate({
     cinemaId,
     date: date,
@@ -116,7 +192,7 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
               type: 'Full',
             }}
           />
-          <TableRevenue rowsTable={values.data} />{' '}
+          <TableRevenue rowsTable={values.data} columnsTable={columns} />
         </>
       ) : (
         noData

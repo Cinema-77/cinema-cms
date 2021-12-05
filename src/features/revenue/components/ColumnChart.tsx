@@ -23,7 +23,6 @@ const generateOptions = (props: GenerateOptionsColumnType) => {
         },
       ];
       break;
-    case 'Quarter':
     case 'ByMovie':
       seriesData = [
         {

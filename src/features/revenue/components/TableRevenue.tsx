@@ -16,10 +16,13 @@ import {
   MenuOptionGroup,
   Stack,
   Select,
+  Text,
 } from '@chakra-ui/react';
+import * as FileSaver from 'file-saver';
 import * as React from 'react';
 import { FiArrowRight, FiArrowDown } from 'react-icons/fi';
 import { GoTriangleDown, GoTriangleUp } from 'react-icons/go';
+import { ImFileExcel } from 'react-icons/im';
 import {
   useTable,
   usePagination,
@@ -29,10 +32,10 @@ import {
   useAsyncDebounce,
   useGlobalFilter,
 } from 'react-table';
-// import matchSorter from 'match-sorter';
+import { v4 as uuidv4 } from 'uuid';
+import * as XLSX from 'xlsx';
 
 import { mapDataRevenue } from '@/features/revenue';
-import { formatNumber } from '@/utils/format';
 
 const MenuFilter = ({ headerGroups }: any) => {
   return (
@@ -44,11 +47,11 @@ const MenuFilter = ({ headerGroups }: any) => {
         <MenuOptionGroup title="Nhóm" type="checkbox">
           {headerGroups[1].headers
             .filter((column: any) => column.canGroupBy)
-            .map((column: any, index: number) => (
+            .map((column: any) => (
               <MenuItemOption
                 value={column.render('Header')}
                 {...column.getGroupByToggleProps()}
-                key={index}
+                key={uuidv4()}
               >
                 {column.render('Header')}
               </MenuItemOption>
@@ -79,84 +82,37 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter }: 
     </chakra.span>
   );
 };
+const ButtonExportCSV = ({ csvData, fileName }: { csvData: any; fileName: string }) => {
+  const fileType =
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=URF-8';
+  const fileExtension = '.xlsx';
+
+  const handleExport = (csvData: any, fileName: string) => {
+    const ws = XLSX.utils.json_to_sheet(csvData);
+    const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
+  };
+
+  return (
+    <Button
+      leftIcon={<ImFileExcel />}
+      colorScheme="green"
+      onClick={() => handleExport(csvData, fileName)}
+    >
+      Export to Excel
+    </Button>
+  );
+};
+
 interface TableRevenueProps {
   rowsTable: any;
+  columnsTable: any;
 }
 
-export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
+export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable, columnsTable }) => {
   const data = React.useMemo(() => mapDataRevenue(rowsTable), [rowsTable]);
-
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: 'Thông tin',
-        Footer: 'Thông tin',
-        columns: [
-          {
-            Header: 'Mã HD',
-            accessor: 'billId',
-            aggregate: 'count',
-            Aggregated: ({ value }: any) => `${value} hđ`,
-          },
-          {
-            Header: 'Tên phim',
-            accessor: 'movieName',
-            aggregate: 'count',
-            Aggregated: ({ value }: any) => `${value} phim`,
-          },
-          {
-            Header: 'Phòng',
-            accessor: 'roomName',
-            aggregate: 'uniqueCount',
-            Aggregated: ({ value }) => `${value} phòng`,
-          },
-          {
-            Header: 'Màn hình',
-            accessor: 'screenName',
-          },
-        ],
-      },
-      {
-        Header: 'Doanh thu bán hàng',
-        Footer: 'Doanh thu bán hàng',
-
-        columns: [
-          {
-            Header: 'Số lượng',
-            accessor: 'quantity',
-            canGroupBy: false,
-          },
-          {
-            Header: 'Đơn giá',
-            accessor: 'price',
-            canGroupBy: false,
-          },
-          {
-            Header: 'Loại',
-            accessor: 'type',
-          },
-          {
-            Header: 'Tổng',
-            accessor: 'totalString',
-            canGroupBy: false,
-            Footer: (info: any) => {
-              // Only calculate total visits if rows change
-
-              const total = React.useMemo(
-                () =>
-                  info.rows.reduce((sum: any, row: any) => parseInt(row.original.total) + sum, 0),
-                // eslint-disable-next-line
-                [],
-              );
-
-              return <>Tổng: {formatNumber(total)}</>;
-            },
-          },
-        ],
-      },
-    ],
-    [],
-  );
 
   const {
     getTableProps,
@@ -177,7 +133,7 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
     preGlobalFilteredRows,
     setGlobalFilter,
   } = useTable(
-    { columns, data },
+    { columns: columnsTable, data },
     useGroupBy,
     useGlobalFilter,
     useSortBy,
@@ -194,17 +150,18 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
           setGlobalFilter={setGlobalFilter}
         />
         <MenuFilter headerGroups={headerGroups} />
+        <ButtonExportCSV csvData={rowsTable} fileName="doanhthu" />
       </Stack>
 
-      <Table {...getTableProps()}>
+      <Table {...getTableProps()} marginY="5">
         <Thead>
           {headerGroups.map((headerGroup: any) => (
-            <Tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+            <Tr {...headerGroup.getHeaderGroupProps()} key={uuidv4()}>
               {headerGroup.headers.map((column: any) => (
                 <Th
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                   isNumeric={column.isNumeric}
-                  key={column.id}
+                  key={uuidv4()}
                 >
                   {column.render('Header')}
                   <chakra.span pl="4">
@@ -225,9 +182,9 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
           {page.map((row: any) => {
             prepareRow(row);
             return (
-              <Tr {...row.getRowProps()} key={row.id}>
-                {row.cells.map((cell: any, index: number) => (
-                  <Td key={index} {...cell.getCellProps()}>
+              <Tr {...row.getRowProps()} key={uuidv4()}>
+                {row.cells.map((cell: any) => (
+                  <Td key={uuidv4()} {...cell.getCellProps()}>
                     {cell.isGrouped ? (
                       // If it's a grouped cell, add an expander and row count
                       <>
@@ -256,9 +213,9 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
         </Tbody>
         <tfoot>
           {footerGroups.map((group: any) => (
-            <tr {...group.getFooterGroupProps()} key={group.id}>
+            <tr {...group.getFooterGroupProps()} key={uuidv4()}>
               {group.headers.map((column: any) => (
-                <td {...column.getFooterProps()} key={column.id}>
+                <td {...column.getFooterProps()} key={uuidv4()}>
                   {column.render('Footer')}
                 </td>
               ))}
@@ -281,13 +238,13 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable }) => {
           {'>>'}
         </Button>
         <chakra.span display="flex" alignItems="center">
-          Page
-          <strong style={{ marginLeft: '4px' }}>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>
+          Trang
+          <Text as="strong" marginLeft="4px">
+            {pageIndex + 1} trên {pageOptions.length}
+          </Text>
         </chakra.span>
         <chakra.span>
-          | Go to page:{' '}
+          | Đi đến trang:{' '}
           <Input
             type="number"
             defaultValue={pageIndex + 1}
