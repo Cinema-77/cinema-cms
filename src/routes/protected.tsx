@@ -14,7 +14,7 @@ const { Cinemas } = lazyImport(() => import('@/features/cinema'), 'Cinemas');
 const { Cinema } = lazyImport(() => import('@/features/cinema'), 'Cinema');
 const { ManageMovie } = lazyImport(() => import('@/features/manageMovie'), 'ManageMovie');
 const { RoomList } = lazyImport(() => import('@/features/room'), 'RoomList');
-const { ShowTimesCreate } = lazyImport(() => import('@/features/showtimes'), 'ShowTimesCreate');
+const { ShowTimesPage } = lazyImport(() => import('@/features/showtimes'), 'ShowTimesPage');
 const { SellerPage } = lazyImport(() => import('@/features/seller'), 'SellerPage');
 const { SellerTicket } = lazyImport(() => import('@/features/seller'), 'SellerTicket');
 const { PaymentComplete } = lazyImport(() => import('@/features/seller'), 'PaymentComplete');
@@ -59,7 +59,7 @@ export const protectedRoutes = [
       { path: ROUTES.CINEMA_LIST, component: Cinemas },
       { path: ROUTES.MOVIE, component: ManageMovie },
       { path: ROUTES.ROOM_LIST, component: RoomList },
-      { path: ROUTES.SHOWTIMES_CREATE, component: ShowTimesCreate },
+      { path: ROUTES.SHOWTIMES_CREATE, component: ShowTimesPage },
       { path: ROUTES.SELLER_TICKET_ID, component: SellerTicket },
       { path: ROUTES.PAYMENT_COMPLETE, component: PaymentComplete },
       { path: ROUTES.SELLER, component: SellerPage },

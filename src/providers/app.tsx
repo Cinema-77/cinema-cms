@@ -25,7 +25,7 @@ const ErrorFallback = () => {
       <Button
         colorScheme="teal"
         variant="solid"
-        onClick={() => window.location.assign(window.location.origin)}
+        onClick={() => window.location.assign(`${window.location.origin}/app`)}
       >
         Refresh
       </Button>

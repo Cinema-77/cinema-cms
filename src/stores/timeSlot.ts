@@ -56,9 +56,9 @@ export const useRoomsByMovieStore = create<RoomsByMovie>((set) => ({
             }
           }
           return { ...state, listRoomByMovie: [...state.listRoomByMovie] };
-        case 'IMax':
+        case 'IMAX':
           rooms = state.listRoomByMovie.filter(
-            (r) => r.name !== roomName && r.screen.name == 'IMax',
+            (r) => r.name !== roomName && r.screen.name == 'IMAX',
           );
           for (const r of rooms) {
             const time = r.timeSlots.find((t) => t._id === _id);
