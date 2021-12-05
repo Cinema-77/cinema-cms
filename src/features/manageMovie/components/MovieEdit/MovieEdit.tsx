@@ -1,23 +1,25 @@
 import { useToast } from '@chakra-ui/toast';
 import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import React, { ChangeEventHandler, useEffect, useState } from 'react';
+import qs from 'query-string';
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useHistory, useLocation } from 'react-router';
 
 import { getCategoryAll, getDirectorAll, getScreenAll, updateMovie } from '../..';
-import { categoryType, MovieItemType } from '../../type';
+import { CategoryItem, MovieItemType, MovieType, directorType, screenType } from '../../type';
 import * as S from '../MovieResult/MovieResult.style';
 
 import x2 from '@/assets/icon/x2.svg';
+import { ErrorMessage, SingleSelect } from '@/components';
 import { InputField, Form, SelectField } from '@/components/Form2';
 import { CheckboxField } from '@/components/Form2/CheckboxField/CheckboxField';
 import { storage } from '@/lib/firebase';
-
+import { rules } from '@/utils/rules';
 interface MovieEditProps {
   movieValue: MovieItemType;
-  setMovieValue: any;
-  setMovie: any;
-  movie: any;
+  setMovieValue: Dispatch<SetStateAction<MovieItemType | undefined>>;
+  setMovie: Dispatch<SetStateAction<boolean>>;
+  movie: boolean;
 }
 
 export const MovieEdit: React.FC<MovieEditProps> = ({
@@ -26,110 +28,88 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
   setMovie,
   movie,
 }) => {
-  const idCategory: any[] = [];
-  const idScreens: any[] = [];
-
-  for (let i = 0; i < movieValue.categories.length; i++) {
-    idCategory.push(movieValue.categories[i]._id);
-  }
-  for (let i = 0; i < movieValue.screens.length; i++) {
-    idScreens.push(movieValue.screens[i]._id);
-  }
-
-  const [screenValue, setScreenValue] = useState<string[]>([...idScreens]);
-  const [categoryValue, setCategoryValue] = useState<string[]>([...idCategory]);
-  const [urlIMG, setUrlIMG] = useState<string>(movieValue.image);
-  const [urlVideo, setUrlVideo] = useState<string>(movieValue.trailer);
-  const [name, setName] = useState<string>(movieValue.name);
-  const [moveDuration, setMovieDuration] = useState<number>(movieValue.moveDuration);
-  const [description, setDescription] = useState<string>(movieValue.description);
-  const [cast, setCast] = useState<string>(movieValue.cast);
-  const [age, setAge] = useState<number>(movieValue.age);
-  const [director, setDirector] = useState(movieValue.director._id);
-  const [categoryList, setCategoryList] = useState<categoryType[]>([]);
-  const [directorList, setdirectorList] = useState<any>();
-  const [screenList, setScreenList] = useState([]);
-  const { control, handleSubmit } = useForm();
+  const [screenValue, setScreenValue] = useState<string[]>(() => {
+    const idScreens = [];
+    for (let i = 0; i < movieValue.screens.length; i++) {
+      idScreens.push(movieValue.screens[i]._id);
+    }
+    return idScreens;
+  });
+  const [categoryValue, setCategoryValue] = useState<string[]>(() => {
+    const idCategory = [];
+    for (let i = 0; i < movieValue.categories.length; i++) {
+      idCategory.push(movieValue.categories[i]._id);
+    }
+    return idCategory;
+  });
+  const [categoryList, setCategoryList] = useState<CategoryItem[]>([]);
+  const [directorList, setDirectorList] = useState<directorType[]>([]);
+  const [screenList, setScreenList] = useState<screenType[]>([]);
+  const {
+    control,
+    handleSubmit,
+    register,
+    getValues,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: movieValue.name,
+      moveDuration: Number(movieValue.moveDuration),
+      categoryId: '',
+      directorId: movieValue.director._id,
+      cast: movieValue.cast,
+      description: movieValue.description,
+      loaiman: '',
+      image: movieValue.image,
+      trailer: movieValue.trailer,
+      age: Number(movieValue.age),
+      dateStart: movieValue.dateStart,
+      dateEnd: movieValue.dateEnd,
+    },
+  });
   const location = useLocation();
-  const idMovie = location.search.split('?id=');
+  const query = useMemo(() => qs.parse(location.search), [location.search]);
   const history = useHistory();
   const toast = useToast();
-  const handleValue = async () => {
+  const handleValue = async (data: MovieType) => {
     const body = {
-      name: name,
-      moveDuration: moveDuration,
-      image: urlIMG,
-      trailer: urlVideo,
-      description: description,
-      directorId: director,
-      cast: cast,
-      age: age,
+      name: data.name,
+      moveDuration: Number(data.moveDuration),
+      image: data.image,
+      trailer: data.trailer,
+      description: data.description,
+      directorId: data.directorId,
+      cast: data.cast,
+      age: Number(data.age),
       screensId: screenValue,
       categoryId: categoryValue,
+      dateStart: data.dateStart,
+      dateEnd: data.dateEnd,
     };
     try {
-      const res = await updateMovie(idMovie[1], body);
-      if (!body.moveDuration) {
-        toast({
-          title: 'Vui lòng nhập thời lượng là số',
-          position: 'top-right',
-          status: 'error',
-          duration: 3000,
-        });
-        return;
-      }
-      if (!body.age) {
-        toast({
-          title: 'Vui lòng độ tuổi là số',
-          position: 'top-right',
-          status: 'error',
-          duration: 3000,
-        });
-        return;
-      }
-
-      if (categoryValue.length === 0) {
-        toast({
-          title: 'Vui lòng chọn thể loại',
-          position: 'top-right',
-          status: 'error',
-          duration: 3000,
-        });
-        return;
-      }
-      if (screenValue.length === 0) {
-        toast({
-          title: 'Vui lòng chọn loại màn hình',
-          position: 'top-right',
-          status: 'error',
-          duration: 3000,
-        });
-        return;
-      }
-      if (!body.description) {
-        toast({
-          title: 'Vui lòng nhập nội dụng của film',
-          position: 'top-right',
-          status: 'error',
-          duration: 3000,
-        });
-        return;
-      }
+      const res = await updateMovie(query.id, body);
       if (res.success === false) {
-        if (res.errors.name) {
-          toast({ title: res.errors.name, position: 'top-right', status: 'error', duration: 3000 });
+        if (res.errors.dateStart) {
+          toast({
+            title: res.errors.dateStart,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
         }
-        if (res.errors.cast) {
-          toast({ title: res.errors.cast, position: 'top-right', status: 'error', duration: 3000 });
+        if (res.errors.dateEnd) {
+          toast({
+            title: res.errors.dateEnd,
+            position: 'top-right',
+            status: 'error',
+            duration: 3000,
+          });
         }
-        console.log(res);
-        return;
       } else {
         toast({ title: res.message, position: 'top-right', status: 'success', duration: 3000 });
-        history.push('/managemovie');
-        setMovieValue('');
+        history.push(`/app/managemovie?${qs.stringify({ page: query.page, limit: query.limit })}`);
+        setMovieValue(undefined);
         setMovie(!movie);
-        console.log(res);
       }
     } catch (error) {
       console.log(error);
@@ -138,49 +118,45 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
 
   useEffect(() => {
     getCategoryAll()
-      .then((res: any) => setCategoryList(res.values.categories))
-      .catch((err) => console.log(err));
+      .then((res) => setCategoryList(res.values.categories))
+      .catch(console.log);
     getDirectorAll()
-      .then((res: any) => setdirectorList(res.values.directors))
-      .catch((err) => console.log(err));
+      .then((res) => setDirectorList(res.values.directors))
+      .catch(console.log);
     getScreenAll()
-      .then((res: any) => setScreenList(res.values.screens))
-      .catch((err) => console.log(err));
+      .then((res) => setScreenList(res.values.screens))
+      .catch(console.log);
   }, []);
 
-  const handleImageChange = async (e: any) => {
+  const handleVideoImage = async (e: any, setValue: Dispatch<SetStateAction<string>>) => {
     if (e.target.files[0] && e.target.files[0].type.includes('image')) {
       const fileName = e.target.files[0];
       const storageRef = ref(storage, `images/${fileName.name}`);
       const uploadTask = uploadBytesResumable(storageRef, fileName);
       await uploadBytes(storageRef, fileName);
-      getDownloadURL(uploadTask.snapshot.ref).then((url: any) => setUrlIMG(url));
-    }
-  };
-
-  const handleVideoChange = async (e: any) => {
-    if (e.target.files[0] && e.target.files[0].type.includes('video')) {
+      getDownloadURL(uploadTask.snapshot.ref).then((url: string) => setValue(url));
+    } else if (e.target.files[0] && e.target.files[0].type.includes('video')) {
       const fileName = e.target.files[0];
       const storageRef = ref(storage, `videos/${fileName.name}`);
       const uploadTask = uploadBytesResumable(storageRef, fileName);
       await uploadBytes(storageRef, fileName);
-      getDownloadURL(uploadTask.snapshot.ref).then((url: any) => setUrlVideo(url));
+      getDownloadURL(uploadTask.snapshot.ref).then((url: string) => setValue(url));
     }
   };
 
   const handleCategory = (e: any) => {
-    if (e.target.checked && screenValue.filter((value: any) => e.target.value !== value)) {
+    if (e.target.checked && screenValue.filter((value: string) => e.target.value !== value)) {
       setCategoryValue([...categoryValue, e.target.value]);
     } else {
-      setCategoryValue(categoryValue.filter((value: any) => e.target.value !== value));
+      setCategoryValue(categoryValue.filter((value: string) => e.target.value !== value));
     }
   };
 
   const handleScreen = (e: any) => {
-    if (e.target.checked && screenValue.filter((value: any) => e.target.value !== value)) {
+    if (e.target.checked && screenValue.filter((value: string) => e.target.value !== value)) {
       setScreenValue([...screenValue, e.target.value]);
     } else {
-      setScreenValue(screenValue.filter((value: any) => e.target.value !== value));
+      setScreenValue(screenValue.filter((value: string) => e.target.value !== value));
     }
   };
 
@@ -190,105 +166,106 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
         <Form submit={handleSubmit(handleValue)}>
           <S.MovieFormTitle>
             Edit Movie
-            <img src={x2} alt="asdsd" onClick={() => setMovieValue('')} role="button" />
+            <img src={x2} alt="asdsd" onClick={() => setMovieValue(undefined)} role="button" />
           </S.MovieFormTitle>
           <S.MovieForm>
             <S.MovieFormController>
               <Controller
                 name="name"
+                rules={rules.name}
                 control={control}
                 render={({ field }) => (
                   <InputField
                     name="name"
                     title="Tên Film"
-                    change={(e: any) => {
-                      field.onChange(e);
-                      setName(e.target.value);
-                    }}
-                    value={name}
+                    change={field.onChange}
+                    error={errors}
+                    value={getValues('name')}
                   />
                 )}
               />
+              <ErrorMessage name="name" errors={errors} />
             </S.MovieFormController>
             <S.MovieFormController>
               <Controller
                 name="moveDuration"
+                rules={rules.time}
                 control={control}
                 render={({ field }) => (
                   <InputField
                     name="moveDuration"
                     title="Thời lượng"
-                    change={(e: any) => {
-                      field.onChange(e);
-                      setMovieDuration(e.target.value);
-                    }}
-                    value={moveDuration}
+                    error={errors}
+                    change={field.onChange}
+                    value={getValues('moveDuration')}
                   />
                 )}
               />
+              <ErrorMessage name="moveDuration" errors={errors} />
             </S.MovieFormController>
             <S.MovieFormController>
               <Controller
                 name="directorId"
+                rules={rules.daodien}
                 control={control}
                 render={({ field }) => (
                   <SelectField
                     List={directorList}
-                    change={(e: any) => {
-                      field.onChange(e);
-                      setDirector(e.target.value);
-                    }}
+                    error={errors}
+                    change={field.onChange}
                     title="Đạo diễn"
                     name="directorId"
-                    value={director}
+                    value={getValues('directorId')}
                   />
                 )}
               />
+              <ErrorMessage name="directorId" errors={errors} />
             </S.MovieFormController>
             <S.MovieFormController>
               <Controller
                 name="cast"
+                rules={rules.dienvien}
                 control={control}
                 render={({ field }) => (
                   <InputField
                     name="cast"
+                    error={errors}
                     title="Diễn viên"
-                    change={(e: any) => {
-                      field.onChange(e);
-                      setCast(e.target.value);
-                    }}
-                    value={cast}
+                    change={field.onChange}
+                    value={getValues('cast')}
                   />
                 )}
               />
+              <ErrorMessage name="cast" errors={errors} />
             </S.MovieFormController>
             <S.MovieFormController>
               <Controller
                 name="age"
+                rules={rules.age}
                 control={control}
                 render={({ field }) => (
                   <InputField
                     name="age"
                     title="Độ tuổi"
-                    change={(e: any) => {
-                      field.onChange(e);
-                      setAge(Number(e.target.value));
-                    }}
-                    value={age}
+                    error={errors}
+                    change={field.onChange}
+                    value={getValues('age')}
                   />
                 )}
               />
+              <ErrorMessage name="age" errors={errors} />
             </S.MovieFormController>
             <S.MovieFormController>
               <Controller
                 name="categoryId"
+                rules={categoryValue.length === 0 ? rules.theloai : undefined}
                 control={control}
                 render={({ field }) => (
                   <CheckboxField
                     title="Thể loại"
                     name="categoryId"
                     listCheckbox={categoryList}
-                    change={(value: ChangeEventHandler) => {
+                    change={(value) => {
                       field.onChange(value);
                       handleCategory(value);
                     }}
@@ -296,17 +273,19 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
                   />
                 )}
               />
+              <ErrorMessage name="categoryId" errors={categoryValue.length === 0 && errors} />
             </S.MovieFormController>
             <S.MovieFormController>
               <Controller
                 name="loaiman"
+                rules={screenValue.length === 0 ? rules.loaiman : undefined}
                 control={control}
                 render={({ field }) => (
                   <CheckboxField
                     title="Loại màn hình"
                     name="loaiman"
                     listCheckbox={screenList}
-                    change={(value: ChangeEventHandler) => {
+                    change={(value) => {
                       field.onChange(value);
                       handleScreen(value);
                     }}
@@ -314,66 +293,83 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
                   />
                 )}
               />
+              <ErrorMessage name="loaiman" errors={screenValue.length === 0 && errors} />
             </S.MovieFormController>
             <S.MovieFormController>
               <Controller
                 name="description"
+                rules={rules.content}
                 control={control}
                 render={({ field }) => (
                   <InputField
                     name="description"
                     title="Nội dung"
+                    error={errors}
                     textarea
-                    change={(e: any) => {
-                      field.onChange(e);
-                      setDescription(e.target.value);
-                    }}
-                    value={description}
+                    change={field.onChange}
+                    value={getValues('description')}
                   />
                 )}
               />
+              <ErrorMessage name="description" errors={errors} />
             </S.MovieFormController>
+          </S.MovieForm>
+          <S.MovieForm>
+            <S.MovieFormController2>
+              <SingleSelect
+                registration={register('dateStart')}
+                defaultValue={getValues('dateStart')}
+                label="Ngày bắt đầu"
+              />
+            </S.MovieFormController2>
+            <S.MovieFormController2>
+              <SingleSelect
+                registration={register('dateEnd')}
+                defaultValue={getValues('dateEnd')}
+                label="Ngày kết thúc"
+              />
+            </S.MovieFormController2>
           </S.MovieForm>
           <S.MovieForm>
             <S.MovieFormController2>
               <Controller
                 name="image"
+                rules={rules.image}
                 control={control}
                 render={({ field }) => (
                   <InputField
-                    url={urlIMG ? urlIMG : movieValue.image}
+                    url={getValues('image')}
                     name="image"
                     type="file"
+                    error={errors}
                     title="Image URL"
-                    change={(value: any) => {
-                      field.onChange(value);
-                      handleImageChange(value);
-                    }}
+                    change={(value) => handleVideoImage(value, field.onChange)}
                   />
                 )}
               />
+              <ErrorMessage name="image" errors={errors} />
             </S.MovieFormController2>
             <S.MovieFormController2>
               <Controller
                 name="trailer"
+                rules={rules.trailer}
                 control={control}
                 render={({ field }) => (
                   <InputField
-                    url={urlVideo}
+                    url={getValues('trailer')}
                     name="trailer"
                     type="file"
+                    error={errors}
                     title="Trailer URL"
-                    change={(value: any) => {
-                      field.onChange(value);
-                      handleVideoChange(value);
-                    }}
+                    change={(value) => handleVideoImage(value, field.onChange)}
                   />
                 )}
               />
+              <ErrorMessage name="trailer" errors={errors} />
             </S.MovieFormController2>
           </S.MovieForm>
           <S.MovieFormListBtn>
-            <S.MovieFormBtn onClick={() => setMovieValue('')} type="button">
+            <S.MovieFormBtn onClick={() => setMovieValue(undefined)} type="button">
               Cancel
             </S.MovieFormBtn>
             <S.MovieFormBtn>Update</S.MovieFormBtn>

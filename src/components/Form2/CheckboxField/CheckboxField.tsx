@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { ChangeEventHandler } from 'react';
 
 import * as S from './CheckboxField.style';
 
 interface CheckboxFieldProps {
   name: string;
-  change: any;
+  change: ChangeEventHandler<HTMLInputElement | undefined>;
   title: string;
   listCheckbox: {
     _id: string;
     name: string;
   }[];
-  value?: any;
+  value?: string[];
 }
 
 export const CheckboxField: React.FC<CheckboxFieldProps> = ({
@@ -22,11 +22,11 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
 }) => {
   return (
     <S.CheckboxField>
-      {title}
+      <S.Label>{title}</S.Label>
       {!value && (
         <S.List>
-          {listCheckbox.map((item) => (
-            <S.Checkbox key={item._id}>
+          {listCheckbox.map((item, index) => (
+            <S.Checkbox key={index}>
               <input type="checkbox" name={name} value={item._id} onChange={change} />
               {item.name}
             </S.Checkbox>
@@ -35,8 +35,8 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
       )}
       {value && (
         <S.List>
-          {listCheckbox.map((item) => (
-            <React.Fragment key={item._id}>
+          {listCheckbox.map((item, index) => (
+            <React.Fragment key={index}>
               {value.includes(item._id) && (
                 <S.Checkbox>
                   <input type="checkbox" name={name} value={item._id} onChange={change} checked />

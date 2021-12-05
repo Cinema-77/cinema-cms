@@ -9,6 +9,7 @@ export const CheckboxField = styled.div`
 `;
 export const List = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 0 20px;
 `;
 export const Checkbox = styled.div`
@@ -21,4 +22,7 @@ export const Checkbox = styled.div`
   input {
     padding: 8px;
   }
+`;
+export const Label = styled.h2`
+  font-size: 13px;
 `;

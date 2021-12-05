@@ -10,6 +10,7 @@ interface InputFieldProps {
   textarea?: string | boolean;
   type?: string;
   url?: string;
+  error: any;
 }
 
 export const InputField: React.FC<InputFieldProps> = ({
@@ -20,10 +21,11 @@ export const InputField: React.FC<InputFieldProps> = ({
   name,
   change,
   value,
+  error,
 }) => {
   return (
     <S.InputField>
-      {title}
+      <S.Label>{title}</S.Label>
       {type === 'file' && (
         <>
           <S.FileUploadLabel htmlFor={name}>Select a {name}...</S.FileUploadLabel>
@@ -36,8 +38,10 @@ export const InputField: React.FC<InputFieldProps> = ({
           {url && name !== 'image' && <S.Iframe src={url} allowFullScreen />}
         </>
       )}
-      {type !== 'file' && !textarea && <S.Input name={name} onChange={change} value={value} />}
-      {textarea && <S.Area name={name} onChange={change} value={value} />}
+      {type !== 'file' && !textarea && (
+        <S.Input name={name} onChange={change} value={value} error={error[name]} />
+      )}
+      {textarea && <S.Area name={name} onChange={change} value={value} error={error[name]} />}
     </S.InputField>
   );
 };

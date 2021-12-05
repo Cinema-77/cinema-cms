@@ -9,6 +9,8 @@ export interface MovieType {
   screensId: string[];
   categoryId: string[];
   age: number;
+  dateStart: string;
+  dateEnd: string;
 }
 
 export interface directorType {
@@ -23,12 +25,6 @@ export interface directorType {
   email: string;
   introduce: string;
   male: boolean;
-}
-
-export interface categoryType {
-  _id: string;
-  name: string;
-  image: string;
 }
 
 export interface screenType {
@@ -48,8 +44,10 @@ export interface MovieItemType {
   director: directorType;
   cast: string;
   age: number;
-  categories: categoryType[];
+  categories: CategoryItem[];
   screens: screenType[];
+  dateStart: string;
+  dateEnd: string;
 }
 
 export interface MovieRespon {
@@ -65,9 +63,15 @@ export interface MoviesResponse {
   message: string;
   values: {
     movies: MovieItemType[];
+    hasMore: boolean;
+    pageNumber: number;
   };
 }
 
+export interface filterProps {
+  page: number;
+  limit: number;
+}
 export interface IMovieCMS {
   movieGroupName: string;
   movies: MovieItemType[];
@@ -77,4 +81,42 @@ export interface MovieCMSResponse {
   success: boolean;
   message: string;
   values: IMovieCMS[];
+}
+
+export interface CategoryItem {
+  _id: string;
+  name: string;
+  image: string;
+}
+
+export interface CategoryRespon {
+  success: boolean;
+  message: string;
+  values: {
+    categories: CategoryItem[];
+  };
+}
+
+export interface DirectorRespon {
+  success: boolean;
+  message: string;
+  values: {
+    directors: directorType[];
+  };
+}
+
+export interface ScreenRespon {
+  success: boolean;
+  message: string;
+  values: {
+    screens: screenType[];
+  };
+}
+
+export interface getMovieRespon {
+  success: boolean;
+  message: string;
+  values: {
+    movie: MovieItemType;
+  };
 }

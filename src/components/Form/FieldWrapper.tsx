@@ -24,7 +24,7 @@ export const FieldWrapper = (props: FieldWrapperProps) => {
   }
   return (
     <FormControl className={className} isInvalid={!!error} {...formProps}>
-      <FormLabel>{label}</FormLabel>
+      <FormLabel style={{ fontSize: '13px' }}>{label}</FormLabel>
       {children}
       <FormErrorMessage>{error && error.message}</FormErrorMessage>
     </FormControl>
