@@ -7,7 +7,6 @@ import { formatNumber, convertToMoney } from '@/utils/format';
 
 interface RevenueByQuarterFormProps {
   cinemaId: string;
-  type: string;
 }
 
 export const RevenueByQuarterForm: React.FC<RevenueByQuarterFormProps> = ({ cinemaId }) => {
