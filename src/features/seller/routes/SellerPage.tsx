@@ -21,9 +21,7 @@ import { getDay } from '@/utils/format';
 export const SellerPage = () => {
   const { rangeDate, startDay } = getRangeDate();
   const { user } = useAuth();
-
   const [activeDate, setActiveDate] = React.useState<string>(format(startDay, 'MM/dd/yyyy'));
-
   const showTimesByDateQuery = useShowTimesByDate({
     data: { date: activeDate, cinemaId: user?.cinema._id || '' },
   });

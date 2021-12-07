@@ -10,8 +10,10 @@ export const getTotalMovie = (data: IRevenueData[], groupName: string) => {
   return R.sum(R.map(getTotalEachMovie, R.filter(isGroupName, data)));
 };
 
+export const sortByDate = R.sortBy(R.prop('date'));
+
 const getTotalMovieInRangeDate = (movieName: string, data: IRevenueData[]) => {
-  const lstDate = R.uniq(data.map((d) => d.date));
+  const lstDate = R.uniq(sortByDate(data).map((d) => d.date));
   return lstDate.map((date) => {
     const isMovieAndDate = (n: IRevenueData) => n.date === date && n.movieName === movieName;
     const getTotalEachMovie = (n: IRevenueData) => n.total;

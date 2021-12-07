@@ -4,20 +4,20 @@ import HighchartsReact from 'highcharts-react-official';
 import { getSeriesByMonth } from '../RevenueHelper';
 
 const generateOptions = (props: any) => {
-  const { xCategories, data, title } = props;
-  console.log(getSeriesByMonth(data));
+  const { xCategories, data, title, subTitle } = props;
+
   return {
     title: {
       text: title,
     },
 
     subtitle: {
-      text: 'Source: thesolarfoundation.com',
+      text: subTitle,
     },
 
     yAxis: {
       title: {
-        text: 'Number of Employees',
+        text: 'Doanh số',
       },
     },
 

@@ -24,7 +24,7 @@ export const RevenuePage = () => {
         <Flex justifyContent="flex-start">
           <Stack
             backgroundColor="white"
-            px={10}
+            px={5}
             py={12}
             shadow={[null, 'md']}
             spacing={4}

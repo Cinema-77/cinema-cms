@@ -44,14 +44,23 @@ export const useBuyTicket = ({ config }: UseBuyTicketOptions = {}) => {
         queryClient.setQueryData('ticketsByShowtimes', context.previousTickets);
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries('ticketsByShowtimes');
-      toast({
-        title: 'Mua vé thành công!',
-        status: 'success',
-        isClosable: true,
-        position: 'top-right',
-      });
+    onSuccess: (data) => {
+      if (data.success) {
+        queryClient.invalidateQueries('ticketsByShowtimes');
+        toast({
+          title: 'Mua vé thành công!',
+          status: 'success',
+          isClosable: true,
+          position: 'top-right',
+        });
+      } else {
+        toast({
+          title: 'Xảy ra lỗi!',
+          status: 'error',
+          isClosable: true,
+          position: 'top-right',
+        });
+      }
     },
     ...config,
     mutationFn: buyTicket,

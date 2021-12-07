@@ -23,7 +23,7 @@ type UseShowTimesOptions = {
 export const useShowTimes = ({ config, data }: UseShowTimesOptions) => {
   return useQuery({
     ...config,
-    queryKey: ['showTimes', data],
+    queryKey: ['showTimes', data.dateStart, data.dateEnd],
     queryFn: () => getShowTimes(data),
   });
 };

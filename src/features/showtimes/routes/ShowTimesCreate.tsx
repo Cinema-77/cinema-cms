@@ -65,6 +65,7 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = ({ user }) => {
         dateEnd: '',
       });
     }
+    // eslint-disable-next-line
   }, [formState, reset]);
 
   const onChangeMovie = (event: React.ChangeEvent<HTMLSelectElement>) => {

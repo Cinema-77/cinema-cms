@@ -2,7 +2,7 @@ import { Spinner, Flex, Heading, Box, Stack, Select } from '@chakra-ui/react';
 import * as R from 'ramda';
 import * as React from 'react';
 
-import { LineChart, TableRevenue, useRevenueByMonthQuery } from '@/features/revenue';
+import { LineChart, TableRevenue, useRevenueByMonthQuery, sortByDate } from '@/features/revenue';
 import { formatNumber, convertToMoney } from '@/utils/format';
 
 interface RevenueByQuarterFormProps {
@@ -166,8 +166,11 @@ export const RevenueByQuarterForm: React.FC<RevenueByQuarterFormProps> = ({ cine
           <LineChart
             data={{
               title: `Doanh thu tháng ${dataDTO.month}`,
+              subTitle: 'Doanh thu từng phim ',
               data: revenueByMonthQuery.data.values.data,
-              xCategories: R.uniq(revenueByMonthQuery.data.values.data.map((m: any) => m.date)),
+              xCategories: R.uniq(
+                sortByDate(revenueByMonthQuery.data.values.data).map((m: any) => m.date),
+              ),
             }}
           />
           <TableRevenue rowsTable={revenueByMonthQuery.data.values.data} columnsTable={columns} />
