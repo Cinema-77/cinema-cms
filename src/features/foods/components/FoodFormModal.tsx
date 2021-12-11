@@ -90,7 +90,7 @@ export const FoodFormModal = () => {
           >
             {({ register, formState, control }) => (
               <>
-                <ModalHeader fontWeight="bold">Thêm phòng</ModalHeader>
+                <ModalHeader fontWeight="bold">{buttonText}</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody as={Stack} spacing={5} direction="column">
                   <InputField

@@ -24,7 +24,7 @@ export const FoodWarningModal: React.FC<FoodWarningModalProps> = (props) => {
       <AlertDialogOverlay />
       <AlertDialogContent>
         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-          Xoá phòng
+          Xoá
         </AlertDialogHeader>
         <AlertDialogBody>
           Bạn có chắc không ? Điều này sẽ xoá sản phẩm hiện tại và bạn không thể khôi phục lại được

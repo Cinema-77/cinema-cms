@@ -86,6 +86,11 @@ const LinkItems = () => {
       icon: FiUser,
       to: '/app/users',
     },
+    checkAccess({ allowedRoles: [ROLES.MANAGER] }) && {
+      name: 'Khách hàng',
+      icon: FiUser,
+      to: '/app/customers',
+    },
     checkAccess({ allowedRoles: [ROLES.MANAGER, ROLES.USER] }) && {
       name: 'Bán vé',
       icon: FiStar,
