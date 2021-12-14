@@ -31,6 +31,7 @@ import {
   FiCompass,
   FiStar,
   FiUser,
+  FiUsers,
   FiSettings,
   FiMenu,
   FiMoon,
@@ -88,7 +89,7 @@ const LinkItems = () => {
     },
     checkAccess({ allowedRoles: [ROLES.MANAGER] }) && {
       name: 'Khách hàng',
-      icon: FiUser,
+      icon: FiUsers,
       to: '/app/customers',
     },
     checkAccess({ allowedRoles: [ROLES.MANAGER, ROLES.USER] }) && {

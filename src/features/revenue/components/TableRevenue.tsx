@@ -184,7 +184,7 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable, columnsTa
             return (
               <Tr {...row.getRowProps()} key={uuidv4()}>
                 {row.cells.map((cell: any) => (
-                  <Td key={uuidv4()} {...cell.getCellProps()}>
+                  <Td key={uuidv4()} {...cell.getCellProps()} padding={2}>
                     {cell.isGrouped ? (
                       // If it's a grouped cell, add an expander and row count
                       <>

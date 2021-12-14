@@ -6,8 +6,12 @@ import { Link } from 'react-router-dom';
 import { ShowTimesListByDate, ShowTimesDetail, screenDetail } from '@/features/showtimes';
 import { formatDate } from '@/utils/format';
 
-export const ShowTimesItem: React.FC<ShowTimesListByDate> = (props) => {
-  const { movie, screen2D, screen3D, screenIMAX, date } = props;
+interface IShowTimesItem extends ShowTimesListByDate {
+  isMineCinema: boolean;
+}
+
+export const ShowTimesItem: React.FC<IShowTimesItem> = (props) => {
+  const { movie, screen2D, screen3D, screenIMAX, date, isMineCinema } = props;
   const shouldHide = (showtimes: ShowTimesDetail[]) => !showtimes.length;
 
   return (
@@ -38,7 +42,7 @@ export const ShowTimesItem: React.FC<ShowTimesListByDate> = (props) => {
                 <Text fontSize="md" fontWeight="bold">
                   {screen2D.title} phụ đề Anh
                 </Text>
-                <ListTime screens={screen2D} date={date} />
+                <ListTime screens={screen2D} date={date} isMineCinema={isMineCinema} />
               </Box>
             )}
 
@@ -47,7 +51,7 @@ export const ShowTimesItem: React.FC<ShowTimesListByDate> = (props) => {
                 <Text fontSize="md" fontWeight="bold">
                   {screen3D.title} phụ đề Anh
                 </Text>
-                <ListTime screens={screen3D} date={date} />
+                <ListTime screens={screen3D} date={date} isMineCinema={isMineCinema} />
               </Box>
             )}
 
@@ -56,7 +60,7 @@ export const ShowTimesItem: React.FC<ShowTimesListByDate> = (props) => {
                 <Text fontSize="md" fontWeight="bold">
                   {screenIMAX.title} phụ đề Anh
                 </Text>
-                <ListTime screens={screenIMAX} date={date} />
+                <ListTime screens={screenIMAX} date={date} isMineCinema={isMineCinema} />
               </Box>
             )}
           </Stack>
@@ -69,21 +73,22 @@ export const ShowTimesItem: React.FC<ShowTimesListByDate> = (props) => {
 interface IListTime {
   screens: screenDetail;
   date: string;
+  isMineCinema: boolean;
 }
-const ListTime = ({ screens, date }: IListTime) => {
+const ListTime = ({ screens, date, isMineCinema }: IListTime) => {
   const today = new Date();
   const todayFormat = formatDate(today);
   const hours = today.getHours() < 10 ? `0${today.getHours()}` : today.getHours();
   const minutes = today.getMinutes();
   const timeNow = `${hours}:${minutes}`;
-  const isDisableTime = (time: string) => date === todayFormat && timeNow > time;
+  const isDisableTime = (time: string) => date === todayFormat && timeNow > time && isMineCinema;
 
   return (
     <Wrap spacing={1} direction="row" mt={2}>
       {screens.showTimesDetails.map((showtime) => (
         <WrapItem key={showtime._id}>
           <Button
-            as={Link}
+            as={isMineCinema ? Link : undefined}
             to={(location: Location) =>
               isDisableTime(showtime.timeSlot.time)
                 ? location.pathname
