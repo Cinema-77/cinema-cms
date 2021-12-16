@@ -20,6 +20,7 @@ const { SellerTicket } = lazyImport(() => import('@/features/seller'), 'SellerTi
 const { PaymentComplete } = lazyImport(() => import('@/features/seller'), 'PaymentComplete');
 const { RevenuePage } = lazyImport(() => import('@/features/revenue'), 'RevenuePage');
 const { FoodsPage } = lazyImport(() => import('@/features/foods'), 'FoodsPage');
+const { StaffPage } = lazyImport(() => import('@/features/staff'), 'StaffPage');
 
 const App = ({ routes }: any) => {
   const history = useHistory();
@@ -66,6 +67,7 @@ export const protectedRoutes = [
       { path: ROUTES.REVENUE, component: RevenuePage },
       { path: ROUTES.FOODS, component: FoodsPage },
       { path: ROUTES.DASHBOARD, component: DashBoard },
+      { path: ROUTES.STAFF, component: StaffPage },
       { path: '*', component: NoMatch },
     ],
   },

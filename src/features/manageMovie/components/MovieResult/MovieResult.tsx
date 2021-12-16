@@ -1,4 +1,4 @@
-import { useToast } from '@chakra-ui/toast';
+import { Flex, Spinner } from '@chakra-ui/react';
 import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import qs from 'query-string';
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 
 import { CategoryItem, MovieType, filterProps } from '../../type';
-import { MovieSkeletion } from '../MovieItem/MovieSkeletion';
 import { MoviePagination } from '../MoviePagination/MoviePagination';
 import { getMovieList } from '../MovieSlice';
 
@@ -17,7 +16,7 @@ import search from '@/assets/icon/search.svg';
 import x2 from '@/assets/icon/x2.svg';
 import { ErrorMessage, SingleSelect } from '@/components';
 import { InputField, Form, SelectField } from '@/components/Form2';
-import { CheckboxField } from '@/components/Form2/CheckboxField/CheckboxField';
+import MultiSelectMenu from '@/components/Form2/SelectMultipleField/SelectMultipleField';
 import {
   MovieItem,
   getCategoryAll,
@@ -29,6 +28,7 @@ import {
 } from '@/features/manageMovie';
 import { storage } from '@/lib/firebase';
 import { rules } from '@/utils/rules';
+import { Toast } from '@/utils/Toast';
 
 export const MovieResult = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -40,13 +40,10 @@ export const MovieResult = () => {
   });
   const location = useLocation();
   const dispatch = useDispatch();
-  const toast = useToast();
   const query = useMemo(() => qs.parse(location.search), [location.search]);
   const [categoryList, setCategoryList] = useState<CategoryItem[]>([]);
   const [directorList, setDirectorList] = useState<directorType[]>([]);
   const [screenList, setScreenList] = useState<screenType[]>([]);
-  const [screenValue, setScreenValue] = useState<string[]>([]);
-  const [categoryValue, setCategoryValue] = useState<string[]>([]);
   const update = useSelector(
     (state: {
       movie: {
@@ -94,41 +91,25 @@ export const MovieResult = () => {
       directorId: data.directorId,
       cast: data.cast,
       age: Number(data.age),
-      screensId: screenValue,
-      categoryId: categoryValue,
+      screensId: data.screensId,
+      categoryId: data.categoryId,
       dateStart: data.dateStart,
       dateEnd: data.dateEnd,
     };
+    console.log('body', body);
     try {
       const res = await createMovie(body);
       if (res.success === false) {
         if (res.errors.dateStart) {
-          toast({
-            title: res.errors.dateStart,
-            position: 'top-right',
-            status: 'error',
-            duration: 3000,
-          });
+          Toast(res.errors.dateStart);
         }
         if (res.errors.dateEnd) {
-          toast({
-            title: res.errors.dateEnd,
-            position: 'top-right',
-            status: 'error',
-            duration: 3000,
-          });
+          Toast(res.errors.dateEnd);
         }
       } else {
-        toast({
-          title: res.message,
-          position: 'top-right',
-          status: 'success',
-          duration: 3000,
-        });
+        Toast(res.message, true);
         setMovie(!movie);
         setOpenAdd(false);
-        setScreenValue([]);
-        setCategoryValue([]);
         reset();
       }
     } catch (error) {
@@ -152,22 +133,6 @@ export const MovieResult = () => {
     }
   };
 
-  const handleCategory = (e: any) => {
-    if (e.target.checked && screenValue.filter((value: string) => e.target.value !== value)) {
-      setCategoryValue([...categoryValue, e.target.value]);
-    } else {
-      setCategoryValue(categoryValue.filter((value: string) => e.target.value !== value));
-    }
-  };
-
-  const handleScreen = (e: any) => {
-    if (e.target.checked && screenValue.filter((value: string) => e.target.value !== value)) {
-      setScreenValue([...screenValue, e.target.value]);
-    } else {
-      setScreenValue(screenValue.filter((value: string) => e.target.value !== value));
-    }
-  };
-
   const handleAdd = async () => {
     setOpenAdd(true);
     getCategoryAll()
@@ -180,6 +145,13 @@ export const MovieResult = () => {
       .then((res) => setScreenList(res.values.screens))
       .catch(console.log);
   };
+
+  const spinner = (
+    <Flex justifyContent="center">
+      <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
+    </Flex>
+  );
+
   return (
     <>
       <S.MovieResult>
@@ -295,37 +267,29 @@ export const MovieResult = () => {
                     rules={rules.theloai}
                     control={control}
                     render={({ field }) => (
-                      <CheckboxField
-                        title="Thể loại"
-                        name="categoryId"
-                        listCheckbox={categoryList}
-                        change={(value) => {
-                          field.onChange(value);
-                          handleCategory(value);
-                        }}
+                      <MultiSelectMenu
+                        options={categoryList}
+                        onChange={field.onChange}
+                        name="Thể loại"
                       />
                     )}
                   />
-                  <ErrorMessage name="categoryId" errors={categoryValue.length === 0 && errors} />
+                  <ErrorMessage name="categoryId" errors={errors} />
                 </S.MovieFormController>
                 <S.MovieFormController>
                   <Controller
-                    name="loaiman"
+                    name="screensId"
                     rules={rules.loaiman}
                     control={control}
                     render={({ field }) => (
-                      <CheckboxField
-                        title="Loại màn hình"
-                        name="loaiman"
-                        listCheckbox={screenList}
-                        change={(value) => {
-                          field.onChange(value);
-                          handleScreen(value);
-                        }}
+                      <MultiSelectMenu
+                        options={screenList}
+                        onChange={field.onChange}
+                        name="Loại màn hình"
                       />
                     )}
                   />
-                  <ErrorMessage name="loaiman" errors={screenValue.length === 0 && errors} />
+                  <ErrorMessage name="screensId" errors={errors} />
                 </S.MovieFormController>
                 <S.MovieFormController>
                   <Controller
@@ -414,13 +378,7 @@ export const MovieResult = () => {
           <MoviePagination filters={filters} setIsLoading={setIsLoading} />
         </S.MovieListTitle>
         <S.MovieList>
-          {isLoading ? (
-            Array(3)
-              .fill(0)
-              .map((item, index) => <MovieSkeletion key={index} />)
-          ) : (
-            <MovieItem setMovie={setMovie} movie={movie} />
-          )}
+          {isLoading ? spinner : <MovieItem setMovie={setMovie} movie={movie} />}
         </S.MovieList>
       </S.Movie>
     </>
