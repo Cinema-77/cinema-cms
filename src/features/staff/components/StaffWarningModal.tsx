@@ -27,7 +27,7 @@ export const StaffWarningModal: React.FC<StaffWarningModalProps> = (props) => {
           Xoá
         </AlertDialogHeader>
         <AlertDialogBody>
-          Bạn có chắc không ? Điều này sẽ xoá sản phẩm hiện tại và bạn không thể khôi phục lại được
+          Bạn có chắc không ? Điều này sẽ xoá nhân viên hiện tại và bạn không thể khôi phục lại được
           ?
         </AlertDialogBody>
         <AlertDialogFooter>
