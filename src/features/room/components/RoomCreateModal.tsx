@@ -65,7 +65,6 @@ export const RoomCreateModal = () => {
         <ModalContent>
           <Form<RoomValues, typeof schema>
             onSubmit={async (data) => {
-              console.log(data);
               const cinemaId = user?.cinema._id as string;
               const rowNumber = parseInt(data.rowNumber, 10);
               const seatsInRow = parseInt(data.seatsInRow, 10);

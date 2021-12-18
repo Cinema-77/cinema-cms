@@ -6,3 +6,4 @@ export * from './Form';
 export * from './RadioField';
 export * from './CheckBoxField';
 export * from './FileUpload';
+export * from './AddressField';

@@ -10,19 +10,14 @@ import {
   useDisclosure,
   useColorModeValue,
 } from '@chakra-ui/react';
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { MdSettings } from 'react-icons/md';
 import * as z from 'zod';
 
 import { useUpdateCinema } from '../api/updateCinema';
 
-import { Form, InputField, SelectField } from '@/components';
-import { useCities, getDistrict, getWards, District, Ward } from '@/features/auth';
-
-type Address = {
-  districts: District[];
-  wards: Ward[];
-};
+import { Form, InputField, AddressField } from '@/components';
+import { UserAddress } from '@/features/auth';
 
 type CinemaValues = {
   _id: string;
@@ -47,28 +42,9 @@ const schema = z.object({
 
 export const CinemaModalUpdate: React.FC<CinemaValues> = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [address, setAdress] = useState<Address>({ districts: [], wards: [] });
   const initialRef = useRef() as any;
-  const cityQuery = useCities();
   const cinemaUpdateMutation = useUpdateCinema();
   const cl = useColorModeValue('white', 'gray.900');
-
-  const onChangeCity = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const code = event.target.value.split('-');
-    console.log(code);
-    if (code.length > 1) {
-      setAdress({ districts: [], wards: [] });
-      getDistrict(code[0]).then((res) => setAdress({ districts: res.districts, wards: [] }));
-    }
-  };
-
-  const onChangeDistrict = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const code = event.target.value.split('-');
-    if (code.length > 1) {
-      setAdress({ ...address, wards: [] });
-      getWards(code[0]).then((res) => setAdress({ ...address, wards: res.wards }));
-    }
-  };
 
   const onUpdateCinema = async (data: CinemaValues) => {
     const { name, address } = data;
@@ -121,64 +97,10 @@ export const CinemaModalUpdate: React.FC<CinemaValues> = (props) => {
                     error={formState.errors['name']}
                     registration={register('name')}
                   />
-                  <SelectField
-                    label="Thành phố"
-                    registration={register('address.city')}
-                    error={formState.errors['address']?.city}
-                    defaultValue={props.address.city}
-                    options={[
-                      {
-                        title: '',
-                        items: cityQuery.data
-                          ? cityQuery?.data.map((city) => ({
-                              label: city.name,
-                              value: `${city.code}-${city.name}`,
-                            }))
-                          : [],
-                      },
-                    ]}
-                    onChanging={onChangeCity}
-                    mt="4"
-                  />
-                  <SelectField
-                    label="Quận / Huyện"
-                    registration={register('address.district')}
-                    error={formState.errors['address']?.district}
-                    options={[
-                      {
-                        title: '',
-                        items: address?.districts.map((d) => ({
-                          label: d.name,
-                          value: `${d.code}-${d.name}`,
-                        })),
-                      },
-                    ]}
-                    defaultValue={props.address.district}
-                    onChanging={onChangeDistrict}
-                    mt="4"
-                  />
-                  <SelectField
-                    label="Phường"
-                    registration={register('address.ward')}
-                    error={formState.errors['address']?.ward}
-                    options={[
-                      {
-                        title: '',
-                        items: address?.wards.map((d) => ({
-                          label: d.name,
-                          value: `${d.code}-${d.name}`,
-                        })),
-                      },
-                    ]}
-                    defaultValue={props.address.ward}
-                    mt="4"
-                  />
-                  <InputField
-                    type="text"
-                    label="Đường"
-                    error={formState.errors['address']?.street}
-                    registration={register('address.street')}
-                    mt="4"
+                  <AddressField
+                    register={register}
+                    formState={formState}
+                    userAddress={props.address as UserAddress}
                   />
                 </ModalBody>
                 <ModalFooter>

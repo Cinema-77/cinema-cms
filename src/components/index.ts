@@ -6,3 +6,4 @@ export * from './Layout';
 export * from './DatePicker';
 export * from './Loading/Loading';
 export * from './ErrorMessage';
+export * from './WarningModal';
