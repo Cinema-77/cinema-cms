@@ -36,6 +36,20 @@ const schema = z.object({
   unit: z.string().nonempty({ message: 'Tên unit là bắt buộc' }),
 });
 
+function dataURLtoFile(dataurl: any, filename: string) {
+  const arr = dataurl.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new File([u8arr], filename, { type: mime });
+}
+
 export const FoodFormModal = () => {
   const {
     isOpen,
@@ -48,24 +62,39 @@ export const FoodFormModal = () => {
   } = useFoodStore();
   const isAdding = type === FOOD_FORM.ADD;
   const initialRef = React.useRef(null);
+  const [fileName, setFileName] = React.useState('');
 
-  const handleImage = async (e: any) => {
+  const handleImageSave = async (blob: string) => {
+    const file = dataURLtoFile(blob, fileName);
+    const storageRef = ref(storage, `images/${file}`);
+    await uploadBytes(storageRef, file);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    return getDownloadURL(uploadTask.snapshot.ref);
+  };
+
+  const handleImageChange = (e: any) => {
     if (e.target.files) {
-      const fileName = e.target.files[0];
-      const storageRef = ref(storage, `images/${fileName.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, fileName);
-      await uploadBytes(storageRef, fileName);
-      getDownloadURL(uploadTask.snapshot.ref).then((url: any) => setImageSource(url));
+      Array.from(e.target.files).map((file) => readerImage(file));
+      setFileName(e.target?.files[0].name || 'file');
     }
+  };
+
+  const readerImage = (file: any) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setImageSource((e.target?.result as string) || '');
+    };
+    reader.readAsDataURL(file);
   };
 
   const createFoodMutation = useCreateFood();
   const editFoodMutation = useEditFood();
   const buttonText = isAdding ? 'Thêm sản phẩm' : 'Chỉnh sửa';
 
-  const saveFood = (type: string, data: FoodValues): Promise<ComBosResponse> => {
+  const saveFood = async (type: string, data: FoodValues): Promise<ComBosResponse> => {
     if (type === FOOD_FORM.ADD) {
-      return createFoodMutation.mutateAsync({ ...data, image: imageSource });
+      const image = await handleImageSave(imageSource);
+      return createFoodMutation.mutateAsync({ ...data, image });
     }
     return editFoodMutation.mutateAsync({
       data: { ...data, image: imageSource },
@@ -80,7 +109,7 @@ export const FoodFormModal = () => {
         <ModalContent>
           <Form<FoodValues, typeof schema>
             onSubmit={async (data) => {
-              await await saveFood(type, data);
+              await saveFood(type, data);
               onClose();
             }}
             schema={schema}
@@ -117,7 +146,7 @@ export const FoodFormModal = () => {
                         acceptedFileTypes={'image/*'}
                         onChange={(value: any) => {
                           field.onChange(value);
-                          handleImage(value);
+                          handleImageChange(value);
                         }}
                       />
                     )}
