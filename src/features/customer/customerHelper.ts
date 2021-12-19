@@ -23,7 +23,7 @@ export const mapDataCustomer = (customer: Customer[] | undefined) => {
   const newCustomer =
     customer &&
     customer
-      .filter((ctm) => ctm.email !== 'cientdefault@gmail.com')
+      .filter((ctm) => ctm.email !== 'cientdefault@gmail.com') // Exclude client default
       .map((ctm) => ({
         _id: ctm._id,
         email: ctm.email,
