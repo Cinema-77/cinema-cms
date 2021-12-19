@@ -1,8 +1,7 @@
-import { Badge, Box, Button, Flex, Stack, Heading, Spinner, SimpleGrid } from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Stack, Heading, Spinner } from '@chakra-ui/react';
 import React from 'react';
 
-import { Table, Td, Th, Tr } from '@/components';
-import { colorBadge } from '@/features/room';
+import { TableSink } from '@/components';
 import { useShowTimes } from '@/features/showtimes';
 import {
   getCurrentMonday,
@@ -61,6 +60,85 @@ export const ShowTimesList: React.FC<ShowTimeListProps> = ({ cinemaId }) => {
     });
   };
 
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: 'Thông tin lịch chiếu',
+        Footer: 'Thông tin lịch chiếu',
+        columns: [
+          {
+            Header: 'Thứ',
+            accessor: (originalRow: any) => {
+              return getDay(originalRow.date);
+            },
+          },
+          {
+            Header: 'Ngày',
+            accessor: 'date',
+          },
+          {
+            Header: 'Phim',
+            accessor: 'movie',
+            aggregate: 'uniqueCount',
+
+            Aggregated: ({ value }: any) => (
+              <Badge colorScheme="green" variant="outline">{`${value} phim`}</Badge>
+            ),
+          },
+          {
+            Header: 'Phòng',
+            accessor: 'room',
+            aggregate: 'uniqueCount',
+            Aggregated: ({ value }: any) => (
+              <Badge colorScheme="green" variant="outline">{`${value} phòng`}</Badge>
+            ),
+          },
+          {
+            Header: 'Màn hình',
+            accessor: 'screen',
+            aggregate: 'uniqueCount',
+            Aggregated: ({ value }: any) => (
+              <Badge colorScheme="green">{`${value} màn hình`}</Badge>
+            ),
+          },
+          {
+            Header: 'Suất',
+            aggregate: 'uniqueCount',
+            accessor: 'time',
+            Aggregated: ({ value }: any) => <Badge colorScheme="green">{`${value} suất`}</Badge>,
+          },
+        ],
+      },
+    ],
+    [],
+  );
+
+  const rows = React.useMemo(() => showTimesQuery.data?.showTimes, [showTimesQuery.data]);
+
+  const spinner = (
+    <Flex justifyContent="center">
+      <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
+    </Flex>
+  );
+
+  const noData = (
+    <Box
+      role="list"
+      aria-label="comments"
+      backgroundColor="white"
+      textColor="gray.500"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      flexDirection="column"
+      height="40"
+    >
+      <Heading as="h4" size="xl">
+        Không có lịch chiếu được tìm thấy
+      </Heading>
+    </Box>
+  );
+
   return (
     <Box width="100%">
       <Heading as="h2" size="lg">
@@ -93,76 +171,11 @@ export const ShowTimesList: React.FC<ShowTimeListProps> = ({ cinemaId }) => {
         >
           <Box overflowX="scroll">
             {showTimesQuery.isLoading ? (
-              <Flex justifyContent="center">
-                <Spinner
-                  thickness="4px"
-                  speed="0.65s"
-                  emptyColor="gray.200"
-                  color="blue.500"
-                  size="xl"
-                />
-              </Flex>
+              spinner
             ) : !showTimesQuery.data?.showTimes?.length ? (
-              <Box
-                role="list"
-                aria-label="comments"
-                backgroundColor="white"
-                textColor="gray.500"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                flexDirection="column"
-                height="40"
-              >
-                <Heading as="h4" size="xl">
-                  Không có lịch chiếu được tìm thấy
-                </Heading>
-              </Box>
+              noData
             ) : (
-              <Table w="full">
-                <thead>
-                  <Tr>
-                    <Th>Thứ</Th>
-                    <Th>Ngày</Th>
-                    <Th>Khung giờ</Th>
-                  </Tr>
-                </thead>
-                <tbody>
-                  {showTimesQuery.data.showTimes.map((st) => (
-                    <Box as="tr" key={st.date}>
-                      <Td>{getDay(st.date)}</Td>
-                      <Td>{st.date}</Td>
-                      <Td>
-                        <Stack spacing={2} direction="column">
-                          {st.times.map((t, index: number) => (
-                            <Stack
-                              direction="row"
-                              alignItems="flex-start"
-                              justifyContent="space-between"
-                              key={`${t.time}-${index}`}
-                            >
-                              <Badge fontSize="1em">{t.time}</Badge>
-                              <SimpleGrid columns={[2, null, 3]} spacing="40px">
-                                {t.movieRoom.map((r, index: number) => (
-                                  <Box key={`${r.room.name}-${index}`}>
-                                    <Badge
-                                      fontSize="1em"
-                                      colorScheme={colorBadge[r.room.screen.name]}
-                                    >
-                                      {r.room.name}
-                                    </Badge>
-                                    <Box>{r.movie.name}</Box>
-                                  </Box>
-                                ))}
-                              </SimpleGrid>
-                            </Stack>
-                          ))}
-                        </Stack>
-                      </Td>
-                    </Box>
-                  ))}
-                </tbody>
-              </Table>
+              <TableSink columnsTable={columns} rowsTable={rows} isGroupBy />
             )}
           </Box>
         </Stack>
