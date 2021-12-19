@@ -9,15 +9,17 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-interface FoodWarningModalProps {
+interface WarningModalProps {
   onCancel: () => void;
   onConfirm: () => void;
   visible: boolean;
+  message?: string;
 }
 
-export const FoodWarningModal: React.FC<FoodWarningModalProps> = (props) => {
-  const { onCancel, onConfirm, visible } = props;
+export const WarningModal: React.FC<WarningModalProps> = (props) => {
+  const { onCancel, onConfirm, visible, message } = props;
   const cancelRef: any = React.useRef();
+  const dialogBody = 'Bạn có chắc không? ' + message;
 
   return (
     <AlertDialog isOpen={visible} leastDestructiveRef={cancelRef} onClose={onCancel}>
@@ -26,10 +28,7 @@ export const FoodWarningModal: React.FC<FoodWarningModalProps> = (props) => {
         <AlertDialogHeader fontSize="lg" fontWeight="bold">
           Xoá
         </AlertDialogHeader>
-        <AlertDialogBody>
-          Bạn có chắc không ? Điều này sẽ xoá sản phẩm hiện tại và bạn không thể khôi phục lại được
-          ?
-        </AlertDialogBody>
+        <AlertDialogBody>{dialogBody}</AlertDialogBody>
         <AlertDialogFooter>
           <Button ref={cancelRef} onClick={onCancel}>
             Huỷ bỏ

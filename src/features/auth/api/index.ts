@@ -1,7 +1,6 @@
 import { useQuery } from 'react-query';
 
-import { AuthResponse, Cities, District } from '../types';
-
+import { AuthResponse, Cities, District, UserAddress } from '@/features/auth';
 import { axios } from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 
@@ -17,13 +16,6 @@ export type LoginCredentialsDTO = {
 export const loginWithEmailAndPassword = (data: LoginCredentialsDTO): Promise<AuthResponse> => {
   return axios.post('/staff/login', data);
 };
-
-export interface UserAddress {
-  city: string;
-  district: string;
-  ward: string;
-  street: string;
-}
 
 export type RegisterCredentialsDTO = {
   email: string;

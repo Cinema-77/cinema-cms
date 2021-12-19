@@ -32,7 +32,6 @@ import {
   FiStar,
   FiUser,
   FiUsers,
-  FiSettings,
   FiMenu,
   FiMoon,
   FiSun,
@@ -103,7 +102,6 @@ const LinkItems = () => {
       icon: GiPopcorn,
       to: '/app/foods',
     },
-    { name: 'Cài đặt', icon: FiSettings, to: '/app/settings' },
   ].filter(Boolean) as LinkItemProps[];
 
   return (

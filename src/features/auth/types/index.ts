@@ -1,11 +1,19 @@
 import { CinemaType } from '@/features/cinema';
 
-interface UserProfile {
+export interface UserAddress {
+  city: string;
+  district: string;
+  ward: string;
+  street: string;
+}
+
+export interface UserProfile {
   fullName: string;
   dateOfBirth: string;
   avatar: string;
   male: boolean;
-  address: string;
+  address: UserAddress;
+  hobby: string;
 }
 
 interface UserPermission {
@@ -22,6 +30,15 @@ export interface AuthUser {
   createdAt: string;
   permission: UserPermission;
   cinema: CinemaType;
+}
+
+export type Customer = Omit<AuthUser, 'permission' | 'cinema'>;
+
+export interface CustomersResponse {
+  success: boolean;
+  message: string;
+  errors?: any;
+  values: { users: Customer[] };
 }
 
 export interface UserResponse {

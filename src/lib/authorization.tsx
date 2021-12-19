@@ -49,6 +49,13 @@ export const POLICIES = {
 
     return false;
   },
+  'customer:update': (user: AuthUser) => {
+    if (user.permission.type === '1') {
+      return true;
+    }
+
+    return false;
+  },
 };
 
 export const useAuthorization = () => {

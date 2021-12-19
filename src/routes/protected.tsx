@@ -21,6 +21,7 @@ const { PaymentComplete } = lazyImport(() => import('@/features/seller'), 'Payme
 const { RevenuePage } = lazyImport(() => import('@/features/revenue'), 'RevenuePage');
 const { FoodsPage } = lazyImport(() => import('@/features/foods'), 'FoodsPage');
 const { StaffPage } = lazyImport(() => import('@/features/staff'), 'StaffPage');
+const { CustomerPage } = lazyImport(() => import('@/features/customer'), 'CustomerPage');
 
 const App = ({ routes }: any) => {
   const history = useHistory();
@@ -58,6 +59,7 @@ export const protectedRoutes = [
     routes: [
       { path: ROUTES.CINEMA_DETAIL, component: Cinema },
       { path: ROUTES.CINEMA_LIST, component: Cinemas },
+      { path: ROUTES.CUSTOMERS, component: CustomerPage },
       { path: ROUTES.MOVIE, component: ManageMovie },
       { path: ROUTES.ROOM_LIST, component: RoomList },
       { path: ROUTES.SHOWTIMES_CREATE, component: ShowTimesPage },

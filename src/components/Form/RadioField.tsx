@@ -3,7 +3,6 @@ import React from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
 
 import { FieldWrapper, FieldWrapperPassThroughProps } from '.';
-
 interface RadioFieldProps extends FieldWrapperPassThroughProps, FormControlProps {
   options: string[];
   defaultValue?: string;

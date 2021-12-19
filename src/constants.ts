@@ -3,6 +3,7 @@ export const ROUTES = {
   DASHBOARD: '/app/dashboard',
   CINEMA_LIST: '/app/cinema/list',
   CINEMA_DETAIL: '/app/cinema/list/:_id',
+  CUSTOMERS: '/app/customers',
   MOVIE: '/app/managemovie',
   REVENUE: '/app/revenue',
   ROOM_LIST: '/app/room/listRoom',
@@ -28,6 +29,11 @@ export const FOOD_FORM = Object.freeze({
 export const STAFF_FORM = Object.freeze({
   ADD: 'FOOD_FORM_ADD',
   EDIT: 'FOOD_FORM_EDIT',
+});
+
+export const CUSTOMER_FORM = Object.freeze({
+  ADD: 'CUSTOMER_FORM_ADD',
+  EDIT: 'CUSTOMER_FORM_EDIT',
 });
 
 export const PRICE = {
