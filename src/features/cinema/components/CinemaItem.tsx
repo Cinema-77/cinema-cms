@@ -7,19 +7,20 @@ import {
   Stack,
   useColorModeValue,
   IconButton,
+  Image,
   AlertDialog,
   AlertDialogBody,
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
-  Avatar,
 } from '@chakra-ui/react';
 import React, { useRef, useState } from 'react';
 import { FiTrash } from 'react-icons/fi';
 import { MdInfo } from 'react-icons/md';
 import { Link, useRouteMatch } from 'react-router-dom';
 
+import logoImage from '@/assets/logo.jpeg';
 import { AuthUser } from '@/features/auth';
 import { CinemaType, useDeleteCinema, CinemaModalUpdate } from '@/features/cinema';
 import { useAuth } from '@/lib/auth';
@@ -49,11 +50,7 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
     >
       <Flex alignItems="flex-start">
         <Box>
-          <Avatar
-            src="https://cdn.moveek.com/media/cache/square/5fffb30b3194c340097683.png"
-            backgroundColor="#fff"
-            size="lg"
-          />
+          <Image src={logoImage} minWidth="130px" height="130px" objectFit="cover" alt="logo" />
         </Box>
         <Box paddingX="12px">
           <Box mb="3">

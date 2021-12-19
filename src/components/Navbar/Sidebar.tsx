@@ -32,7 +32,6 @@ import {
   FiStar,
   FiUser,
   FiUsers,
-  FiSettings,
   FiMenu,
   FiMoon,
   FiSun,
@@ -102,7 +101,6 @@ const LinkItems = () => {
       icon: GiPopcorn,
       to: '/app/foods',
     },
-    { name: 'Cài đặt', icon: FiSettings, to: '/app/settings' },
   ].filter(Boolean) as LinkItemProps[];
 
   return (
@@ -287,8 +285,6 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               borderColor={useColorModeValue('gray.200', 'gray.700')}
             >
               <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
-              <MenuItem>Billing</MenuItem>
               <MenuDivider />
               <MenuItem onClick={() => logout()}>Sign out</MenuItem>
             </MenuList>
