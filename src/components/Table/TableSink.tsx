@@ -42,7 +42,7 @@ interface TableSinkProps {
   isGroupBy?: boolean;
   isExport?: boolean;
   fileNameExport?: string;
-  dropdown?: React.ReactNode;
+  hasFooter?: boolean;
 }
 
 const MenuFilter = ({ headerGroups }: any) => {
@@ -119,6 +119,7 @@ export const TableSink: React.FC<TableSinkProps> = ({
   columnsTable,
   isGroupBy = false,
   isExport = false,
+  hasFooter = false,
   fileNameExport,
 }) => {
   const {
@@ -171,6 +172,7 @@ export const TableSink: React.FC<TableSinkProps> = ({
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                   isNumeric={column.isNumeric}
                   key={uuidv4()}
+                  padding={2}
                 >
                   {column.render('Header')}
                   <chakra.span pl="4">
@@ -221,15 +223,16 @@ export const TableSink: React.FC<TableSinkProps> = ({
           })}
         </Tbody>
         <Tfoot>
-          {footerGroups.map((group: any) => (
-            <Tr {...group.getFooterGroupProps()} key={uuidv4()}>
-              {group.headers.map((column: any) => (
-                <Td {...column.getFooterProps()} key={uuidv4()}>
-                  {column.render('Footer')}
-                </Td>
-              ))}
-            </Tr>
-          ))}
+          {hasFooter &&
+            footerGroups.map((group: any) => (
+              <Tr {...group.getFooterGroupProps()} key={uuidv4()}>
+                {group.headers.map((column: any) => (
+                  <Td {...column.getFooterProps()} key={uuidv4()} padding={2}>
+                    {column.render('Footer')}
+                  </Td>
+                ))}
+              </Tr>
+            ))}
         </Tfoot>
       </Table>
 

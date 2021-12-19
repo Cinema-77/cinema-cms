@@ -18,7 +18,7 @@ type useCustomerStoreType = {
     };
     dateOfBirth: string;
     hobby?: string;
-    male?: boolean;
+    male: boolean;
     avatar?: string;
   };
   onOpen: (type: string, data?: any) => void;
@@ -26,22 +26,18 @@ type useCustomerStoreType = {
 };
 
 const defaultCustomer = {
+  _id: '',
   email: '',
   phoneNumber: '',
   fullName: '',
   dateOfBirth: '',
+  male: true,
 };
 
 export const useCustomerStore = create<useCustomerStoreType>((set) => ({
   type: '',
   isOpen: false,
-  initialValues: {
-    _id: '',
-    email: '',
-    phoneNumber: '',
-    fullName: '',
-    dateOfBirth: '',
-  },
+  initialValues: defaultCustomer,
   onOpen: (type: string, data?: any) =>
     set(() => ({
       isOpen: true,

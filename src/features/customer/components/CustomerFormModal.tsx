@@ -73,7 +73,7 @@ export const CustomerFormModal = () => {
   const { isOpen, onClose, type, initialValues } = useCustomerStore();
   const isAdding = type === CUSTOMER_FORM.ADD;
   const initialRef = React.useRef(null);
-  const [male, setMale] = React.useState(new Boolean(initialValues.male).toString());
+  const [male, setMale] = React.useState(initialValues.male.toString());
 
   const createCustomerMutation = useCreateCustomer();
   const updateCustomerMutation = useUpdateCustomer();
@@ -153,11 +153,7 @@ export const CustomerFormModal = () => {
 
                       <FormControl as="fieldset">
                         <FormLabel as="legend">Sở thích</FormLabel>
-                        <RadioGroup
-                          value={male as any}
-                          onChange={setMale}
-                          defaultValue={initialValues.male as any}
-                        >
+                        <RadioGroup value={male} onChange={setMale}>
                           <HStack spacing="24px">
                             <Radio value="true">Nam</Radio>
                             <Radio value="false">Nữ</Radio>
