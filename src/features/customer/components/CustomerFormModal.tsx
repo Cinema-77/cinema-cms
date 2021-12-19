@@ -99,7 +99,7 @@ export const CustomerFormModal = () => {
           ward: newWard[1],
         },
       },
-      customerId: initialValues.id || '',
+      customerId: initialValues._id || '',
     });
   };
 

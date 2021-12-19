@@ -19,7 +19,7 @@ interface WarningModalProps {
 export const WarningModal: React.FC<WarningModalProps> = (props) => {
   const { onCancel, onConfirm, visible, message } = props;
   const cancelRef: any = React.useRef();
-  const dialogBody = message ? message : 'Bạn có chắc không ?';
+  const dialogBody = 'Bạn có chắc không? ' + message;
 
   return (
     <AlertDialog isOpen={visible} leastDestructiveRef={cancelRef} onClose={onCancel}>

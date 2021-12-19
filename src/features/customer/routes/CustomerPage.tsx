@@ -2,11 +2,13 @@ import { Box, Flex, Spinner, Stack, Button, useColorModeValue } from '@chakra-ui
 import * as React from 'react';
 import { MdAdd } from 'react-icons/md';
 
-import { Table, Td, Th, Tr, SiteHeader, WarningModal } from '@/components';
+// import { Table, Td, Th, Tr, SiteHeader, WarningModal } from '@/components';
+import { SiteHeader, TableSink, WarningModal } from '@/components';
 import { CUSTOMER_FORM, ROUTES } from '@/constants';
 import { AuthUser } from '@/features/auth';
 import {
   CustomerFormModal,
+  mapDataCustomer,
   useCustomers,
   CustomerDropdown,
   useDeleteCustomer,
@@ -40,42 +42,63 @@ export const CustomerPage = () => {
     hideWarningDialog();
   };
 
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: 'Thông tin nhân viên',
+        Footer: 'Thông tin nhân viên',
+        columns: [
+          {
+            Header: 'Họ tên',
+            accessor: 'fullName',
+          },
+          {
+            Header: 'Email',
+            accessor: 'email',
+          },
+          {
+            Header: 'Ngày sinh',
+            accessor: 'dateOfBirth',
+          },
+          {
+            Header: 'Giới tính',
+            accessor: (originalRow: any) => {
+              return originalRow.male ? 'Nam' : 'Nữ';
+            },
+          },
+          {
+            Header: 'Số điện thoại',
+            accessor: 'phoneNumber',
+          },
+          {
+            Header: 'More',
+            accessor: (originalRow: any) => {
+              return (
+                <CustomerDropdown
+                  customer={originalRow}
+                  onDelete={() => onDelete(originalRow._id)}
+                />
+              );
+            },
+          },
+        ],
+      },
+    ],
+    [],
+  );
+
+  const rows = React.useMemo(
+    () => mapDataCustomer(customersQuery.data?.values.users),
+    [customersQuery.data],
+  );
+
   const spinner = (
     <Flex justifyContent="center">
       <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
     </Flex>
   );
 
-  const tableCustomer = (
-    <Table w="full">
-      <thead>
-        <Tr>
-          <Th>Họ Tên</Th>
-          <Th>Email</Th>
-          <Th>Ngày sinh</Th>
-          <Th>Giới tính</Th>
-          <Th>Số điện thoại</Th>
-          <Th></Th>
-        </Tr>
-      </thead>
-      <tbody>
-        {customersQuery.data?.values.users.map((customer) => {
-          return (
-            <Box as="tr" key={customer._id}>
-              <Td>{customer.profile.fullName}</Td>
-              <Td>{customer.email}</Td>
-              <Td>{customer.profile.dateOfBirth}</Td>
-              <Td>{customer.profile.male ? 'Nam' : 'Nữ'}</Td>
-              <Td>{customer.phoneNumber}</Td>
-              <Td>
-                <CustomerDropdown customer={customer} onDelete={() => onDelete(customer._id)} />
-              </Td>
-            </Box>
-          );
-        })}
-      </tbody>
-    </Table>
-  );
+  const tableCustomer = <TableSink columnsTable={columns} rowsTable={rows} isExport />;
 
   return (
     <Authorization
@@ -128,6 +151,7 @@ export const CustomerPage = () => {
         onCancel={hideWarningDialog}
         onConfirm={async () => await onConfirmDeleteFood(customerId)}
         visible={warningDialogVisible}
+        message="Điều này sẽ xoá khách hàng hiện tại và bạn không thể khôi phục lại được "
       />
     </Authorization>
   );

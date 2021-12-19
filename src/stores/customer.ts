@@ -1,13 +1,12 @@
 import create from 'zustand';
 
 import { CUSTOMER_FORM } from '@/constants';
-import { mapInitialCustomer } from '@/features/customer';
 
 type useCustomerStoreType = {
   type: string;
   isOpen: boolean;
   initialValues: {
-    id?: string;
+    _id: string;
     email: string;
     phoneNumber: string;
     fullName: string;
@@ -37,6 +36,7 @@ export const useCustomerStore = create<useCustomerStoreType>((set) => ({
   type: '',
   isOpen: false,
   initialValues: {
+    _id: '',
     email: '',
     phoneNumber: '',
     fullName: '',
@@ -46,7 +46,7 @@ export const useCustomerStore = create<useCustomerStoreType>((set) => ({
     set(() => ({
       isOpen: true,
       type,
-      initialValues: type === CUSTOMER_FORM.EDIT ? mapInitialCustomer(data) : defaultCustomer,
+      initialValues: type === CUSTOMER_FORM.EDIT ? data : defaultCustomer,
     })),
   onClose: () => set(() => ({ isOpen: false })),
 }));

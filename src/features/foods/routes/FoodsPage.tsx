@@ -136,8 +136,7 @@ export const FoodsPage = () => {
         onCancel={hideWarningDialog}
         onConfirm={async () => await onConfirmDeleteFood(deleteFoodId)}
         visible={warningDialogVisible}
-        message="Bạn có chắc không ? Điều này sẽ xoá sản phẩm hiện tại và bạn không thể khôi phục lại được
-        ?"
+        message="Điều này sẽ xoá sản phẩm hiện tại và bạn không thể khôi phục lại được ?"
       />
     </Authorization>
   );
