@@ -5,3 +5,11 @@ export interface ComBosResponse {
   message: string;
   combos: ComboItem[];
 }
+
+export interface IFood {
+  _id: string;
+  name: string;
+  price: string;
+  unit: string;
+  image: string;
+}

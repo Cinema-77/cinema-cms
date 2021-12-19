@@ -1,38 +1,45 @@
 import create from 'zustand';
 
-import { FoodValues } from '@/features/foods';
-
-type FoodDTO = {
-  type: string;
-  foodId: string;
-  imageSource: string;
-  data: FoodValues;
-};
+import { FOOD_FORM } from '@/constants';
+import { IFood } from '@/features/foods';
 
 type useFoodStoreType = {
   type: string;
   isOpen: boolean;
-  foodId: string;
-  data: FoodValues;
+  data: IFood;
   imageSource: string;
-  onOpen: () => void;
+  onOpen: (type: string, data?: any) => void;
   onClose: () => void;
-  setType: ({ type, data, foodId, imageSource }: FoodDTO) => void;
   setImageSource: (url: string) => void;
+};
+
+const defaultFood = {
+  _id: '',
+  name: '',
+  price: '',
+  unit: '',
+  image: '',
 };
 
 export const useFoodStore = create<useFoodStoreType>((set) => ({
   type: '',
   isOpen: false,
-  data: {} as FoodValues,
+  data: {
+    _id: '',
+    name: '',
+    price: '',
+    unit: '',
+    image: '',
+  },
   imageSource: '',
-  foodId: '',
-  onOpen: () =>
+  onOpen: (type: string, data?: any) =>
     set(() => ({
       isOpen: true,
+      type,
+      data: type === FOOD_FORM.EDIT ? data : defaultFood,
+      imageSource: type === FOOD_FORM.EDIT ? data.image : '',
     })),
   onClose: () => set(() => ({ isOpen: false })),
-  setType: ({ type, data, foodId, imageSource }: FoodDTO) =>
-    set(() => ({ type, data, foodId, imageSource })),
+
   setImageSource: (url: string) => set(() => ({ imageSource: url })),
 }));

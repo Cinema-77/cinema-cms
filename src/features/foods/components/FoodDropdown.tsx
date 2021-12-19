@@ -13,21 +13,10 @@ interface FoodDropdownProps {
 }
 
 export const FoodDropdown: React.FC<FoodDropdownProps> = ({ food, onDelete }) => {
-  const { onOpen: openFoodForm, setType } = useFoodStore();
+  const { onOpen } = useFoodStore();
 
   const onEdit = () => {
-    openFoodForm();
-    setType({
-      type: FOOD_FORM.EDIT,
-      data: {
-        name: food.name,
-        price: food.price.toString(),
-        unit: food.unit,
-        image: food.image,
-      },
-      foodId: food._id,
-      imageSource: food.image,
-    });
+    onOpen(FOOD_FORM.EDIT, food);
   };
 
   return (
