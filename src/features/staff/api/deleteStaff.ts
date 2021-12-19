@@ -24,7 +24,9 @@ export const useDeleteStaff = ({ config }: UseStaffDelete = {}) => {
       queryClient.setQueryData('rooms', {
         ...previousStaffs,
         values: {
-          rooms: previousStaffs?.values.staffs.filter((staff) => staff._id !== deleteStaff.staffId),
+          staffs: previousStaffs?.values.staffs.filter(
+            (staff) => staff._id !== deleteStaff.staffId,
+          ),
         },
       });
 

@@ -39,7 +39,7 @@ export const useEditStaff = ({ config }: UseUpdateStaffOptions = {}) => {
 
       queryClient.setQueryData(['staffs', updatingStaff.staffId], {
         ...previousStaff,
-        combos: { ...updatingStaff.data, _id: updatingStaff.staffId },
+        staffs: { ...updatingStaff.data, _id: updatingStaff.staffId },
       });
 
       return { previousStaff };
