@@ -1,12 +1,13 @@
 import { createStandaloneToast } from '@chakra-ui/react';
 
-export const Toast = (message: string, success?: boolean) => {
+type TypeProps = 'error' | 'success' | 'info' | 'warning';
+
+export const Toast = (message: string, type?: TypeProps) => {
   const toast = createStandaloneToast();
   toast({
     title: message,
-    status: success ? 'success' : 'error',
+    status: type || 'success',
     isClosable: true,
     position: 'top-right',
   });
-  return null;
 };

@@ -12,11 +12,11 @@ export type UpdateStaffDTO = {
     fullName: string;
     male: boolean;
     avatar: string;
-    cinemaId: string;
+    cinemaId: string | undefined;
     dateOfBirth: string;
-    permissionId: string;
+    permissionId: string | undefined;
   };
-  staffId: string;
+  staffId: string | undefined;
 };
 
 export const editStaff = ({ data, staffId }: UpdateStaffDTO): Promise<StaffRespon> => {
@@ -51,8 +51,9 @@ export const useEditStaff = ({ config }: UseUpdateStaffOptions = {}) => {
     },
     onSuccess: (res) => {
       if (res.success) {
+        queryClient.invalidateQueries('auth-user');
         queryClient.invalidateQueries('staffs');
-        Toast('Updated Staff', true);
+        Toast('Updated Staff');
       } else {
         queryClient.invalidateQueries('staffs');
       }

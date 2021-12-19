@@ -213,10 +213,16 @@ interface MobileProps extends FlexProps {
   onOpen: () => void;
 }
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+  const [type, setType] = React.useState<number>(0);
   const { logout, user } = useAuth();
   const { colorMode, toggleColorMode } = useColorMode();
   const { role } = useAuthorization();
   const { isOpen, onOpen: onOpenn, onClose } = useDisclosure();
+
+  const handleOpen = (type: number) => {
+    onOpenn();
+    setType(type);
+  };
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -294,7 +300,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                 <Text>{user?.email}</Text>
               </Box>
               <MenuDivider />
-              <MenuItem onClick={onOpenn}>Change Password</MenuItem>
+              <MenuItem onClick={() => handleOpen(1)}>Profile</MenuItem>
+              <MenuItem onClick={() => handleOpen(0)}>Change Password</MenuItem>
               <MenuItem>Settings</MenuItem>
               <MenuItem>Billing</MenuItem>
               <MenuDivider />
@@ -303,7 +310,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
           </Menu>
         </Flex>
       </HStack>
-      <Password isOpen={isOpen} onClose={onClose} />
+      <Password isOpen={isOpen} onClose={onClose} type={type} />
     </Flex>
   );
 };

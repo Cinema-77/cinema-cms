@@ -28,7 +28,3 @@ code {
   color: #0bc5ea;
   transform: scale(2.5);
 }
-
-.chakra-modal__content-container {
-  align-items: center !important;
-}

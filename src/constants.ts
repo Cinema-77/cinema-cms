@@ -27,8 +27,8 @@ export const FOOD_FORM = Object.freeze({
 });
 
 export const STAFF_FORM = Object.freeze({
-  ADD: 'FOOD_FORM_ADD',
-  EDIT: 'FOOD_FORM_EDIT',
+  ADD: 'STAFF_FORM_ADD',
+  EDIT: 'STAFF_FORM_EDIT',
 });
 
 export const CUSTOMER_FORM = Object.freeze({

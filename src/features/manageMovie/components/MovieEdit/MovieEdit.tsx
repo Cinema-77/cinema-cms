@@ -91,13 +91,13 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
       const res = await updateMovie(query.id, body);
       if (res.success === false) {
         if (res.errors.dateStart) {
-          Toast(res.errors.dateStart);
+          Toast(res.errors.dateStart, 'error');
         }
         if (res.errors.dateEnd) {
-          Toast(res.errors.dateEnd);
+          Toast(res.errors.dateEnd, 'error');
         }
       } else {
-        Toast(res.message, true);
+        Toast(res.message);
         history.push(`/app/managemovie?${qs.stringify({ page: query.page, limit: query.limit })}`);
         setMovieValue(undefined);
         setMovie(!movie);

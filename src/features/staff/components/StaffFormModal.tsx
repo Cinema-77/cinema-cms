@@ -21,7 +21,8 @@ import { StaffRespon } from '../type';
 
 import { FileUpload, Form, InputField, RadioField, SelectField, SingleSelect } from '@/components';
 import { STAFF_FORM } from '@/constants';
-import { useCinemas, useCreateStaff, usePermissions, useEditStaff } from '@/features/staff';
+import { useCinemas } from '@/features/cinema';
+import { useCreateStaff, usePermissions, useEditStaff } from '@/features/staff';
 import { storage } from '@/lib/firebase';
 import { useStaffStore } from '@/stores/staff';
 import { Toast } from '@/utils/Toast';
@@ -224,7 +225,9 @@ export const StaffFormModal = () => {
                     _hover={{
                       backgroundColor: 'cyan.700',
                     }}
-                    isLoading={StaffCreateMutation.isLoading}
+                    isLoading={
+                      isAdding ? StaffCreateMutation.isLoading : editStaffMutation.isLoading
+                    }
                   >
                     {buttonText}
                   </Button>

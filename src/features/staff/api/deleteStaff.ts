@@ -17,11 +17,11 @@ type UseStaffDelete = {
 export const useDeleteStaff = ({ config }: UseStaffDelete = {}) => {
   return useMutation({
     onMutate: async (deleteStaff) => {
-      await queryClient.cancelQueries('rooms');
+      await queryClient.cancelQueries('staffs');
 
       const previousStaffs = queryClient.getQueryData<StaffRespon>('staffs');
 
-      queryClient.setQueryData('rooms', {
+      queryClient.setQueryData('staffs', {
         ...previousStaffs,
         values: {
           staffs: previousStaffs?.values.staffs.filter(
@@ -39,7 +39,7 @@ export const useDeleteStaff = ({ config }: UseStaffDelete = {}) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries('staffs');
-      Toast('Deleted Staff', true);
+      Toast('Deleted Staff');
     },
     ...config,
     mutationFn: deleteStaff,

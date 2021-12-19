@@ -4,9 +4,9 @@ import { MdAdd } from 'react-icons/md';
 
 import { useDeleteStaff } from '../api';
 
-import { Table, Td, Th, Tr, SiteHeader } from '@/components';
+import { Table, Td, Th, Tr, SiteHeader, WarningModal } from '@/components';
 import { ROUTES, STAFF_FORM } from '@/constants';
-import { StaffWarningModal, useStaffs, StaffDropdown, StaffFormModal } from '@/features/staff';
+import { useStaffs, StaffDropdown, StaffFormModal } from '@/features/staff';
 import { Authorization, ROLES } from '@/lib/authorization';
 import { useStaffStore } from '@/stores/staff';
 import { formatDate } from '@/utils/format';
@@ -22,11 +22,14 @@ export const StaffPage = () => {
   const deleteFoodMutation = useDeleteStaff();
   const { onOpen, setType } = useStaffStore();
   const [warningDialogVisible, setWarningDialogVisible] = React.useState(false);
+  const [staffId, setStaffId] = React.useState('');
+
   const bg = useColorModeValue('gray.900', 'white');
   const color = useColorModeValue('white', 'gray.900');
 
-  const onDelete = () => {
+  const onDelete = (id: string) => {
     setWarningDialogVisible(true);
+    setStaffId(id);
   };
 
   const onConfirmDeleteStaff = (staffId: string) => {
@@ -72,19 +75,14 @@ export const StaffPage = () => {
                   textAlign={'center'}
                   colorScheme={colorBadge[name]}
                 >
-                  {name === '0' ? 'Admin' : 'Manager '}
+                  {name === '0' ? 'Admin' : name === '1' ? 'Manager' : 'Nhân viên'}
                 </Badge>
               </Td>
               <Td>{staff?.createdAt && formatDate(new Date(staff.createdAt))}</Td>
               <Td>{staff.profile?.fullName}</Td>
               <Td>{staff?.email}</Td>
               <Td>
-                <StaffDropdown staff={staff} onDelete={onDelete} />
-                <StaffWarningModal
-                  onCancel={hideWarningDialog}
-                  onConfirm={async () => await onConfirmDeleteStaff(staff._id)}
-                  visible={warningDialogVisible}
-                />
+                <StaffDropdown staff={staff} onDelete={() => onDelete(staff._id)} />
               </Td>
             </Box>
           );
@@ -158,6 +156,12 @@ export const StaffPage = () => {
       </Flex>
 
       <StaffFormModal />
+      <WarningModal
+        onCancel={hideWarningDialog}
+        onConfirm={async () => await onConfirmDeleteStaff(staffId)}
+        visible={warningDialogVisible}
+        message="Điều này sẽ xoá nhân viên hiện tại và bạn không thể khôi phục lại được ?"
+      />
     </Authorization>
   );
 };

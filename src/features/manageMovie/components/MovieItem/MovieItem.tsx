@@ -71,10 +71,10 @@ export const MovieItem: React.FC<MovieItemProps> = ({ setMovie, movie }) => {
     };
     const res: Respon = unwrapResult(data);
     if (res.success === true) {
-      Toast(res.message, true);
+      Toast(res.message);
       setMovie(!movie);
     } else {
-      Toast(res.message);
+      Toast(res.message, 'error');
     }
   };
 

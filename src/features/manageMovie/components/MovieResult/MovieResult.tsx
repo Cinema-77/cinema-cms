@@ -101,13 +101,13 @@ export const MovieResult = () => {
       const res = await createMovie(body);
       if (res.success === false) {
         if (res.errors.dateStart) {
-          Toast(res.errors.dateStart);
+          Toast(res.errors.dateStart, 'error');
         }
         if (res.errors.dateEnd) {
-          Toast(res.errors.dateEnd);
+          Toast(res.errors.dateEnd, 'error');
         }
       } else {
-        Toast(res.message, true);
+        Toast(res.message);
         setMovie(!movie);
         setOpenAdd(false);
         reset();

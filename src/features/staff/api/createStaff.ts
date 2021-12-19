@@ -47,7 +47,7 @@ export const useCreateStaff = ({ config }: UseCreateStaffOptions = {}) => {
     onSuccess: (res) => {
       if (res.success) {
         queryClient.invalidateQueries('staffs');
-        Toast('Created Staff', true);
+        Toast('Created Staff');
       } else {
         queryClient.invalidateQueries('staffs');
       }
