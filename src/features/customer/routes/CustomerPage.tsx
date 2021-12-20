@@ -2,7 +2,6 @@ import { Box, Flex, Spinner, Stack, Button, useColorModeValue } from '@chakra-ui
 import * as React from 'react';
 import { MdAdd } from 'react-icons/md';
 
-// import { Table, Td, Th, Tr, SiteHeader, WarningModal } from '@/components';
 import { SiteHeader, TableSink, WarningModal } from '@/components';
 import { CUSTOMER_FORM, ROUTES } from '@/constants';
 import { AuthUser } from '@/features/auth';
@@ -103,14 +102,14 @@ export const CustomerPage = () => {
   return (
     <Authorization
       forbiddenFallback={<div>Chỉ có quản lý mới có quyền.</div>}
-      allowedRoles={[ROLES.MANAGER, ROLES.USER]}
+      allowedRoles={[ROLES.MANAGER]}
     >
       <SiteHeader
         menuName="Danh sách khách hàng"
         menuHref={ROUTES.CUSTOMERS}
         heading={`Customers`}
         showButton={
-          <Authorization policyCheck={POLICIES['customer:update'](user as AuthUser)}>
+          <Authorization policyCheck={POLICIES['customer:save'](user as AuthUser)}>
             <Button
               leftIcon={<MdAdd />}
               backgroundColor={bg}
