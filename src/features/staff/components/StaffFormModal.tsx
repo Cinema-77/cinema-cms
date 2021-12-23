@@ -71,7 +71,7 @@ export const StaffFormModal = () => {
   const saveStaff = (type: string, data: StaffValues): Promise<StaffRespon> | any => {
     const male = data.male == 'Male' ? true : false;
     if (!imageSource) {
-      Toast('Vui lòng chọn hình ảnh');
+      Toast('Vui lòng chọn hình ảnh', 'error');
     } else {
       if (type === STAFF_FORM.ADD) {
         return StaffCreateMutation.mutateAsync({ ...data, male, avatar: imageSource });
@@ -102,13 +102,13 @@ export const StaffFormModal = () => {
               const res = await await saveStaff(type, data);
               if (!res?.success) {
                 if (res?.errors.phoneNumber) {
-                  Toast(res?.errors.phoneNumber);
+                  Toast(res?.errors.phoneNumber, 'error');
                 } else if (res?.errors.email) {
-                  Toast(res?.errors.email);
+                  Toast(res?.errors.email, 'error');
                 } else if (res?.errors.male) {
-                  Toast(res?.errors.male);
+                  Toast(res?.errors.male, 'error');
                 } else if (res?.errors.name) {
-                  Toast(res?.errors.name);
+                  Toast(res?.errors.name, 'error');
                 }
                 return;
               }
