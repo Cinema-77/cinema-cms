@@ -35,13 +35,10 @@ export interface TimeStamp {
 
 export interface ShowTimesListByDayRange {
   date: string;
-  times: {
-    time: string;
-    movieRoom: {
-      room: Room;
-      movie: MovieType;
-    }[];
-  }[];
+  movie: string;
+  room: string;
+  screen: string;
+  time: string;
 }
 export interface ShowTimesListByDayRangeResponse {
   message: string;

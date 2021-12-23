@@ -12,7 +12,7 @@ import { formatNumber } from '@/utils/format';
 export const FoodsPage = () => {
   const foodsQuery = useFoods();
   const deleteFoodMutation = useDeleteFood();
-  const { onOpen, setType } = useFoodStore();
+  const { onOpen } = useFoodStore();
   const [warningDialogVisible, setWarningDialogVisible] = React.useState(false);
   const [deleteFoodId, setdeleteFoodId] = React.useState('');
   const bg = useColorModeValue('gray.900', 'white');
@@ -96,18 +96,7 @@ export const FoodsPage = () => {
                 transform: 'scale(0.95)',
               }}
               onClick={() => {
-                onOpen();
-                setType({
-                  type: FOOD_FORM.ADD,
-                  data: {
-                    name: '',
-                    price: '',
-                    unit: '',
-                    image: '',
-                  },
-                  foodId: '',
-                  imageSource: '',
-                });
+                onOpen(FOOD_FORM.ADD);
               }}
             >
               Thêm sản phẩm

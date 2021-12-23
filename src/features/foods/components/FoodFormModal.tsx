@@ -19,16 +19,11 @@ import * as z from 'zod';
 
 import { Form, InputField, FileUpload } from '@/components';
 import { FOOD_FORM } from '@/constants';
-import { ComBosResponse, useCreateFood, useEditFood } from '@/features/foods';
+import { ComBosResponse, useCreateFood, useEditFood, IFood } from '@/features/foods';
 import { storage } from '@/lib/firebase';
 import { useFoodStore } from '@/stores/food';
 
-export type FoodValues = {
-  name: string;
-  price: string;
-  unit: string;
-  image: string;
-};
+type FoodValues = Partial<IFood>;
 
 const schema = z.object({
   name: z.string().nonempty({ message: 'Tên sản phẩm là bắt buộc' }),
@@ -51,15 +46,7 @@ function dataURLtoFile(dataurl: any, filename: string) {
 }
 
 export const FoodFormModal = () => {
-  const {
-    isOpen,
-    onClose,
-    data: dataFood,
-    type,
-    foodId,
-    imageSource,
-    setImageSource,
-  } = useFoodStore();
+  const { isOpen, onClose, data: dataFood, type, imageSource, setImageSource } = useFoodStore();
   const isAdding = type === FOOD_FORM.ADD;
   const initialRef = React.useRef(null);
   const [fileName, setFileName] = React.useState('');
@@ -91,14 +78,14 @@ export const FoodFormModal = () => {
   const editFoodMutation = useEditFood();
   const buttonText = isAdding ? 'Thêm sản phẩm' : 'Chỉnh sửa';
 
-  const saveFood = async (type: string, data: FoodValues): Promise<ComBosResponse> => {
+  const saveFood = async (type: string, data: IFood): Promise<ComBosResponse> => {
     if (type === FOOD_FORM.ADD) {
       const image = await handleImageSave(imageSource);
       return createFoodMutation.mutateAsync({ ...data, image });
     }
     return editFoodMutation.mutateAsync({
       data: { ...data, image: imageSource },
-      foodId,
+      foodId: data._id,
     });
   };
 
@@ -109,7 +96,7 @@ export const FoodFormModal = () => {
         <ModalContent>
           <Form<FoodValues, typeof schema>
             onSubmit={async (data) => {
-              await saveFood(type, data);
+              await saveFood(type, data as IFood);
               onClose();
             }}
             schema={schema}

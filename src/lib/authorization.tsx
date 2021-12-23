@@ -49,7 +49,7 @@ export const POLICIES = {
 
     return false;
   },
-  'customer:update': (user: AuthUser) => {
+  'customer:save': (user: AuthUser) => {
     if (user.permission.type === '1') {
       return true;
     }
