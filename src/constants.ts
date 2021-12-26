@@ -31,8 +31,8 @@ export const CUSTOMER_FORM = Object.freeze({
 });
 
 export const PRICE = {
-  STUDENT: 45000,
-  CHILD: 50000,
+  MEMBER: 45000,
+  STUDENT: 50000,
 };
 
 export const REVENUE_TYPE = [

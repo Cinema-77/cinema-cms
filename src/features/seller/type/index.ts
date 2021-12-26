@@ -36,7 +36,7 @@ export interface ComboItem {
 export enum UserType {
   Adult = 'Adult',
   Student = 'Student',
-  Child = 'Child',
+  Member = 'Member',
 }
 
 interface IBill {

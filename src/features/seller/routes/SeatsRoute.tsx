@@ -72,8 +72,8 @@ export const SeatsRoute: React.FC<SeatsRouteProps> = (props) => {
         setDisplayPrice(selectSeat.price);
         return setSelectedSeats([...selectedSeats]);
       }
-      case 'Child': {
-        selectSeat.price = PRICE.CHILD;
+      case 'Member': {
+        selectSeat.price = PRICE.MEMBER;
         selectSeat.type = 0;
         setDisplayPrice(selectSeat.price);
         return setSelectedSeats([...selectedSeats]);
@@ -175,11 +175,11 @@ export const SeatsRoute: React.FC<SeatsRouteProps> = (props) => {
               </Radio>
               <Radio
                 colorScheme="cyan"
-                value={UserType.Child}
+                value={UserType.Member}
                 onChange={onCheckPersonType}
                 isDisabled={shouldDisabled()}
               >
-                Trẻ em
+                Thành viên
               </Radio>
             </SimpleGrid>
           </RadioGroup>

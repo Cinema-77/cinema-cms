@@ -86,25 +86,26 @@ export const useSellerStore = create<SellerStore>((set) => ({
   fetchMember: async (phoneNumber: string) => {
     set({ isLoading: true });
     const { user, success } = await getUserProfile({ phoneNumber });
+    set({ isLoading: false });
 
     if (!success) {
-      set({ isLoading: false });
       return false;
     } else {
-      set({ member: user, isLoading: false, point: user.point });
+      set({ member: user, point: user.point });
     }
+
     return true;
   },
   fetchGifts: async (screenId: string) => {
     set({ isLoading: true });
     const { values, status } = await getGiftByScreen({ screenId });
     const gifts = values.gifts.filter((g) => g.type !== 2); // hide discount gift
+    set({ isLoading: false });
 
     if (!status) {
-      set({ isLoading: false });
       return false;
     } else {
-      set({ gifts: gifts, isLoading: false });
+      set({ gifts: gifts });
     }
     return true;
   },

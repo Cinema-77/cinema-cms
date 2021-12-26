@@ -45,7 +45,7 @@ export const TimeSlotList: React.FC<TimeSlotListProps> = (props) => {
         height="40"
       >
         <Heading as="h4" size="xl" fontSize="25px">
-          Không có phòng được tìm thấy
+          Vui lòng chọn phim trước
         </Heading>
       </Box>
     );

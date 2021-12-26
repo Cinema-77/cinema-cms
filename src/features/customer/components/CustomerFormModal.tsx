@@ -43,7 +43,10 @@ const regexDate = /(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\
 
 const schemaUpdateCustomer = z.object({
   email: z.string().nonempty({ message: 'Email là bắt buộc' }),
-  phoneNumber: z.string().nonempty({ message: 'Số điện thoại là bắt buộc' }),
+  phoneNumber: z
+    .string()
+    .nonempty({ message: 'Số điện thoại là bắt buộc' })
+    .regex(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g, 'số điện thoại không đúng định dạng'),
   fullName: z.string().nonempty({ message: 'Họ tên là bắt buộc' }),
   dateOfBirth: z
     .string()
@@ -61,7 +64,10 @@ const schemaUpdateCustomer = z.object({
 
 const schemaCreateCustomer = z.object({
   email: z.string().nonempty({ message: 'Email là bắt buộc' }),
-  phoneNumber: z.string().nonempty({ message: 'Số điện thoại là bắt buộc' }),
+  phoneNumber: z
+    .string()
+    .nonempty({ message: 'Số điện thoại là bắt buộc' })
+    .regex(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g, 'số điện thoại không đúng định dạng'),
   fullName: z.string().nonempty({ message: 'Họ tên là bắt buộc' }),
   dateOfBirth: z
     .string()
