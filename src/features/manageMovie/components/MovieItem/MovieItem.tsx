@@ -1,4 +1,4 @@
-import { useToast } from '@chakra-ui/toast';
+import { Flex, Spinner } from '@chakra-ui/react';
 import { unwrapResult } from '@reduxjs/toolkit';
 import qs from 'query-string';
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
@@ -11,13 +11,13 @@ import { MovieEdit } from '../MovieEdit/MovieEdit';
 import { DeleteMovie } from '../MovieSlice';
 
 import * as S from './MovieItem.style';
-import { MovieSkeletion } from './MovieSkeletion';
 
 import clock from '@/assets/icon/clock.svg';
 import edit from '@/assets/icon/edit.svg';
 import play from '@/assets/icon/play.svg';
 import trash from '@/assets/icon/trash.svg';
 import x from '@/assets/icon/x.svg';
+import { Toast } from '@/utils/Toast';
 
 interface MovieItemProps {
   setMovie: Dispatch<SetStateAction<boolean>>;
@@ -31,16 +31,32 @@ export const MovieItem: React.FC<MovieItemProps> = ({ setMovie, movie }) => {
   const [movieValue, setMovieValue] = useState<MovieItemType | undefined>();
   const [listMovie, setMovieList] = useState<MovieItemType[]>([]);
   const update = useSelector((state: any) => state.movie.list.movies);
+  const [screenValue, setScreenValue] = useState<string[]>([]);
+  const [categoryValue, setCategoryValue] = useState<string[]>([]);
+  console.log(categoryValue);
   const history = useHistory();
   const location = useLocation();
-  const toast = useToast();
   const query = useMemo(() => qs.parse(location.search), [location.search]);
   const dispatch = useDispatch();
   useEffect(() => {
     if (update) {
       setMovieList(update);
+      const idScreen: string[] = [];
+      const idCategory: string[] = [];
+      for (const i in update) {
+        for (const j in update[i].screens) {
+          if (update[i].screens[j]) idScreen.push(update[i].screens[j].name);
+        }
+      }
+      for (const i in update) {
+        for (const j in update[i].categories) {
+          if (update[i].categories[j]) idCategory.push(update[i].categories[j].name);
+        }
+      }
+      setScreenValue(idScreen.filter((item, index) => idScreen.indexOf(item) === index));
+      setCategoryValue(idCategory.filter((item, index) => idCategory.indexOf(item) === index));
     }
-  }, [update]);
+  }, [update, dispatch]);
 
   const handleDelete = (id: string) => {
     setIsMovie(true);
@@ -55,15 +71,10 @@ export const MovieItem: React.FC<MovieItemProps> = ({ setMovie, movie }) => {
     };
     const res: Respon = unwrapResult(data);
     if (res.success === true) {
-      toast({
-        title: res.message,
-        position: 'top-right',
-        status: 'success',
-        duration: 3000,
-      });
+      Toast(res.message);
       setMovie(!movie);
     } else {
-      toast({ title: res.message, position: 'top-right', status: 'error', duration: 3000 });
+      Toast(res.message, 'error');
     }
   };
 
@@ -77,6 +88,12 @@ export const MovieItem: React.FC<MovieItemProps> = ({ setMovie, movie }) => {
       .then((res) => setMovieValue(res.values.movie))
       .catch(console.log);
   };
+
+  const spinner = (
+    <Flex justifyContent="center">
+      <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
+    </Flex>
+  );
   return (
     <>
       {listMovie.length !== 0
@@ -103,14 +120,7 @@ export const MovieItem: React.FC<MovieItemProps> = ({ setMovie, movie }) => {
                     <>
                       <S.MovieSpan>Thể loại:</S.MovieSpan>
                       <S.MovieSpan>
-                        {movie.categories.length > 1 &&
-                          movie.categories.map((category) => (
-                            <span key={category._id}>{category.name}, </span>
-                          ))}
-                        {movie.categories.length === 1 &&
-                          movie.categories.map((category) => (
-                            <span key={category._id}>{category.name}</span>
-                          ))}
+                        {categoryValue.length > 0 && <span>{categoryValue.toString()}</span>}
                       </S.MovieSpan>
                     </>
                   )}
@@ -136,14 +146,7 @@ export const MovieItem: React.FC<MovieItemProps> = ({ setMovie, movie }) => {
                     <>
                       <S.MovieSpan>Loại màn:</S.MovieSpan>
                       <S.MovieSpan>
-                        {movie.screens.length > 1 &&
-                          movie.screens.map((screen, index) => (
-                            <span key={index}>{screen.name}, </span>
-                          ))}
-                        {movie.screens.length === 1 &&
-                          movie.screens.map((screen, index) => (
-                            <span key={index}>{screen.name}</span>
-                          ))}
+                        {screenValue.length > 0 && <span>{screenValue.toString()}</span>}
                       </S.MovieSpan>
                     </>
                   )}
@@ -224,9 +227,7 @@ export const MovieItem: React.FC<MovieItemProps> = ({ setMovie, movie }) => {
               )}
             </S.MovieItem>
           ))
-        : Array(3)
-            .fill(0)
-            .map((item, index) => <MovieSkeletion key={index} />)}
+        : spinner}
       {movieValue && (
         <MovieEdit
           movieValue={movieValue}

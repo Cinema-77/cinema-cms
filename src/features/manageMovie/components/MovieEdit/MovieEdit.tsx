@@ -1,4 +1,3 @@
-import { useToast } from '@chakra-ui/toast';
 import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import qs from 'query-string';
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
@@ -12,9 +11,10 @@ import * as S from '../MovieResult/MovieResult.style';
 import x2 from '@/assets/icon/x2.svg';
 import { ErrorMessage, SingleSelect } from '@/components';
 import { InputField, Form, SelectField } from '@/components/Form2';
-import { CheckboxField } from '@/components/Form2/CheckboxField/CheckboxField';
+import MultiSelectMenu from '@/components/Form2/SelectMultipleField/SelectMultipleField';
 import { storage } from '@/lib/firebase';
 import { rules } from '@/utils/rules';
+import { Toast } from '@/utils/Toast';
 interface MovieEditProps {
   movieValue: MovieItemType;
   setMovieValue: Dispatch<SetStateAction<MovieItemType | undefined>>;
@@ -28,20 +28,21 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
   setMovie,
   movie,
 }) => {
-  const [screenValue, setScreenValue] = useState<string[]>(() => {
+  const [screenValue] = useState<string[]>(() => {
     const idScreens = [];
-    for (let i = 0; i < movieValue.screens.length; i++) {
+    for (const i in movieValue.screens) {
       idScreens.push(movieValue.screens[i]._id);
     }
     return idScreens;
   });
-  const [categoryValue, setCategoryValue] = useState<string[]>(() => {
+  const [categoryValue] = useState<string[]>(() => {
     const idCategory = [];
-    for (let i = 0; i < movieValue.categories.length; i++) {
+    for (const i in movieValue.categories) {
       idCategory.push(movieValue.categories[i]._id);
     }
     return idCategory;
   });
+  console.log('screenValue', screenValue);
   const [categoryList, setCategoryList] = useState<CategoryItem[]>([]);
   const [directorList, setDirectorList] = useState<directorType[]>([]);
   const [screenList, setScreenList] = useState<screenType[]>([]);
@@ -55,11 +56,11 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
     defaultValues: {
       name: movieValue.name,
       moveDuration: Number(movieValue.moveDuration),
-      categoryId: '',
+      categoryId: categoryValue,
       directorId: movieValue.director._id,
       cast: movieValue.cast,
       description: movieValue.description,
-      loaiman: '',
+      screensId: screenValue,
       image: movieValue.image,
       trailer: movieValue.trailer,
       age: Number(movieValue.age),
@@ -70,7 +71,6 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
   const location = useLocation();
   const query = useMemo(() => qs.parse(location.search), [location.search]);
   const history = useHistory();
-  const toast = useToast();
   const handleValue = async (data: MovieType) => {
     const body = {
       name: data.name,
@@ -81,32 +81,23 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
       directorId: data.directorId,
       cast: data.cast,
       age: Number(data.age),
-      screensId: screenValue,
-      categoryId: categoryValue,
+      screensId: data.screensId,
+      categoryId: data.categoryId,
       dateStart: data.dateStart,
       dateEnd: data.dateEnd,
     };
+    console.log('body', body);
     try {
       const res = await updateMovie(query.id, body);
       if (res.success === false) {
         if (res.errors.dateStart) {
-          toast({
-            title: res.errors.dateStart,
-            position: 'top-right',
-            status: 'error',
-            duration: 3000,
-          });
+          Toast(res.errors.dateStart, 'error');
         }
         if (res.errors.dateEnd) {
-          toast({
-            title: res.errors.dateEnd,
-            position: 'top-right',
-            status: 'error',
-            duration: 3000,
-          });
+          Toast(res.errors.dateEnd, 'error');
         }
       } else {
-        toast({ title: res.message, position: 'top-right', status: 'success', duration: 3000 });
+        Toast(res.message);
         history.push(`/app/managemovie?${qs.stringify({ page: query.page, limit: query.limit })}`);
         setMovieValue(undefined);
         setMovie(!movie);
@@ -141,22 +132,6 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
       const uploadTask = uploadBytesResumable(storageRef, fileName);
       await uploadBytes(storageRef, fileName);
       getDownloadURL(uploadTask.snapshot.ref).then((url: string) => setValue(url));
-    }
-  };
-
-  const handleCategory = (e: any) => {
-    if (e.target.checked && screenValue.filter((value: string) => e.target.value !== value)) {
-      setCategoryValue([...categoryValue, e.target.value]);
-    } else {
-      setCategoryValue(categoryValue.filter((value: string) => e.target.value !== value));
-    }
-  };
-
-  const handleScreen = (e: any) => {
-    if (e.target.checked && screenValue.filter((value: string) => e.target.value !== value)) {
-      setScreenValue([...screenValue, e.target.value]);
-    } else {
-      setScreenValue(screenValue.filter((value: string) => e.target.value !== value));
     }
   };
 
@@ -258,42 +233,34 @@ export const MovieEdit: React.FC<MovieEditProps> = ({
             <S.MovieFormController>
               <Controller
                 name="categoryId"
-                rules={categoryValue.length === 0 ? rules.theloai : undefined}
+                rules={rules.theloai}
                 control={control}
                 render={({ field }) => (
-                  <CheckboxField
-                    title="Thể loại"
-                    name="categoryId"
-                    listCheckbox={categoryList}
-                    change={(value) => {
-                      field.onChange(value);
-                      handleCategory(value);
-                    }}
-                    value={categoryValue}
+                  <MultiSelectMenu
+                    defaultValue={getValues('categoryId')}
+                    options={categoryList}
+                    onChange={field.onChange}
+                    name="Thể loại"
                   />
                 )}
               />
-              <ErrorMessage name="categoryId" errors={categoryValue.length === 0 && errors} />
+              <ErrorMessage name="categoryId" errors={errors} />
             </S.MovieFormController>
             <S.MovieFormController>
               <Controller
-                name="loaiman"
-                rules={screenValue.length === 0 ? rules.loaiman : undefined}
+                name="screensId"
+                rules={rules.loaiman}
                 control={control}
                 render={({ field }) => (
-                  <CheckboxField
-                    title="Loại màn hình"
-                    name="loaiman"
-                    listCheckbox={screenList}
-                    change={(value) => {
-                      field.onChange(value);
-                      handleScreen(value);
-                    }}
-                    value={screenValue}
+                  <MultiSelectMenu
+                    defaultValue={getValues('screensId')}
+                    options={screenList}
+                    onChange={field.onChange}
+                    name="Loại màn hình"
                   />
                 )}
               />
-              <ErrorMessage name="loaiman" errors={screenValue.length === 0 && errors} />
+              <ErrorMessage name="loaiman" errors={errors} />
             </S.MovieFormController>
             <S.MovieFormController>
               <Controller
