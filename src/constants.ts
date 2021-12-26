@@ -12,6 +12,7 @@ export const ROUTES = {
   PAYMENT_COMPLETE: '/app/seller/paymentComplete',
   SELLER_TICKET_ID: '/app/seller/bookTicket/:_id',
   FOODS: '/app/foods',
+  STAFF: '/app/users',
 };
 
 export const SITE_MODAL_TYPES = Object.freeze({
@@ -23,6 +24,11 @@ export const SITE_MODAL_TYPES = Object.freeze({
 export const FOOD_FORM = Object.freeze({
   ADD: 'FOOD_FORM_ADD',
   EDIT: 'FOOD_FORM_EDIT',
+});
+
+export const STAFF_FORM = Object.freeze({
+  ADD: 'STAFF_FORM_ADD',
+  EDIT: 'STAFF_FORM_EDIT',
 });
 
 export const CUSTOMER_FORM = Object.freeze({

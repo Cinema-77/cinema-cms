@@ -7,6 +7,7 @@ import { FieldWrapper, FieldWrapperPassThroughProps } from './FieldWrapper';
 interface InputFieldProps extends FieldWrapperPassThroughProps, FormControlProps {
   type?: 'text' | 'email' | 'password';
   registration: Partial<UseFormRegisterReturn>;
+  disabled?: boolean;
 }
 
 export const InputField: React.FC<InputFieldProps> = (props) => {
