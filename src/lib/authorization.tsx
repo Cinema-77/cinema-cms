@@ -56,6 +56,27 @@ export const POLICIES = {
 
     return false;
   },
+  'revenue:quarter': (user: AuthUser) => {
+    if (user.permission.type === '1') {
+      return true;
+    }
+
+    return false;
+  },
+  'food:create': (user: AuthUser) => {
+    if (user.permission.type === '1') {
+      return true;
+    }
+
+    return false;
+  },
+  'food:action': (user: AuthUser) => {
+    if (user.permission.type === '1') {
+      return true;
+    }
+
+    return false;
+  },
 };
 
 export const useAuthorization = () => {

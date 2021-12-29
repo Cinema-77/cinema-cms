@@ -144,7 +144,7 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable, columnsTa
 
   return (
     <Box overflow="scroll">
-      <Stack spacing={2} direction="row" justifyContent="flex-end">
+      <Stack spacing={2} direction="row" justifyContent="flex-end" marginY={3}>
         <GlobalFilter
           preGlobalFilteredRows={preGlobalFilteredRows}
           globalFilter={globalFilter}

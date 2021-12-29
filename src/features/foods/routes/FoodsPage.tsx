@@ -4,12 +4,15 @@ import { MdAdd } from 'react-icons/md';
 
 import { Table, Td, Th, Tr, SiteHeader, WarningModal } from '@/components';
 import { ROUTES, FOOD_FORM } from '@/constants';
+import { AuthUser } from '@/features/auth';
 import { useFoods, FoodFormModal, FoodDropdown, useDeleteFood } from '@/features/foods';
-import { Authorization, ROLES } from '@/lib/authorization';
+import { useAuth } from '@/lib/auth';
+import { Authorization, ROLES, POLICIES } from '@/lib/authorization';
 import { useFoodStore } from '@/stores/food';
 import { formatNumber } from '@/utils/format';
 
 export const FoodsPage = () => {
+  const { user } = useAuth();
   const foodsQuery = useFoods();
   const deleteFoodMutation = useDeleteFood();
   const { onOpen } = useFoodStore();
@@ -61,9 +64,11 @@ export const FoodsPage = () => {
 
               <Td>{food.unit}</Td>
               <Td>{formatNumber(food.price)}</Td>
-              <Td>
-                <FoodDropdown food={food} onDelete={() => onDelete(food._id)} />
-              </Td>
+              <Authorization policyCheck={POLICIES['food:action'](user as AuthUser)}>
+                <Td>
+                  <FoodDropdown food={food} onDelete={() => onDelete(food._id)} />
+                </Td>
+              </Authorization>
             </Box>
           );
         })}
@@ -73,7 +78,7 @@ export const FoodsPage = () => {
 
   return (
     <Authorization
-      forbiddenFallback={<div>Only manager can view this.</div>}
+      forbiddenFallback={<div>Chỉ những người có quyền mới có thể truy cập.</div>}
       allowedRoles={[ROLES.MANAGER, ROLES.USER]}
     >
       <SiteHeader
@@ -81,10 +86,7 @@ export const FoodsPage = () => {
         menuHref={ROUTES.FOODS}
         heading={`Foods`}
         showButton={
-          <Authorization
-            forbiddenFallback={<div>Only manager can view this.</div>}
-            allowedRoles={[ROLES.MANAGER]}
-          >
+          <Authorization policyCheck={POLICIES['food:create'](user as AuthUser)}>
             <Button
               leftIcon={<MdAdd />}
               backgroundColor={bg}

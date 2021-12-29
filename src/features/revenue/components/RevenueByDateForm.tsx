@@ -8,7 +8,7 @@ import {
   useGetRevenueByDate,
   ColumnChart,
   RevenueInfo,
-  IRevenueData,
+  // IRevenueData,
 } from '@/features/revenue';
 import { formatDate, formatNumber, convertToMoney } from '@/utils/format';
 
@@ -19,9 +19,15 @@ type RevenueValues = {
 
 interface RevenueByDateFormProps {
   cinemaId: string;
+  userName: string;
+  roleType: string;
 }
 
-export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }) => {
+export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({
+  cinemaId,
+  userName,
+  roleType,
+}) => {
   const [date, setDate] = React.useState<string>(formatDate(new Date()));
   const columns = React.useMemo(
     () => [
@@ -98,10 +104,20 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
           },
           {
             Header: 'TT',
-            accessor: (originalRow: IRevenueData) => {
+            accessor: (originalRow: any) => {
               return <RevenueInfo revenueData={originalRow} />;
             },
             canGroupBy: false,
+          },
+          {
+            Header: 'Tên nhân viên',
+            isVisible: true,
+            accessor: (originalRow: any) => `${originalRow.staff.profile.fullName}` as any,
+            aggregate: 'uniqueCount',
+            Aggregated: ({ value }: any) => {
+              console.log(value);
+              return `${value} phòng`;
+            },
           },
         ],
       },
@@ -153,7 +169,8 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
   return (
     <Stack spacing={3} width="full">
       <Stack direction="column" justifyContent="center">
-        <Heading fontSize="20px">Thống kê doanh thu </Heading>
+        <Heading fontSize="20px">Thống kê doanh thu</Heading>
+        {roleType === '2' && <Heading fontSize="20px">{`Nhân viên: ${userName} `}</Heading>}
       </Stack>
       <Box paddingBottom={5} borderBottom="1px solid" borderColor="gray.300">
         <Form<RevenueValues>
