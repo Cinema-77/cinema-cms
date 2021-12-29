@@ -37,6 +37,8 @@ export const PaymentComplete = () => {
     (state) => ({ bills: state.bills, clearBill: state.clearBill }),
     shallow,
   );
+  console.log(bills);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useHistory();
 
@@ -105,6 +107,7 @@ export const PaymentComplete = () => {
                   roomName={bills.roomName}
                   price={bill.price}
                   time={bills.time}
+                  staff={bills.staff}
                 />
               ))}
 

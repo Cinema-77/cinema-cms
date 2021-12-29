@@ -1,3 +1,4 @@
+import { Customer, AuthUser } from '@/features/auth';
 import { MovieType } from '@/features/manageMovie';
 import { Room, TimeSlot } from '@/features/room';
 
@@ -48,14 +49,17 @@ export interface IRevenueData {
   billId: string;
   createdAt: string;
   movieName: string;
-  price: number;
+  price: string;
   quantity: number;
   promotion: number;
+  promotionType: string;
   roomName: string;
   screenName: string;
   total: number;
   type: string;
   date: string;
+  staff: AuthUser;
+  user: Customer;
 }
 
 export interface RevenueResponse extends BaseEntity {

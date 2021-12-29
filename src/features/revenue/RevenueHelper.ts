@@ -33,8 +33,25 @@ export const getSeriesByMonth = (data: IRevenueData[]) => {
 export const mapDataRevenue = (data: IRevenueData[]) => {
   return data.map((revenue) => ({
     ...revenue,
-    price: formatNumber(revenue.price),
+    price: revenue.price,
     totalString: formatNumber(revenue.total),
     promotion: revenue.promotion * -1,
   }));
 };
+
+export const mapDataInfo = (data: IRevenueData) => ({
+  id: data.billId,
+  movieName: data.movieName,
+  createdAt: data.createdAt,
+  price: data.price,
+  quantity: data.quantity,
+  promotion: data.promotion,
+  promotionType: data.promotionType,
+  roomName: data.roomName,
+  screenName: data.screenName,
+  total: formatNumber(data.total),
+  type: data.type,
+  date: data.date,
+  staffFullName: data.staff.profile?.fullName || '',
+  userName: data.user.profile?.fullName || '',
+});

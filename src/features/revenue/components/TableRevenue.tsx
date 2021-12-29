@@ -17,6 +17,7 @@ import {
   Stack,
   Select,
   Text,
+  Box,
 } from '@chakra-ui/react';
 import * as FileSaver from 'file-saver';
 import * as React from 'react';
@@ -142,7 +143,7 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable, columnsTa
   ) as any;
 
   return (
-    <>
+    <Box overflow="scroll">
       <Stack spacing={2} direction="row" justifyContent="flex-end">
         <GlobalFilter
           preGlobalFilteredRows={preGlobalFilteredRows}
@@ -269,6 +270,6 @@ export const TableRevenue: React.FC<TableRevenueProps> = ({ rowsTable, columnsTa
           ))}
         </Select>
       </Stack>
-    </>
+    </Box>
   );
 };

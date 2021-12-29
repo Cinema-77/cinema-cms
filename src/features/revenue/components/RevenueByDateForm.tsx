@@ -3,7 +3,13 @@ import * as R from 'ramda';
 import * as React from 'react';
 
 import { Form, SingleSelect } from '@/components';
-import { TableRevenue, useGetRevenueByDate, ColumnChart } from '@/features/revenue';
+import {
+  TableRevenue,
+  useGetRevenueByDate,
+  ColumnChart,
+  RevenueInfo,
+  IRevenueData,
+} from '@/features/revenue';
 import { formatDate, formatNumber, convertToMoney } from '@/utils/format';
 
 type RevenueValues = {
@@ -90,6 +96,13 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
               return <>Tổng {formatNumber(total)}</>;
             },
           },
+          {
+            Header: 'TT',
+            accessor: (originalRow: IRevenueData) => {
+              return <RevenueInfo revenueData={originalRow} />;
+            },
+            canGroupBy: false,
+          },
         ],
       },
     ],
@@ -99,7 +112,7 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({ cinemaId }
     cinemaId,
     date: date,
     config: {
-      refetchInterval: 2000,
+      refetchInterval: 10000,
     },
   });
 

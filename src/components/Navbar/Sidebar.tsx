@@ -301,8 +301,6 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               <MenuDivider />
               <MenuItem onClick={() => handleOpen(1)}>Profile</MenuItem>
               <MenuItem onClick={() => handleOpen(0)}>Change Password</MenuItem>
-              <MenuItem>Settings</MenuItem>
-              <MenuItem>Billing</MenuItem>
               <MenuDivider />
               <MenuItem onClick={() => logout()}>Sign out</MenuItem>
             </MenuList>

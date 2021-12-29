@@ -4,3 +4,4 @@ export * from './TableRevenue';
 export * from './RevenueByDateForm';
 export * from './RevenueByMovieForm';
 export * from './RevenueByQuarterForm';
+export * from './RevenueInfo';

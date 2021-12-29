@@ -1,6 +1,7 @@
 import { Box, Heading, Text, Stack, Flex } from '@chakra-ui/react';
 import React from 'react';
 
+import { AuthUser } from '@/features/auth';
 import { useAuth } from '@/lib/auth';
 import { formatNumber, removeAccents } from '@/utils/format';
 
@@ -11,10 +12,11 @@ interface TicketCardProps {
   seatName: string;
   price: number;
   roomName: string;
+  staff?: AuthUser;
 }
 
 export const TicketCard: React.FC<TicketCardProps> = (props) => {
-  const { date, movieName, seatName, time, roomName, price } = props;
+  const { date, movieName, seatName, time, roomName, price, staff } = props;
   const { user } = useAuth();
 
   const address = `${user?.cinema.address.street}, ${user?.cinema.address.ward}, ${user?.cinema.address.district}, ${user?.cinema.address.city}`;
@@ -48,7 +50,7 @@ export const TicketCard: React.FC<TicketCardProps> = (props) => {
         </Heading>
         <Text>{new Date().toUTCString()}</Text>
         <Text>PDS : SCAN</Text>
-        <Text>STAFF : AFF</Text>
+        <Text>STAFF : {staff ? staff.profile.fullName : 'AFF'}</Text>
       </Stack>
       <Stack spacing={1} marginTop={2} paddingY={2} borderY="1px dashed" borderColor="gray.900">
         <Flex justifyContent="space-between" alignItems="center">

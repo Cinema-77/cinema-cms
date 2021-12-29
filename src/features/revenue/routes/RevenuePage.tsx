@@ -2,7 +2,7 @@ import { Box, Flex, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chak
 
 import { SiteHeader } from '@/components';
 import { ROUTES } from '@/constants';
-import { RevenueByDateForm, RevenueByQuarterForm, RevenueByMovieForm } from '@/features/revenue';
+import { RevenueByDateForm, RevenueByQuarterForm } from '@/features/revenue';
 import { useAuth } from '@/lib/auth';
 import { Authorization, ROLES } from '@/lib/authorization';
 
@@ -35,7 +35,7 @@ export const RevenuePage = () => {
               <TabList>
                 <Tab>Doanh thu của rạp theo ngày </Tab>
                 <Tab>Doanh thu của rạp theo quý </Tab>
-                <Tab>Doanh thu của phim </Tab>
+                {/* <Tab>Doanh thu của phim </Tab> */}
               </TabList>
               <TabPanels>
                 <TabPanel>
@@ -44,9 +44,9 @@ export const RevenuePage = () => {
                 <TabPanel>
                   <RevenueByQuarterForm cinemaId={user?.cinema._id || ''} />
                 </TabPanel>
-                <TabPanel>
+                {/* <TabPanel>
                   <RevenueByMovieForm cinemaId={user?.cinema._id || ''} />
-                </TabPanel>
+                </TabPanel> */}
               </TabPanels>
             </Tabs>
           </Stack>

@@ -32,6 +32,7 @@ import {
   getDiscount,
 } from '@/features/seller';
 import { ShowTimesDetail } from '@/features/showtimes';
+import { useAuth } from '@/lib/auth';
 import { formatNumber } from '@/utils/format';
 
 interface ShowTimeDetailProps {
@@ -67,6 +68,7 @@ export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
   const history = useHistory();
   const buyTicketMutation = useBuyTicket();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { user: staff } = useAuth();
 
   const total =
     getInvoiceTotal(selectedSeats) +
@@ -96,6 +98,7 @@ export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
       movieName: showTimeDetail.movieName,
       roomName: showTimeDetail.roomName,
       date: showTimeDetail.date,
+      staff: staff || undefined,
     });
     history.push(ROUTES.PAYMENT_COMPLETE);
     clearData();
@@ -130,7 +133,7 @@ export const ShowTimeDetail: React.FC<ShowTimeDetailProps> = (props) => {
         </Box>
         <Stack spacing={2}>
           <Box paddingBottom="8px" borderBottom="1px solid">
-            <b>Rạp : </b> Movieer Tân Phú
+            <b>Rạp : </b> Movieer Tân Phú | Phòng: {showTimeDetail.roomName}
           </Box>
           <Box paddingBottom="8px" borderBottom="1px solid">
             <b>Suất chiếu : </b> {`${showTimeDetail.time} | ${showTimeDetail.date}`}

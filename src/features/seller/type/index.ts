@@ -1,3 +1,4 @@
+import { AuthUser as Staff } from '@/features/auth';
 import { ShowTimesDetail } from '@/features/showtimes';
 
 export interface SeatType {
@@ -59,6 +60,7 @@ export interface BillsResponse {
   movieName: string;
   roomName: string;
   date: string;
+  staff?: Staff;
 }
 export interface BuyTicketResponse {
   success: boolean;

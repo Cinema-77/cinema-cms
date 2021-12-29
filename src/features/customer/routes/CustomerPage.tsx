@@ -44,8 +44,8 @@ export const CustomerPage = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: 'Thông tin nhân viên',
-        Footer: 'Thông tin nhân viên',
+        Header: 'Thông tin khách hàng',
+        Footer: 'Thông tin khách hàng',
         columns: [
           {
             Header: 'Họ tên',
