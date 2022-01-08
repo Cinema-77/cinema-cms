@@ -32,9 +32,7 @@ export const Cinema = () => {
       <Tabs>
         <TabList>
           <Tab fontWeight="500">Showtimes</Tab>
-          <Tab fontWeight="500">Movies</Tab>
         </TabList>
-
         <TabPanels>
           <TabPanel>
             <Flex justifyContent="flex-start">
@@ -46,9 +44,6 @@ export const Cinema = () => {
                 isMineCinema={false}
               />
             </Flex>
-          </TabPanel>
-          <TabPanel>
-            <p>two!</p>
           </TabPanel>
         </TabPanels>
       </Tabs>

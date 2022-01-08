@@ -15,7 +15,7 @@ import * as z from 'zod';
 import shallow from 'zustand/shallow';
 
 import { Form, InputField } from '@/components';
-import { getCouponGift, ICoupon } from '@/features/seller';
+import { getCouponGift } from '@/features/seller';
 import { useSellerStore } from '@/stores/seller';
 
 type CouponValues = {
@@ -29,17 +29,7 @@ const schema = z.object({
 });
 
 export const CouponFormModal = () => {
-  const {
-    openModal,
-    isLoading,
-    member,
-    screenId,
-    selectedGifts,
-    selectedSeats,
-    closeModal,
-    fetchCoupon,
-    setLoading,
-  } = useSellerStore(
+  const { openModal, isLoading, member, closeModal, fetchCoupon, setLoading } = useSellerStore(
     (state) => ({
       openModal: state.openModal,
       member: state.member,
@@ -55,54 +45,16 @@ export const CouponFormModal = () => {
   );
   const toast = useToast();
 
-  const validateError = (coupon: ICoupon) => {
-    const messageError: string[] = [];
-
-    const isUnvaliableTicket = coupon.gift.screenId && coupon.gift.screenId !== screenId;
-    const hasGiftDiscount = selectedGifts.find((g) => g.type === 2 && coupon.gift.type === g.type); // 2 la phieu giam gia
-    const ticketsGift = selectedGifts.find((g) => g.type === 0);
-    const isUnvaliableCoupon = coupon.status === 1;
-
-    if (isUnvaliableCoupon) {
-      messageError.push('Coupon đã được sử dụng');
-    }
-
-    if (isUnvaliableTicket) {
-      messageError.push('Coupon không hợp lệ');
-    }
-
-    if (hasGiftDiscount) {
-      messageError.push('Phiếu giảm giá chỉ áp dụng 1 lần');
-    }
-
-    if (ticketsGift && ticketsGift.quantity > selectedSeats.length) {
-      messageError.push(`Bạn chỉ đổi được tối đa ${selectedSeats.length} vé`);
-    }
-
-    messageError.forEach((msg) =>
-      toast({
-        position: 'top-right',
-        status: 'info',
-        title: msg,
-        isClosable: true,
-      }),
-    );
-
-    return messageError;
-  };
-
   return (
     <Modal onClose={closeModal} isOpen={openModal} isCentered>
       <ModalOverlay />
       <ModalContent>
         <Form<CouponValues, typeof schema>
           onSubmit={async ({ code }) => {
-            setLoading(true);
-            const data = { code, userId: member._id };
-            const { values, success } = await getCouponGift(data);
-            const hasError = validateError(values.coupon);
-
-            if (success && !hasError.length) {
+            try {
+              setLoading(true);
+              const data = { code, userId: member._id };
+              const { values } = await getCouponGift(data);
               toast({
                 position: 'top-right',
                 status: 'success',
@@ -111,7 +63,7 @@ export const CouponFormModal = () => {
               });
               fetchCoupon(values.coupon);
               closeModal();
-            } else {
+            } catch {
               setLoading(false);
             }
           }}

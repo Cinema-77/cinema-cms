@@ -36,7 +36,7 @@ export const RevenuePage = () => {
               <TabList>
                 <Tab>Doanh thu của rạp theo ngày </Tab>
                 <Authorization policyCheck={POLICIES['revenue:quarter'](user as AuthUser)}>
-                  <Tab>Doanh thu của rạp theo quý </Tab>
+                  <Tab>Doanh thu của rạp theo tháng </Tab>
                 </Authorization>
               </TabList>
               <TabPanels>
@@ -47,11 +47,9 @@ export const RevenuePage = () => {
                     roleType={user?.permission.type || '2'}
                   />
                 </TabPanel>
-                <Authorization policyCheck={POLICIES['revenue:quarter'](user as AuthUser)}>
-                  <TabPanel>
-                    <RevenueByQuarterForm cinemaId={user?.cinema._id || ''} />
-                  </TabPanel>
-                </Authorization>
+                <TabPanel>
+                  <RevenueByQuarterForm cinemaId={user?.cinema._id || ''} />
+                </TabPanel>
               </TabPanels>
             </Tabs>
           </Stack>

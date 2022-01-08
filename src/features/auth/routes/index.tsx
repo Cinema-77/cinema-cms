@@ -1,4 +1,4 @@
-import { Button, Flex, Heading, Stack, useToast } from '@chakra-ui/react';
+import { Button, Flex, Heading, Stack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -22,7 +22,6 @@ const schema = z.object({
 export const Auth = () => {
   const { login } = useAuth();
   const [isLoggingIn, setIsLoggingIn] = React.useState<boolean>(false);
-  const toast = useToast();
   const {
     handleSubmit,
     register,
@@ -31,15 +30,15 @@ export const Auth = () => {
   const history = useHistory();
 
   const onLogin: SubmitHandler<LoginValues> = async (data: LoginValues) => {
-    setIsLoggingIn(!isLoggingIn);
-    const { values, errors } = await loginWithEmailAndPassword(data);
-    if (errors) {
-      toast({ title: `Login Failed`, position: 'top-right', isClosable: true, status: 'error' });
+    try {
+      setIsLoggingIn(!isLoggingIn);
+      const { values } = await loginWithEmailAndPassword(data);
       setIsLoggingIn(false);
-    } else {
       login(values);
       setIsLoggingIn(false);
       history.push('/app');
+    } catch {
+      setIsLoggingIn(false);
     }
   };
 

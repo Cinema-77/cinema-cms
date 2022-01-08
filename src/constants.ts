@@ -37,7 +37,7 @@ export const CUSTOMER_FORM = Object.freeze({
 });
 
 export const PRICE = {
-  MEMBER: 45000,
+  CHILD: 45000,
   STUDENT: 50000,
 };
 

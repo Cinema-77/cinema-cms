@@ -84,30 +84,43 @@ export const useSellerStore = create<SellerStore>((set) => ({
     })),
   getScreen: (screenId) => set(() => ({ screenId })),
   fetchMember: async (phoneNumber: string) => {
-    set({ isLoading: true });
-    const { user, success } = await getUserProfile({ phoneNumber });
-    set({ isLoading: false });
-
-    if (!success) {
-      return false;
-    } else {
-      set({ member: user, point: user.point });
+    let isSucess = true;
+    try {
+      set({ isLoading: true });
+      const { user, success } = await getUserProfile({ phoneNumber });
+      set({ isLoading: false });
+      if (!success) {
+        isSucess = false;
+      } else {
+        set({ member: user, point: user.point });
+      }
+    } catch {
+      set({ isLoading: false });
+      isSucess = false;
     }
 
-    return true;
+    return isSucess;
   },
   fetchGifts: async (screenId: string) => {
-    set({ isLoading: true });
-    const { values, status } = await getGiftByScreen({ screenId });
-    const gifts = values.gifts.filter((g) => g.type !== 2); // hide discount gift
-    set({ isLoading: false });
+    let isSucess = true;
+    try {
+      set({ isLoading: true });
+      const { values, status } = await getGiftByScreen({ screenId });
+      const gifts = values.gifts.filter((g) => g.type !== 2); // hide discount gift
+      set({ isLoading: false });
 
-    if (!status) {
-      return false;
-    } else {
-      set({ gifts: gifts });
+      if (!status) {
+        isSucess = false;
+      } else {
+        set({ gifts: gifts });
+      }
+    } catch {
+      set({ isLoading: false });
+
+      isSucess = false;
     }
-    return true;
+
+    return isSucess;
   },
   fetchCoupon: (coupon: ICoupon) =>
     set((state) => ({
