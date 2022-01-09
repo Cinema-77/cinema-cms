@@ -14,9 +14,9 @@ export const Cinemas = () => {
   return (
     <>
       <SiteHeader
-        menuName="List Cinema"
+        menuName="Danh sách rạp"
         menuHref={ROUTES.CINEMA_LIST}
-        heading="List Cinema"
+        heading="Danh sách rạp"
         showButton={
           <Authorization policyCheck={POLICIES['cinema:create'](user as AuthUser)}>
             <CinemaModalCreate />

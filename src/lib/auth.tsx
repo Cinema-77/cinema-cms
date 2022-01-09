@@ -7,6 +7,7 @@ import storage from '@/utils/storage';
 async function handleUserResponse(data: UserResponse) {
   const { token, staff } = data;
   storage.setToken(token);
+
   return staff;
 }
 

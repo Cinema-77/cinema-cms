@@ -103,7 +103,7 @@ export const CinemaModalCreate: React.FC<any> = () => {
         }}
         leftIcon={<MdAdd />}
       >
-        Add Cinema
+        Thêm rạp
       </Button>
 
       <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="lg">

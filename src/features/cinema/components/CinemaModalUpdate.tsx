@@ -73,7 +73,7 @@ export const CinemaModalUpdate: React.FC<CinemaValues> = (props) => {
         variant="solid"
         onClick={onOpen}
       >
-        Edit
+        Sửa
       </Button>
       <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />

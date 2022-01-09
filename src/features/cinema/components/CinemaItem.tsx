@@ -71,15 +71,12 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
                 <AlertDialogOverlay />
                 <AlertDialogContent>
                   <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                    Delete Cinema
+                    Xoá rạp
                   </AlertDialogHeader>
-                  <AlertDialogBody>
-                    Are you sure? This will also delete all showtimes and movie left on the cinema.
-                    You can't undo this action afterwards.
-                  </AlertDialogBody>
+                  <AlertDialogBody>Bạn có chắc chắc muốn xoá rạp ?</AlertDialogBody>
                   <AlertDialogFooter>
                     <Button ref={cancelRef} onClick={onClose}>
-                      Cancel
+                      Trở lại
                     </Button>
                     <Button
                       fontWeight="bold"
@@ -88,7 +85,7 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
                       ml={3}
                       isLoading={deleteCinemaMutation.isLoading}
                     >
-                      Delete
+                      Xoá
                     </Button>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -120,7 +117,7 @@ export const CinemaItem: React.FC<CinemaType> = (props) => {
           colorScheme="cyan"
           variant="outline"
         >
-          Details
+          Chi tiết
         </Button>
       </Stack>
     </Box>
