@@ -15,9 +15,10 @@ import { IRevenueData } from '@/features/revenue';
 
 interface RevenueInfoProps {
   revenueData: IRevenueData;
+  revenueType: string;
 }
 
-export const RevenueInfo: React.FC<RevenueInfoProps> = ({ revenueData }) => {
+export const RevenueInfo: React.FC<RevenueInfoProps> = ({ revenueData, revenueType }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -43,7 +44,7 @@ export const RevenueInfo: React.FC<RevenueInfoProps> = ({ revenueData }) => {
                   <Heading as="h4" size="md">
                     Mã hoá đơn
                   </Heading>
-                  <Text>{revenueData.billId}</Text>
+                  <Text>{revenueData?.billId || ''}</Text>
                 </Stack>
               </Box>
               <Box>
@@ -126,22 +127,26 @@ export const RevenueInfo: React.FC<RevenueInfoProps> = ({ revenueData }) => {
                   <Text>{revenueData.promotionType}</Text>
                 </Stack>
               </Box>
-              <Box>
-                <Stack spacing={2}>
-                  <Heading as="h4" size="md">
-                    Tên Nhân viên
-                  </Heading>
-                  <Text>{revenueData.staff.profile?.fullName || ''}</Text>
-                </Stack>
-              </Box>
-              <Box>
-                <Stack spacing={2}>
-                  <Heading as="h4" size="md">
-                    Tên khách hàng
-                  </Heading>
-                  <Text>{revenueData.user.profile?.fullName || ''}</Text>
-                </Stack>
-              </Box>
+              {revenueType === 'date' && (
+                <>
+                  <Box>
+                    <Stack spacing={2}>
+                      <Heading as="h4" size="md">
+                        Tên Nhân viên
+                      </Heading>
+                      <Text>{revenueData.staff.profile?.fullName || ''}</Text>
+                    </Stack>
+                  </Box>
+                  <Box>
+                    <Stack spacing={2}>
+                      <Heading as="h4" size="md">
+                        Tên khách hàng
+                      </Heading>
+                      <Text>{revenueData.user.profile?.fullName || ''}</Text>
+                    </Stack>
+                  </Box>
+                </>
+              )}
             </SimpleGrid>
           </ModalBody>
         </ModalContent>

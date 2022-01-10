@@ -2,7 +2,13 @@ import { Spinner, Flex, Heading, Box, Stack, Select } from '@chakra-ui/react';
 import * as R from 'ramda';
 import * as React from 'react';
 
-import { LineChart, TableRevenue, useRevenueByMonthQuery, sortByDate } from '@/features/revenue';
+import {
+  LineChart,
+  TableRevenue,
+  useRevenueByMonthQuery,
+  sortByDate,
+  RevenueInfo,
+} from '@/features/revenue';
 import { formatNumber, convertToMoney } from '@/utils/format';
 
 interface RevenueByQuarterFormProps {
@@ -76,6 +82,13 @@ export const RevenueByQuarterForm: React.FC<RevenueByQuarterFormProps> = ({ cine
 
               return <>Tổng {formatNumber(total)}</>;
             },
+          },
+          {
+            Header: 'TT',
+            accessor: (originalRow: any) => {
+              return <RevenueInfo revenueData={originalRow} revenueType="quarter" />;
+            },
+            canGroupBy: false,
           },
         ],
       },

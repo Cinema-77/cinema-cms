@@ -105,7 +105,7 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({
           {
             Header: 'TT',
             accessor: (originalRow: any) => {
-              return <RevenueInfo revenueData={originalRow} />;
+              return <RevenueInfo revenueData={originalRow} revenueType="date" />;
             },
             canGroupBy: false,
           },
@@ -115,7 +115,6 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({
             accessor: (originalRow: any) => `${originalRow.staff.profile.fullName}` as any,
             aggregate: 'uniqueCount',
             Aggregated: ({ value }: any) => {
-              console.log(value);
               return `${value} phòng`;
             },
           },
