@@ -11,6 +11,7 @@ import {
   useCustomers,
   CustomerDropdown,
   useDeleteCustomer,
+  CustomerInfo,
 } from '@/features/customer';
 import { useAuth } from '@/lib/auth';
 import { Authorization, POLICIES, ROLES } from '@/lib/authorization';
@@ -22,6 +23,8 @@ export const CustomerPage = () => {
   const deleteCusomterMutation = useDeleteCustomer();
   const { onOpen } = useCustomerStore();
   const [warningDialogVisible, setWarningDialogVisible] = React.useState(false);
+  const [infoDialogVisible, setInfoDialogVisible] = React.useState(false);
+  const [customerInfo, setCustomerInfo] = React.useState<any>({});
   const [customerId, setCustomerId] = React.useState('');
   const bg = useColorModeValue('gray.900', 'white');
   const color = useColorModeValue('white', 'gray.900');
@@ -39,6 +42,15 @@ export const CustomerPage = () => {
     deleteCusomterMutation.mutateAsync({ customerId });
 
     hideWarningDialog();
+  };
+
+  const hideInfoDiaglog = () => {
+    setInfoDialogVisible(false);
+  };
+
+  const onGetDetail = (customer: any) => {
+    setCustomerInfo(customer);
+    setInfoDialogVisible(true);
   };
 
   const columns = React.useMemo(
@@ -76,6 +88,7 @@ export const CustomerPage = () => {
                 <CustomerDropdown
                   customer={originalRow}
                   onDelete={() => onDelete(originalRow._id)}
+                  onGetDetail={() => onGetDetail(originalRow)}
                 />
               );
             },
@@ -146,6 +159,11 @@ export const CustomerPage = () => {
       </Flex>
 
       <CustomerFormModal />
+      <CustomerInfo
+        isVisible={infoDialogVisible}
+        customer={customerInfo}
+        onCloseModal={hideInfoDiaglog}
+      />
       <WarningModal
         onCancel={hideWarningDialog}
         onConfirm={async () => await onConfirmDeleteFood(customerId)}

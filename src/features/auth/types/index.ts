@@ -30,6 +30,7 @@ export interface AuthUser {
   createdAt: string;
   permission: UserPermission;
   cinema: CinemaType;
+  point?: number;
 }
 
 export type Customer = Omit<AuthUser, 'permission' | 'cinema'>;
