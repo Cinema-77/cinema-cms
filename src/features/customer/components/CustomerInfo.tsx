@@ -66,7 +66,7 @@ export const CustomerInfo: React.FC<CustomerInfoProps> = ({
                 <Heading as="h4" size="md">
                   Điểm tích luỹ
                 </Heading>
-                <Text>{customer?.point || 0}</Text>
+                <Text>{customer?.customer?.point || 0}</Text>
               </Stack>
             </Box>
             <Box>

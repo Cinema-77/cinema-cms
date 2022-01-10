@@ -58,6 +58,7 @@ export interface IRevenueData {
   total: number;
   type: string;
   date: string;
+  point: number;
   staff: AuthUser;
   user: Customer;
 }

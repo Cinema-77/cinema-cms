@@ -105,7 +105,7 @@ export const RevenueByDateForm: React.FC<RevenueByDateFormProps> = ({
           {
             Header: 'TT',
             accessor: (originalRow: any) => {
-              return <RevenueInfo revenueData={originalRow} revenueType="date" />;
+              return <RevenueInfo revenueData={originalRow} />;
             },
             canGroupBy: false,
           },

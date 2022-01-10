@@ -86,7 +86,7 @@ export const RevenueByQuarterForm: React.FC<RevenueByQuarterFormProps> = ({ cine
           {
             Header: 'TT',
             accessor: (originalRow: any) => {
-              return <RevenueInfo revenueData={originalRow} revenueType="quarter" />;
+              return <RevenueInfo revenueData={originalRow} />;
             },
             canGroupBy: false,
           },
