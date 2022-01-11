@@ -1,10 +1,10 @@
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-import { getSeriesByMonth } from '../RevenueHelper';
+import { getSeriesByMonth, getSeriesCinemaByMonth } from '../RevenueHelper';
 
 const generateOptions = (props: any) => {
-  const { xCategories, data, title, subTitle } = props;
+  const { xCategories, data, title, subTitle, byCinemaAll } = props;
 
   return {
     title: {
@@ -31,16 +31,7 @@ const generateOptions = (props: any) => {
       verticalAlign: 'middle',
     },
 
-    // plotOptions: {
-    //   series: {
-    //     label: {
-    //       connectorAllowed: false,
-    //     },
-    //     pointStart: 2010,
-    //   },
-    // },
-
-    series: getSeriesByMonth(data),
+    series: byCinemaAll ? getSeriesCinemaByMonth(data) : getSeriesByMonth(data),
 
     responsive: {
       rules: [

@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 
-import { IRevenueData } from '@/features/revenue';
+import { IRevenueData, IRevenueAllByMonth } from '@/features/revenue';
 import { formatNumber } from '@/utils/format';
 
 export const getTotalMovie = (data: IRevenueData[], groupName: string) => {
@@ -21,12 +21,30 @@ const getTotalMovieInRangeDate = (movieName: string, data: IRevenueData[]) => {
     return R.sum(R.map(getTotalEachMovie, R.filter(isMovieAndDate, data)));
   });
 };
+const getTotalCinemaInRangeDate = (cinemaName: string, data: IRevenueAllByMonth[]) => {
+  const lstDate = R.uniq(sortByDate(data).map((d) => d.date));
+  return lstDate.map((date) => {
+    const isCinemaAndDate = (n: IRevenueAllByMonth) =>
+      n.date === date && n.cinemaName === cinemaName;
+    const getTotalEachCinema = (n: IRevenueAllByMonth) => n.total;
+
+    return R.sum(R.map(getTotalEachCinema, R.filter(isCinemaAndDate, data)));
+  });
+};
 
 export const getSeriesByMonth = (data: IRevenueData[]) => {
   const lstMovie = R.uniq(data.map((d) => d.movieName));
   return lstMovie.map((movieName) => ({
     name: movieName,
     data: getTotalMovieInRangeDate(movieName, data),
+  }));
+};
+
+export const getSeriesCinemaByMonth = (data: IRevenueAllByMonth[]) => {
+  const lstCinema = R.uniq(data.map((d) => d.cinemaName));
+  return lstCinema.map((cinemaName) => ({
+    name: cinemaName,
+    data: getTotalCinemaInRangeDate(cinemaName, data),
   }));
 };
 

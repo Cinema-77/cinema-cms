@@ -42,21 +42,7 @@ export const POLICIES = {
 
     return false;
   },
-  'revenue:all-cinema': (user: AuthUser) => {
-    if (user.permission.type === '0') {
-      return true;
-    }
-
-    return false;
-  },
   'customer:save': (user: AuthUser) => {
-    if (user.permission.type === '1') {
-      return true;
-    }
-
-    return false;
-  },
-  'revenue:quarter': (user: AuthUser) => {
     if (user.permission.type === '1') {
       return true;
     }

@@ -62,7 +62,7 @@ const LinkItems = () => {
       icon: FiFilm,
       to: '/app/managemovie',
     },
-    checkAccess({ allowedRoles: [ROLES.USER, ROLES.MANAGER] }) && {
+    checkAccess({ allowedRoles: [ROLES.USER, ROLES.MANAGER, ROLES.ADMIN] }) && {
       name: 'Doanh thu',
       icon: FiTrendingUp,
       to: '/app/revenue',

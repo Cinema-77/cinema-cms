@@ -70,6 +70,16 @@ export interface RevenueResponse extends BaseEntity {
   };
 }
 
+export interface IRevenueAllByMonth {
+  date: string;
+  cinemaId: string;
+  cinemaName: string;
+  total: number;
+}
+export interface RevenueAllByMonthResponse extends BaseEntity {
+  data: IRevenueAllByMonth[];
+}
+
 export interface RevenueResponseMoive extends BaseEntity {
   data: IRevenueWithMovie[];
 }

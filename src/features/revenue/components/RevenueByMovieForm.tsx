@@ -4,7 +4,6 @@ import React from 'react';
 import { Form, SingleSelect, Table, Td, Th, Tr } from '@/components';
 import { useGetRevenueByMovie, ColumnChart } from '@/features/revenue';
 import { formatNumber } from '@/utils/format';
-// import { formatNumber } from '@/utils/format';
 
 type RevenueValues = {
   cinemaId: string;
