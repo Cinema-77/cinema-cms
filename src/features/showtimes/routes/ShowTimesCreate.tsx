@@ -84,11 +84,16 @@ export const ShowTimesCreate: React.FC<ShowTimesCreateProps> = ({ user }) => {
       });
       return;
     }
-    const times = data.showTimes.filter((t) => Boolean(t.roomId) !== false);
+    const times = data.showTimes.filter(
+      (t) => Boolean(t.roomId) !== false && Boolean(t.times) !== false,
+    );
+
     const newShowTimes = {
       ...data,
+      cinemaId: user?.cinema._id as string,
       showTimes: times,
     };
+
     await createShowTimeMutation.mutateAsync({ data: newShowTimes });
     resetMovies();
   });
