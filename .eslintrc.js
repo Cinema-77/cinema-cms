@@ -42,7 +42,7 @@ module.exports = {
             patterns: ['@/features/*/*'],
           },
         ],
-        'linebreak-style': ['error', 'unix'],
+        'linebreak-style': ['error', 'windows'],
         'react/prop-types': 'off',
         'react/no-unescaped-entities': 'off',
         'jsx-a11y/click-events-have-key-events': 'off',
